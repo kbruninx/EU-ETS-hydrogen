@@ -67,6 +67,12 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,mdict::Dic
                 push!(ADMM["Imbalances"]["MSR"], results["s"][end]-results["s"][end-1])
             end
 
+            # Note on the EOM residuals: 
+            # Penalty factors related to the EOM are weighted in objectives with weight representative days (as balancing constraint appears X times in orignal optimization problem),
+            # but not in the calculation of the primal and dual residuals as this adds computational effort (inefficient operations on large arrays).
+            # Primal and duals are, however, only used to measure convergence (i.e., tolerance on meeting the balancing constraints, expressed as percentage of demand 
+            # on the considered representative days) and to update rho (based on ratio of primal and dual residuals, which doesn't change with the scaling of the representative days)
+
             # Primal residuals 
             @timeit TO "Compute primal residuals" begin
                 push!(ADMM["Residuals"]["Primal"]["ETS"], sqrt(sum(ADMM["Imbalances"]["ETS"][end].^2)))
@@ -86,7 +92,11 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,mdict::Dic
 
             # Price updates 
             @timeit TO "Update prices" begin
-                push!(results[ "λ"]["EUA"][3:end], results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["ETS"][end][3:end]) 
+                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2017-2018 prices fixed, 2019 prices are free variable
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                else # 2017-2019 ETS prices fixed to historical values
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["ETS"][end][4:end]])    
+                end
                 push!(results[ "λ"]["EOM"], results[ "λ"]["EOM"][end] - ADMM["ρ"]["EOM"][end]*ADMM["Imbalances"]["EOM"][end])
                 push!(results[ "λ"]["REC"], results[ "λ"]["REC"][end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["REC"][end])
             end

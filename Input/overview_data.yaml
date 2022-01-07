@@ -42,15 +42,14 @@ ETS:
   P_2017: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2018: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2019: 24.72 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
+  E_2017: 1803.006839 # MtCO2 - emissions in 2017, according to difference between communications to the commission
+  E_2018: 1689.079302 #  MtCO2 -  emissions in 2018, according to difference between communications to the commission
+  E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
 
 #HydM:
 
 Industry: 
-  # Historical emissions and prices for calibration - starting year of our analysis is 2017 
-  E_2017: 1803.006839 # MtCO2 - emissions in 2017, according to difference between communications to the commission
-  E_2018: 1689.079302 #  MtCO2 -  emissions in 2018, according to difference between communications to the commission
-  E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
-s  E_ref: 1900 #  MtCO2 - baseline emissions MACC
+  E_ref: 1900 #  MtCO2 - baseline emissions MACC
   tolerance_calibration: 0.1 # €/tCO2  - tolerance in calibration MACC
   SF_ind: 0.41970387243 # relative share of emissions in 2017
   REC: "NO" # eligible for RECs?
@@ -58,7 +57,6 @@ s  E_ref: 1900 #  MtCO2 - baseline emissions MACC
   EOM: "NO" # participates in EOM?
 
 # HydrogenSector: 
-
 
 PowerSector: # Note all capacity values (power) are expressed in GW, whereas energy related values (energy) are expressed in TWh. All monetary values in M€, all emissions in MtCO2
  Nuclear:

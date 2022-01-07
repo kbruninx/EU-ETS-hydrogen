@@ -1,3 +1,5 @@
+THIS README IS OUTDATED! 
+
 This code was developed to study the impact of the market stability reserve on the European Emission Trading System. It calculates an equilibrium between a representative price-taking agent on the ETS allowance auctions. The agent makes a trade-off between abatement and buying emission allowances, based on marginal abatement cost curves. It employs an iterative price-search algorithm based on ADMM to calculate this equilibrium iteratively. This allows considering a wide range of marginal abatement cost curves, which can be automatically calibrated to reproduce allowance prices post MSR reform (2019). The model allows studying the impact of emission allowance demand changes due to shocks, overlapping climate policies or EU ETS design changes as well as the impact of the convexity of the abatement cost curve.
 
 The research code documented below was used in the following paper:

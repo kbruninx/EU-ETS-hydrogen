@@ -3,3 +3,4 @@ scen_number;LRF_2021;LRF_2031;COVID;MSR;RES_target_2030;gamma;max_em_change;op_d
 2;0.042;0.042;1;2021;0.4;1;5;0;0;2020;2020;1;COVID +  Fit for 55
 3;0.022;0.022;0;2018;0.34;2;5;0;0;2020;2020;3;2018 policies, used to calibrate MACC
 4;0.042;0.042;1;2021;0.4;2;5;0;0;2020;2020;3;COVID +  Fit for 55
+5;0.022;0.022;0;2018;0.34;1;5;0;0;2020;2020;1;2018 policies, used to calibrate MACC

@@ -21,10 +21,8 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(results["s"],zeros(data["nyears"]))
 
     results["λ"] = Dict()
-
     results[ "λ"]["EUA"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 
-    push!(results[ "λ"]["EUA"],[5; 5; zeros(data["nyears"]-2)])
-
+    push!(results[ "λ"]["EUA"],zeros(data["nyears"]))
     results[ "λ"]["REC"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])  
     push!(results[ "λ"]["REC"],zeros(data["nyears"]))
     results[ "λ"]["EOM"] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"]) 

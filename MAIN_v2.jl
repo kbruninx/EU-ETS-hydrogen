@@ -84,20 +84,18 @@ agents[:rec] = []                  # all agents that participate in the rec auct
 mdict = Dict(i => Model(optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_ENV))) for i in agents[:all])
 
 ## 3. Define parameters for representative agents
-for m in agents[:all]
-    if m in agents[:ind]
-        define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents,scenario_overview_row)        # Parameters common to all agents
-        define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"]),scenario_overview_row)                                              # Industry
-    end
-    if m in agents[:ps]
-        define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,agents,scenario_overview_row)  # Parameters common to all agents
-        define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row)                            # Power sector
-    end
-    # if m in agents[:hyd]
-    #     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row) # Parameters common to all agents
-    #     define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row)                    # Power sector
-    # end
+for m in agents[:ind]
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents,scenario_overview_row)        # Parameters common to all agents
+    define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"]),scenario_overview_row)                                              # Industry
 end
+for m in agents[:ps]
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,agents,scenario_overview_row)  # Parameters common to all agents
+    define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row)                            # Power sector
+end
+# if m in agents[:hyd]
+#     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row) # Parameters common to all agents
+#     define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row)                    # Power sector
+# end
 
 # Parameters/variables ETS 
 ETS = Dict()
@@ -114,7 +112,6 @@ define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scena
 # # Parameters/variables HydrogenMarket
 # REC = Dict()
 # define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scenario_overview[scen_number,:])
-
 
 println("Inititate model, sets and parameters: done")
 println("   ")
@@ -143,11 +140,11 @@ define_results!(merge(data["General"],data["ADMM"]),results,ADMM,agents,ETS,EOM,
 ADMM!(results,ADMM,ETS,EOM,REC,mdict,agents,scenario_overview_row,TO)                      # calculate equilibrium 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][3]-data["Industry"]["P_2019"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
+while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
     # Calibration β - new estimate:
-    println(string("Calibration error 2019 EUA prices: " , abs(results[ "λ"]["EUA"][end][3]-data["Industry"]["P_2019"])," €/tCO2"))
+    println(string("Calibration error 2019 EUA prices: " , abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β])*1/(1+(results[ "λ"]["EUA"][end][3]-data["Industry"]["P_2019"])/data["Industry"]["P_2019"])
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β])*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 

@@ -93,5 +93,10 @@ function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::Data
         end
     end
 
+    # Historical prices
+    ETS["P_2017"] = data["P_2017"]
+    ETS["P_2018"] = data["P_2018"]
+    ETS["P_2019"] = data["P_2019"]
+
     return ETS
 end

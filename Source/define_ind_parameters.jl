@@ -1,9 +1,15 @@
 function define_ind_parameters!(mod::Model, data::Dict, scenario_overview_row::DataFrameRow)
     # Emissions bound to historical values in 2017-2019
     mod.ext[:parameters][:e] = zeros(data["nyears"],1)  
-    mod.ext[:parameters][:e][1] = data["E_2017"]*data["SF_ind"]
-    mod.ext[:parameters][:e][2] = data["E_2018"]*data["SF_ind"]
-    mod.ext[:parameters][:e][3] = data["E_2019"]*data["SF_ind"]
+    if data["SF_ind"] < 1 # Energy-intensive industry emissions didn't decrease in 2017-2019
+        mod.ext[:parameters][:e][1] = data["E_2017"]*data["SF_ind"] 
+        mod.ext[:parameters][:e][2] = data["E_2017"]*data["SF_ind"]
+        mod.ext[:parameters][:e][3] = data["E_2017"]*data["SF_ind"]
+    else # This is used if this agent represents all emissions under EU ETS
+        mod.ext[:parameters][:e][1] = data["E_2017"] 
+        mod.ext[:parameters][:e][2] = data["E_2018"] 
+        mod.ext[:parameters][:e][3] = data["E_2019"] 
+    end
 
     # β-value
     if scenario_overview_row[:scen_number] - scenario_overview_row[:ref_scen_number] == 0 # this is a calibration run - provide an initial estimate

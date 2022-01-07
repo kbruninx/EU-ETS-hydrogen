@@ -5,8 +5,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
 
     # Aggregate metrics 
     WBseal = Years[findfirst(ETS["TNAC"] .< ETS["TNAC_MAX"])]
-    if scenario_overview_row[:op_dem] != 0  # overlapping policy that affects emissions
-        # to be completed
+    if scenario_overview_row[:op_dem] != 0  # overlapping policy that affects emissions ########### NEEDS TO BE UPDATED ############
         # # Reference results
         # ref_results = CSV.read(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row[:ref_scen_number],".csv")),DataFrame;delim=";")
         # # WBL 
@@ -24,8 +23,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         # dirWBL = (sum(ref_ETS["C"])-sum(ref_results[:Cancellation]))/(scenario_overview_row[:op_dem]*(scenario_overview_row[:stop_op]-scenario_overview_row[:start_op]+1))
         # # Calculate indirect waterbed leakage 
         # indirWBL = WBL - dirWBL
-    elseif scenario_overview_row[:op_supply] != 0 
-        # to be completed
+    elseif scenario_overview_row[:op_supply] != 0   ########### NEEDS TO BE UPDATED ############
         # # Reference results
         # ref_results = CSV.read(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row[:ref_scen_number],".csv")),DataFrame;delim=";")
         # # WBL 
