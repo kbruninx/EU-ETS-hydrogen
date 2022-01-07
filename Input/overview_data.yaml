@@ -1,0 +1,284 @@
+General: 
+  nyears: 45
+  nTimesteps: 24 # number of timesteps per representative day
+  nReprDays: 1 # days
+  inflation: 0.02
+  discount_rate: 0.1
+
+ADMM:
+ rho_EUA: 1 # rho ADMM penalty term
+ rho_EOM: 1 # rho ADMM penalty term
+ rho_REC: 1 # rho ADMM penalty term
+ max_iter: 1000 # maximum number of iterations
+ epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
+ CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
+
+EOM: 
+  SF_load: 1.061801876 # based on Sandbag data, rescaling factor
+  nAgents: 13 # number of agents
+
+REC: 
+  RES_target_2020: 0.32 # RES target in 2020
+  RES_share_other_2017: 0.165 # RES share from biomass, hydro, etc. in 2017
+  nAgents: 3 # number of agents  
+
+ETS: 
+  LRF_2017: 38.264246
+  CAP_2016: 1969.509072 # Does not include aviation - this number is only relevant for calibration of the MACCss
+  CAP_2021_NoGreenDeal: 1596.083007 # Brexit and Aviation included in 2021 cap - https://ec.europa.eu/clima/policies/ets/cap_en
+  CAP_2021_GreenDeal: 1635.379448 # Green Deal (inclusion maritime sector), brexit and aviation on 2021 cap.
+  S_2017: 1764
+  EX_2016: 1693.904897
+  B_2016: 900
+  UA_2020: 700
+  TNAC_THRESHOLD: 1096
+  TNAC_MAX: 833
+  TNAC_MIN: 400
+  X_MSR_MAX_POS_2019: 0.24
+  X_MSR_MAX_POS_2023: 0.12
+  X_MSR_MAX_NEG_2019: 100
+  X_MSR_MAX_NEG_2023: 100
+  nAgents: 9 # number of agents
+  P_2017: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
+  P_2018: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
+  P_2019: 24.72 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
+
+#HydM:
+
+Industry: 
+  # Historical emissions and prices for calibration - starting year of our analysis is 2017 
+  E_2017: 1803.006839 # MtCO2 - emissions in 2017, according to difference between communications to the commission
+  E_2018: 1689.079302 #  MtCO2 -  emissions in 2018, according to difference between communications to the commission
+  E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
+s  E_ref: 1900 #  MtCO2 - baseline emissions MACC
+  tolerance_calibration: 0.1 # €/tCO2  - tolerance in calibration MACC
+  SF_ind: 0.41970387243 # relative share of emissions in 2017
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "NO" # participates in EOM?
+
+# HydrogenSector: 
+
+
+PowerSector: # Note all capacity values (power) are expressed in GW, whereas energy related values (energy) are expressed in TWh. All monetary values in M€, all emissions in MtCO2
+ Nuclear:
+  fuelCosts: 10 # MEUR/TWh
+  emissions: 0 # Mton/TWh
+  OC: 3672 # MEUR/GW
+  Lifetime: 50 # years
+  Leadtime: 10 # years
+  Legcap: 118.406 # GW
+  Legcap_out: 25 # years
+  AF: 0.8 # - 
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "NO" # covered by ETS?
+  EOM: "YES" # participates in EOM?
+
+ SPP_lignite_old:
+  fuelCosts: 13.2 # MEUR/TWh
+  emissions: 1.1 # Mton/TWh
+  OC: 1540 # MEUR/GW
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 48.656 # GW
+  Legcap_out: 20 # years
+  AF: 0.7 # -
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ SPP_lignite_new:
+  fuelCosts: 9.9 # MEUR/TWh
+  emissions: 0.83 # MtCO2/TWh
+  OC: 1540 # MEUR/GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 2.561 # GW
+  Legcap_out: 30 # years
+  AF: 0.7 # -
+  max_YoY_new_cap: 10000 # GW
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ SPP_coal_old:
+  fuelCosts: 15.9 # MEUR/TWh
+  emissions: 1.18 # Mton/TWh
+  OC: 1232 # MEUR/GW
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 75.788 # GW
+  Legcap_out: 20 # years
+  AF: 0.5 # -
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ SPP_coal_new:
+  fuelCosts: 12 # MEUR/TWh
+  emissions: 0.89 # MtCO2/TWh
+  OC: 1232 # MEUR/GW
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 18.947 # GW
+  Legcap_out: 30 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ SPP_gas:
+  fuelCosts: 70 # MEUR/TWh
+  emissions: 0.6 # Mton/TWh
+  OC: 1698 # MEUR/TW
+  Lifetime: 40 # years
+  Leadtime: 4 # years
+  Legcap: 7.569 # GW
+  Legcap_out: 20 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ CCGT_old:
+  fuelCosts: 52.6 # MEUR/TWh
+  emissions: 0.45 # Mton/TWh
+  OC: 760 # MEUR/GW
+  Lifetime: 25 # years
+  Leadtime: 4 # years
+  Legcap: 37.995 # GW
+  Legcap_out: 15 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ CCGT_new:
+  fuelCosts: 36.3 # MEUR/TWh
+  emissions: 0.31 # Mton/TWh
+  OC: 760 # MEUR/GW
+  Lifetime: 25 # years
+  Leadtime: 4 # years
+  Legcap: 151.982 # GW
+  Legcap_out: 20 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ OCGT:
+  fuelCosts: 60.1 # MEUR/TWh
+  emissions: 0.52 # Mton/TWh
+  OC: 524 # MEUR/GW
+  Lifetime: 15 # years
+  Leadtime: 1 # years
+  Legcap: 6.576 # GW
+  Legcap_out: 5 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ ICE:
+  fuelCosts: 85.8 # MEUR/TWh
+  emissions: 0.83 # Mton/TWh
+  OC: 524 # MEUR/GW
+  Lifetime: 15 # years
+  Leadtime: 1 # years
+  Legcap: 20.364 # GW
+  Legcap_out: 5 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ Solar:
+  fuelCosts: 0 # MEUR/TWh
+  emissions: 0 # Mton/TWh
+  OC: 1077 # MEUR/GW
+  Legcap: 106.038 # GW
+  Legcap_out: 17 # years
+  Lifetime: 20 # years
+  Leadtime: 1 # years
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF: 1 # - 
+  AF_ts: "SOLAR" # key to find time series with historical output
+  REC: "YES" # eligible for RECs?
+  ETS: "NO" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ WindOnshore:
+  fuelCosts: 0 # MEUR/TWh
+  emissions: 0 # Mton/TWh
+  OC: 1353 # MEUR/GW
+  Legcap: 153.539 # GW
+  Legcap_out: 17 # years
+  Lifetime: 20 # years
+  Leadtime: 1 # years
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF: 1 # - 
+  AF_ts: "WIND_ONSHORE" # key to find time series with historical output
+  REC: "YES" # eligible for RECs?
+  ETS: "NO" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
+ WindOffshore:
+  fuelCosts: 0 # MEUR/TWh
+  emissions: 0 # Mton/TWh
+  OC: 3748 # MEUR/GW
+  Legcap: 15.780 # GW
+  Legcap_out: 18 # years
+  Lifetime: 20 # years
+  Leadtime: 1 # years
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF: 1 # - 
+  AF_ts: "WIND_OFFSHORE" # key to find time series with historical output
+  REC: "YES" # eligible for RECs?
+  ETS: "NO" # covered by ETS
+  EOM: "YES" # participates in EOM?
+
