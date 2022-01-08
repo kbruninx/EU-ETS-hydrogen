@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # Range of scenarios to be simulated
-start_scen = 1
+start_scen = 3
 stop_scen = 4
 
 # Include packages 
@@ -142,9 +142,10 @@ ADMM!(results,ADMM,ETS,EOM,REC,mdict,agents,scenario_overview_row,TO)           
 # Calibration of industry MACC
 while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
     # Calibration β - new estimate:
-    println(string("Calibration error 2019 EUA prices: " , abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])," €/tCO2"))
+    println(string("Calibration error 2019 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β])*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])^(1/scenario_overview_row[:gamma]))
+    
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 
