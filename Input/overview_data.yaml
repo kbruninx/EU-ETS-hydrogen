@@ -9,7 +9,7 @@ ADMM:
  rho_EUA: 1 # rho ADMM penalty term
  rho_EOM: 1 # rho ADMM penalty term
  rho_REC: 1 # rho ADMM penalty term
- max_iter: 1000 # maximum number of iterations
+ max_iter: 50 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 

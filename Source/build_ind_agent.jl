@@ -18,7 +18,7 @@ b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="
 
 # Objective
 @objective(mod, Min, sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) +sum(ρ_EUA/2*A[jy]*(b[jy] - b_bar[jy])^2 for jy in JY))
-      
+
 # Constraints 
 mod.ext[:constraints][:con1]  = @constraint(mod,[jy=JY], 
     sum(b[y2] for y2=1:jy) >= sum(e[y2] for y2=1:jy)

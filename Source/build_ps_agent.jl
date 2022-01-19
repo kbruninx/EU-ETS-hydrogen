@@ -62,7 +62,6 @@ function build_ps_agent!(mod::Model)
         + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
     )
 
-
     if DELTA_CAP_MAX > 0 
         # Capacity constraint
         mod.ext[:constraints][:cap_limit] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
@@ -75,9 +74,15 @@ function build_ps_agent!(mod::Model)
         ) 
 
         # Generation of RES from new capacity that participates in REC auction
-        mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
-            r[jy] <= sum(W[jd]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000 # scaling factor needed to go from GW -> TWh
-        )
+        if mod.ext[:parameters][:REC] == 1
+            mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
+                r[jy] <= sum(W[jd]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000 # scaling factor needed to go from GW -> TWh
+            )
+        else
+            mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
+                r[jy] == 0 
+            )
+        end
 
     else
         # Capacity constraint
@@ -97,8 +102,15 @@ function build_ps_agent!(mod::Model)
     end
 
     # EUA balance 
-    mod.ext[:constraints][:EUA_balance]  = @constraint(mod,[jy=JY], 
-        sum(b[y2] for y2=1:jy) >=  sum(W[jd]*CI*g[jh,jd,y2] for jh in JH, jd in JD, y2=1:jy)
-    )
+    if mod.ext[:parameters][:ETS] == 1 
+        mod.ext[:constraints][:EUA_balance]  = @constraint(mod,[jy=JY], 
+            sum(b[y2] for y2=1:jy) >=  sum(W[jd]*CI*g[jh,jd,y2] for jh in JH, jd in JD, y2=1:jy)
+        )
+    else
+        mod.ext[:constraints][:EUA_balance]  = @constraint(mod,[jy=JY], 
+            b[y] = 0 
+        )   
+    end
+
     return mod
 end

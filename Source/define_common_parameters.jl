@@ -62,5 +62,13 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
         mod.ext[:parameters][:EOM] = 0
     end
 
+    # # Covered by Hydrogen?
+    # if data["EOM"] == "YES" 
+    #     mod.ext[:parameters][:EOM] = 1
+    #     push!(agents[:eom],m)
+    # else
+    #     mod.ext[:parameters][:EOM] = 0
+    # end
+
     return mod, agents
 end

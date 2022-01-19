@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # Range of scenarios to be simulated
-start_scen = 3
+start_scen = 4
 stop_scen = 4
 
 # Include packages 
@@ -145,7 +145,7 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"
     println(string("Calibration error 2019 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]," €/tCO2"))
 
     mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])^(1/scenario_overview_row[:gamma]))
-    
+
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 
