@@ -10,7 +10,7 @@ function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::D
     mod.ext[:parameters][:CAP_LT] = zeros(data["nyears"],data["nyears"]) 
     for y=1:data["nyears"]
         if y+data["Leadtime"] < data["nyears"]
-            for yy = y+data["Leadtime"]:minimum([y+data["Leadtime"]+data["Lifetime"],data["nyears"]])
+            for yy = y+data["Leadtime"]:minimum([y+data["Leadtime"]+data["Lifetime"]-1,data["nyears"]])
                 mod.ext[:parameters][:CAP_LT][y,yy] = 1
             end
         end
