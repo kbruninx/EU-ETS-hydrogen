@@ -6,7 +6,11 @@ function solve_ps_agent!(mod::Model)
    
     # Extract parameters
     W = mod.ext[:parameters][:W] # weight of the representative days
-    VC = mod.ext[:parameters][:VC] # variable costs, excluding cost of carbon emissions
+    if mod.ext[:parameters][:NG] == 1
+        VC  = mod.ext[:parameters][:VC] = mod.ext[:parameters][:λ_NG]/mod.ext[:parameters][:η]
+    else 
+        VC  = mod.ext[:parameters][:VC]  
+    end
     IC = mod.ext[:parameters][:IC] # overnight investment costs
     A = mod.ext[:parameters][:A] # discount factors
     CAP_SV = mod.ext[:parameters][:CAP_SV] # salvage value of new capacity

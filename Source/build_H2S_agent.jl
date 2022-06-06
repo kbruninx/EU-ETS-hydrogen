@@ -1,0 +1,126 @@
+function build_h2s_agent!(mod::Model)
+    # Solver settings
+    # set_optimizer_attribute(mod, "NumericFocus",3)
+    set_optimizer_attribute(mod, "OutputFlag",0)
+
+    # Extract sets
+    JH = mod.ext[:sets][:JH]
+    JD = mod.ext[:sets][:JD]
+    JY = mod.ext[:sets][:JY]
+       
+    # Extract parameters
+    W = mod.ext[:parameters][:W] # weight of the representative days
+    IC = mod.ext[:parameters][:IC] # overnight investment costs
+    CI = mod.ext[:parameters][:CI] # carbon intensity
+    LEG_CAP = mod.ext[:parameters][:LEG_CAP] # legacy capacity
+    CAP_LT = mod.ext[:parameters][:CAP_LT] # lead time on new capacity
+    CAP_SV = mod.ext[:parameters][:CAP_SV] # salvage value of new capacity
+    DELTA_CAP_MAX = mod.ext[:parameters][:DELTA_CAP_MAX] # max YoY change in new capacity
+    A = mod.ext[:parameters][:A] # discount factors
+    η_E_H2 = mod.ext[:parameters][:η_E_H2] # efficiency E->H2
+    η_NG_H2 = mod.ext[:parameters][:η_NG_H2] # efficiency NG->H2
+    λ_NG = mod.ext[:parameters][:λ_NG] # natural gas price
+
+    # ADMM algorithm parameters
+    λ_EUA = mod.ext[:parameters][:λ_EUA] # EUA prices
+    b_bar = mod.ext[:parameters][:b_bar] # element in ADMM penalty term related to EUA auctions
+    ρ_EUA = mod.ext[:parameters][:ρ_EUA] # rho-value in ADMM related to EUA auctions
+    λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
+    g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
+    ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EUA auctions
+    λ_H2 = mod.ext[:parameters][:λ_H2] # H2 prices
+    gH_bar = mod.ext[:parameters][:gH_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_H2 = mod.ext[:parameters][:ρ_H2] # rho-value in ADMM related to H2 market
+    λ_H2CN_prod = mod.ext[:parameters][:λ_H2CN_prod] # Carbon neutral H2 generation subsidy
+    gHCN_bar = mod.ext[:parameters][:gHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen generation subsidy
+    ρ_H2CN_prod = mod.ext[:parameters][:ρ_H2CN_prod] # rho-value in ADMM related to carbon neutral H2 generation subsidy 
+    λ_H2CN_cap = mod.ext[:parameters][:λ_H2CN_cap] # Carbon neutral H2 capacity subsidy
+    capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
+    ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
+
+    # Decision variables
+    capH = mod.ext[:variables][:capH] = @variable(mod, [jy=JY], lower_bound=0, base_name="capacity")
+    capHCN = mod.ext[:variables][:capHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="green_capacity")
+    gH = mod.ext[:variables][:gH] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_hydrogen")
+    gHCN = mod.ext[:variables][:gHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_carbon_neutral_hydrogen")
+    g = mod.ext[:variables][:g] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="demand_electricity_hydrogen") # note this is defined as a negative number, consumption
+    dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_naturalgas_hydrogen")
+    b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
+      
+    # Create affine expressions 
+    mod.ext[:expressions][:e] = @expression(mod, [jy=JY],
+        CI*dNG[jy]
+    )
+    mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
+        W[jd]*g[jh,jd,jy]
+    )
+    mod.ext[:expressions][:gtot] = @expression(mod, [jy=JY],
+        sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+    )
+
+    # Definition of the objective function
+    mod.ext[:objective] = @objective(mod, Min,
+    + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
+    - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+    + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
+    - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
+    - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
+    - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
+    + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
+    + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
+    + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
+    + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) # r refers to the hydrogen market
+    + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY) # r refers only to green H2 + imports
+    + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY) # only green H2 capacity
+    )
+    
+    # Constraints
+    mod.ext[:constraints][:gen_limit_capacity] = @constraint(mod, [jy=JY],
+        gH[jy] <=  8760*((sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000) # [TWh]        
+    )
+
+    # Investment limits: YoY investment is limited
+    mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=JY],
+        capH[jy] <= DELTA_CAP_MAX # [GW]
+    )
+        
+    # Electricity consumption
+    mod.ext[:constraints][:elec_consumption] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+        -η_E_H2*g[jh,jd,jy] <= (sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000  # [TWh]
+    )    
+
+    # Total H2 production
+    mod.ext[:constraints][:gen_limit_energy_sources] = @constraint(mod, [jy=JY],
+        gH[jy] <= -sum(W[jd]*η_E_H2*g[jh,jd,jy] for jh in JH, jd in JD) + (η_NG_H2*dNG[jy]) # [TWh]
+    )
+    
+    if CI == 0
+        mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
+        gHCN[jy] <= gH[jy] # [TWh]
+        )
+
+        mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
+        b[jy] == 0 # [MtonCO2]
+        )
+
+        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
+        capHCN[jy] <= capH[jy] # [GW]
+        )
+
+    else
+        mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
+            gHCN[jy] == 0 # [TWh]
+        )
+
+        mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
+            sum(b[y2] for y2=1:jy) >=  sum(CI*dNG[y2] for y2=1:jy) # [MtonCO2]
+        )
+
+        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
+            capHCN[jy] == 0 # [GW]
+        )
+    end
+
+    return mod
+
+end

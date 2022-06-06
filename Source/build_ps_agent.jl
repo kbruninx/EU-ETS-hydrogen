@@ -13,7 +13,11 @@ function build_ps_agent!(mod::Model)
 
     # Extract parameters
     W = mod.ext[:parameters][:W] # weight of the representative days
-    VC = mod.ext[:parameters][:VC] # variable costs, excluding cost of carbon emissions
+    if mod.ext[:parameters][:NG] == 1
+        VC  = mod.ext[:parameters][:VC] = mod.ext[:parameters][:λ_NG]/mod.ext[:parameters][:η]
+    else 
+        VC  = mod.ext[:parameters][:VC]  
+    end
     IC = mod.ext[:parameters][:IC] # overnight investment costs
     CI = mod.ext[:parameters][:CI] # carbon intensity
     LEG_CAP = mod.ext[:parameters][:LEG_CAP] # legacy capacity
@@ -41,13 +45,14 @@ function build_ps_agent!(mod::Model)
     mod.ext[:expressions][:curt] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[jy] for y2=1:jy) + LEG_CAP[jy]) - g[jh,jd,jy]
     )
-
     mod.ext[:expressions][:e] = @expression(mod, [jy=JY],
         sum(W[jd]*CI*g[jh,jd,jy] for jh in JH, jd in JD)
     )
-
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
+    )
+    mod.ext[:expressions][:gtot] = @expression(mod, [jy=JY],
+        sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
     )
 
     # Objective 
@@ -108,7 +113,7 @@ function build_ps_agent!(mod::Model)
         )
     else
         mod.ext[:constraints][:EUA_balance]  = @constraint(mod,[jy=JY], 
-            b[y] = 0 
+            b[jy] == 0 
         )   
     end
 

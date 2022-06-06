@@ -37,7 +37,24 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     mod.ext[:parameters][:r_bar] = zeros(data["nyears"],1)       # ADMM penalty term
     mod.ext[:parameters][:ρ_REC] = data["rho_REC"]               # ADMM rho value 
 
-    
+    # Parameters related to the H2 market
+    mod.ext[:parameters][:λ_H2] = zeros(data["nyears"],1)       # Price structure
+    mod.ext[:parameters][:gH_bar] = zeros(data["nyears"],1)     # ADMM penalty term
+    mod.ext[:parameters][:ρ_H2] = data["rho_H2"]                # ADMM rho value 
+
+    # Parameters related to the carbon-neutral H2 generation subsidy
+    mod.ext[:parameters][:λ_H2CN_prod] = zeros(data["nyears"],1)       # Price structure
+    mod.ext[:parameters][:gHCN_bar] = zeros(data["nyears"],1)     # ADMM penalty term
+    mod.ext[:parameters][:ρ_H2CN_prod] = data["rho_H2CN_prod"]    # ADMM rho value
+
+    # Parameters related to the carbon-neutral H2 production capacity subsidy
+    mod.ext[:parameters][:λ_H2CN_cap] = zeros(data["nyears"],1)       # Price structure
+    mod.ext[:parameters][:capHCN_bar] = zeros(data["nyears"],1)   # ADMM penalty term
+    mod.ext[:parameters][:ρ_H2CN_cap] = data["rho_H2CN_cap"]      # ADMM rho value 
+
+    # Parameters related to the natural gas market
+    mod.ext[:parameters][:λ_NG] = zeros(data["nyears"],1)         # Price structure
+
     # Eligble for RECs?
     if data["REC"] == "YES" 
         mod.ext[:parameters][:REC] = 1
@@ -62,13 +79,37 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
         mod.ext[:parameters][:EOM] = 0
     end
 
-    # # Covered by Hydrogen?
-    # if data["EOM"] == "YES" 
-    #     mod.ext[:parameters][:EOM] = 1
-    #     push!(agents[:eom],m)
-    # else
-    #     mod.ext[:parameters][:EOM] = 0
-    # end
+    # Covered by Hydrogen Market?
+    if data["H2"] == "YES" 
+        mod.ext[:parameters][:H2] = 1
+        push!(agents[:h2],m)
+    else
+        mod.ext[:parameters][:H2] = 0
+    end
+
+    # Covered by incentive scheme for carbon neutral hydrogen?
+    if data["H2CN_prod"] == "YES" 
+        mod.ext[:parameters][:H2CN_prod] = 1
+        push!(agents[:h2cn_prod],m)
+    else
+        mod.ext[:parameters][:H2CN_prod] = 0
+    end
+
+     # Covered by incentive scheme for carbon neutral hydrogen?
+     if data["H2CN_cap"] == "YES" 
+        mod.ext[:parameters][:H2CN_cap] = 1
+        push!(agents[:h2cn_cap],m)
+    else
+        mod.ext[:parameters][:H2CN_cap] = 0
+    end
+
+     # Covered by natural gas market
+     if data["NG"] == "YES" 
+        mod.ext[:parameters][:NG] = 1
+        push!(agents[:ng],m)
+    else
+        mod.ext[:parameters][:NG] = 0
+    end
 
     return mod, agents
 end

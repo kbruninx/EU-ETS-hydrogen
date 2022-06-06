@@ -18,5 +18,24 @@ function update_rho!(ADMM::Dict, iter::Int64)
         elseif ADMM["Residuals"]["Dual"]["EOM"][end] > 2*ADMM["Residuals"]["Primal"]["REC"][end]
             push!(ADMM["ρ"]["REC"], 1/1.1*ADMM["ρ"]["REC"][end])
         end
+
+        if ADMM["Residuals"]["Primal"]["H2"][end] > 2*ADMM["Residuals"]["Dual"]["H2"][end]
+            push!(ADMM["ρ"]["H2"], 1.1*ADMM["ρ"]["H2"][end])
+        elseif ADMM["Residuals"]["Dual"]["H2"][end] > 2*ADMM["Residuals"]["Primal"]["H2"][end]
+            push!(ADMM["ρ"]["H2"], 1/1.1*ADMM["ρ"]["H2"][end])
+        end
+
+        if ADMM["Residuals"]["Primal"]["H2CN_prod"][end] > 2*ADMM["Residuals"]["Dual"]["H2CN_prod"][end]
+            push!(ADMM["ρ"]["H2CN_prod"], 1.1*ADMM["ρ"]["H2CN_prod"][end])
+        elseif ADMM["Residuals"]["Dual"]["H2CN_prod"][end] > 2*ADMM["Residuals"]["Primal"]["H2CN_prod"][end]
+            push!(ADMM["ρ"]["H2CN_prod"], 1/1.1*ADMM["ρ"]["H2CN_prod"][end])
+        end
+
+        if ADMM["Residuals"]["Primal"]["H2CN_cap"][end] > 2*ADMM["Residuals"]["Dual"]["H2CN_cap"][end]
+            push!(ADMM["ρ"]["H2CN_cap"], 1.1*ADMM["ρ"]["H2CN_cap"][end])
+        elseif ADMM["Residuals"]["Dual"]["H2CN_cap"][end] > 2*ADMM["Residuals"]["Primal"]["H2CN_cap"][end]
+            push!(ADMM["ρ"]["H2CN_cap"], 1/1.1*ADMM["ρ"]["H2CN_cap"][end])
+        end
+
     end
 end

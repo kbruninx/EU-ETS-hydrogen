@@ -6,16 +6,19 @@ General:
   discount_rate: 0.1
 
 ADMM:
- rho_EUA: 1 # rho ADMM penalty term
- rho_EOM: 1 # rho ADMM penalty term
- rho_REC: 1 # rho ADMM penalty term
- max_iter: 50 # maximum number of iterations
+ rho_EUA: 1 # rho ADMM penalty term, EUA market
+ rho_EOM: 1 # rho ADMM penalty term, EOM 
+ rho_REC: 1 # rho ADMM penalty term, REC electricity
+ rho_H2: 1  # rho ADMM penalty term, H2
+ rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
+ rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
+ max_iter: 5000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
- CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
+ CircularBufferSize: 50 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
   SF_load: 1.061801876 # based on Sandbag data, rescaling factor
-  nAgents: 13 # number of agents
+  nAgents: 14 # number of agents
 
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
@@ -46,7 +49,26 @@ ETS:
   E_2018: 1689.079302 #  MtCO2 -  emissions in 2018, according to difference between communications to the commission
   E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
 
-#HydM:
+NG:
+  P_2017: 25 # €/MWh - values to be confirmed
+  P_2018: 25 # €/MWh - values to be confirmed
+  P_2019: 25 # €/MWh - values to be confirmed
+  P_2020: 25 # €/MWh - values to be confirmed
+  YoY: 2 # percentage change in NG prices
+
+H2:
+  demand: 330 # 10 MtH2 = 330 TWh (LHV)
+  nAgents: 2 # number of agents
+
+H2CN_prod:
+  H2CN_prod_target_2024: 33  # carbon-neutral hydrogen target 2024 (MtH2)
+  H2CN_prod_target_2030: 330 # carbon-neutral hydrogen target 2024 (MtH2)
+  nAgents: 1 # number of agents
+
+H2CN_cap:
+  H2CN_cap_target_2024: 0  # carbon-neutral hydrogen target 2024 (GW)
+  H2CN_cap_target_2030: 0 # carbon-neutral hydrogen target 2024 (GW)
+  nAgents: 1 # number of agents
 
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC
@@ -55,13 +77,57 @@ Industry:
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "NO" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
-# HydrogenSector: 
+HydrogenSector: 
+  SMR:
+   OC: 740 # M€/GW. See https://energy.nl/wp-content/uploads/2019/07/Steam-methane-reforming-SMR-for-hydrogen-production-1.pdf
+   fuelCosts: 0 # M€/MtH2  - To be linked to the gas price of electricity
+   Lifetime: 25 # years. See https://energy.nl/wp-content/uploads/2019/07/Steam-methane-reforming-SMR-for-hydrogen-production-1.pdf
+   Leadtime: 3  # years NOTE: TO CHECK THIS VALUE
+   Legcap: 70 # GW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED
+   efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
+   efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh]
+   max_YoY_new_cap: 20 # [GW]
+   YoY_OC: 0 # % change in overnight investment cost YoY
+   Legcap_out: 15 # years # MW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED. THIS VALUE CANNOT BE ZERO
+   REC: "NO" # eligible for RECs?
+   ETS: "YES" # covered by ETS
+   EOM: "YES" # participates in EOM?
+   H2: "YES" # participate in the carbon neutral H2 market
+   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+   NG: "YES" # participate in the natural gas market 
+
+  electrolysis:
+   OC: 1000 # M€/GW. See https://irena.org/-/media/Files/IRENA/Agency/Publication/2020/Dec/IRENA_Green_hydrogen_cost_2020.pdf
+   fuelCosts: 0 # MEUR/MtH2 - to be linked to price of electricity
+   Lifetime: 3 # Years 
+   Leadtime: 3 # years NOTE: TO CHECK THIS VALUE
+   Legcap: 1 # GW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED
+   efficiency_E_H2: 0.75 # efficiency conversion electricity to hydrogen 
+   efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
+   max_YoY_new_cap: 20 # [GW]
+   YoY_OC: -2 # % change in overnight investment cost YoY
+   Legcap_out: 25 # years # MW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED. THIS VALUE CANNOT BE ZERO
+   REC: "NO" # eligible for RECs?
+   ETS: "NO" # covered by ETS
+   EOM: "YES" # participates in EOM?
+   H2: "YES" # participate in the H2 market
+   H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "YES" # participate in the carbon neutral H2 market (capacity)
+   NG: "NO" # participate in the natural gas market
 
 PowerSector: # Note all capacity values (power) are expressed in GW, whereas energy related values (energy) are expressed in TWh. All monetary values in M€, all emissions in MtCO2
  Nuclear:
   fuelCosts: 10 # MEUR/TWh
   emissions: 0 # Mton/TWh
+  efficiency: 0 # not used
   OC: 3672 # MEUR/GW
   Lifetime: 50 # years
   Leadtime: 10 # years
@@ -75,10 +141,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "NO" # covered by ETS?
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_lignite_old:
   fuelCosts: 13.2 # MEUR/TWh
   emissions: 1.1 # Mton/TWh
+  efficiency: 0 # not used
   OC: 1540 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
@@ -92,10 +163,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_lignite_new:
   fuelCosts: 9.9 # MEUR/TWh
   emissions: 0.83 # MtCO2/TWh
+  efficiency: 0 # not used
   OC: 1540 # MEUR/GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
@@ -109,10 +185,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_coal_old:
   fuelCosts: 15.9 # MEUR/TWh
   emissions: 1.18 # Mton/TWh
+  efficiency: 0 # not used
   OC: 1232 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
@@ -126,10 +207,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_coal_new:
   fuelCosts: 12 # MEUR/TWh
   emissions: 0.89 # MtCO2/TWh
+  efficiency: 0 # not used
   OC: 1232 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
@@ -143,9 +229,14 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_gas:
-  fuelCosts: 70 # MEUR/TWh
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.4 # NG -> electricity
   emissions: 0.6 # Mton/TWh
   OC: 1698 # MEUR/TW
   Lifetime: 40 # years
@@ -160,9 +251,14 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
  CCGT_old:
-  fuelCosts: 52.6 # MEUR/TWh
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.5 # NG -> electricity  
   emissions: 0.45 # Mton/TWh
   OC: 760 # MEUR/GW
   Lifetime: 25 # years
@@ -177,9 +273,14 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
  CCGT_new:
-  fuelCosts: 36.3 # MEUR/TWh
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.6 # NG -> electricity  
   emissions: 0.31 # Mton/TWh
   OC: 760 # MEUR/GW
   Lifetime: 25 # years
@@ -194,9 +295,14 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
  OCGT:
-  fuelCosts: 60.1 # MEUR/TWh
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.45 # NG -> electricity  
   emissions: 0.52 # Mton/TWh
   OC: 524 # MEUR/GW
   Lifetime: 15 # years
@@ -211,10 +317,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
  ICE:
   fuelCosts: 85.8 # MEUR/TWh
   emissions: 0.83 # Mton/TWh
+  efficiency: 0 # not used
   OC: 524 # MEUR/GW
   Lifetime: 15 # years
   Leadtime: 1 # years
@@ -228,10 +339,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  Solar:
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
+  efficiency: 0 # not used
   OC: 1077 # MEUR/GW
   Legcap: 106.038 # GW
   Legcap_out: 17 # years
@@ -245,10 +361,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "YES" # eligible for RECs?
   ETS: "NO" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  WindOnshore:
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
+  efficiency: 0 # not used
   OC: 1353 # MEUR/GW
   Legcap: 153.539 # GW
   Legcap_out: 17 # years
@@ -262,10 +383,15 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "YES" # eligible for RECs?
   ETS: "NO" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  WindOffshore:
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
+  efficiency: 0 # not used
   OC: 3748 # MEUR/GW
   Legcap: 15.780 # GW
   Legcap_out: 18 # years
@@ -279,4 +405,9 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   REC: "YES" # eligible for RECs?
   ETS: "NO" # covered by ETS
   EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
+
 

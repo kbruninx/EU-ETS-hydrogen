@@ -2,6 +2,7 @@ function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::D
     # Parameters 
     mod.ext[:parameters][:W] = Dict(jd => repr_days[!,:Period_weight][jd] for jd=1:data["nReprDays"]) # weights of each representative day
     mod.ext[:parameters][:VC] = data["fuelCosts"].*[(1+data["YoY_VC"]/100)^(jy-1) for jy in 1:data["nyears"]] # EUR/MWh or MEUR/TWh
+    mod.ext[:parameters][:η] = data["efficiency"] # - 
     mod.ext[:parameters][:CI] = data["emissions"] # tCO2/MWh or MtCO2/TWh
     mod.ext[:parameters][:IC] = data["OC"].*[(1+data["YoY_OC"]/100)^(jy-1) for jy in 1:data["nyears"]] # EUR/MW or MEUR/TW    
     mod.ext[:parameters][:DELTA_CAP_MAX] = data["max_YoY_new_cap"] # TW
