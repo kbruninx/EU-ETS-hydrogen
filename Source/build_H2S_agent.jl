@@ -37,6 +37,16 @@ function build_h2s_agent!(mod::Model)
     λ_H2CN_cap = mod.ext[:parameters][:λ_H2CN_cap] # Carbon neutral H2 capacity subsidy
     capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
     ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
+    λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
+    r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
+    ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
+    λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
+    r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
+    ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
+    λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
+    r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
+    ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
+    ADD_SF = mod.ext[:parameters][:ADD_SF] 
 
     # Decision variables
     capH = mod.ext[:variables][:capH] = @variable(mod, [jy=JY], lower_bound=0, base_name="capacity")
@@ -44,7 +54,7 @@ function build_h2s_agent!(mod::Model)
     gH = mod.ext[:variables][:gH] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_hydrogen")
     gHCN = mod.ext[:variables][:gHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_carbon_neutral_hydrogen")
     g = mod.ext[:variables][:g] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="demand_electricity_hydrogen") # note this is defined as a negative number, consumption
-    dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_naturalgas_hydrogen")
+    dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_natural_gas_hydrogen")
     b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
       
     # Create affine expressions 
@@ -54,14 +64,17 @@ function build_h2s_agent!(mod::Model)
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    mod.ext[:expressions][:gtot] = @expression(mod, [jy=JY],
+    mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
         sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+    )
+    mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
+        sum(g[jh,jd,jy] for jh in JH)
     )
 
     # Definition of the objective function
     mod.ext[:objective] = @objective(mod, Min,
     + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
-    - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+    - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy]+λ_h_REC[jh,jd,jy]+λ_d_REC[jd,jy]+ADD_SF[jy]*λ_y_REC[jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
     + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
     - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
     - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
@@ -69,9 +82,12 @@ function build_h2s_agent!(mod::Model)
     + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
     + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
     + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
-    + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) # r refers to the hydrogen market
-    + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY) # r refers only to green H2 + imports
-    + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY) # only green H2 capacity
+    + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
+    + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
+    + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
+    + sum(ρ_y_REC/2*ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH,jd in JD) - r_y_bar[jy])^2 for jy in JY)
+    + sum(ρ_d_REC/2*W[jd]*(sum(g[jh,jd,jy] for jh in JH) - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+    + sum(ρ_h_REC/2*W[jd]*(g[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
     )
     
     # Constraints

@@ -5,53 +5,29 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
 
     # Aggregate metrics 
     WBseal = Years[findfirst(ETS["TNAC"] .< ETS["TNAC_MAX"])]
-    if scenario_overview_row[:op_dem] != 0  # overlapping policy that affects emissions ########### NEEDS TO BE UPDATED ############
-        # # Reference results
-        # ref_results = CSV.read(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row[:ref_scen_number],".csv")),DataFrame;delim=";")
-        # # WBL 
-        # WBL =(sum(ETS["C"])-sum(ref_results[:Cancellation]))/(scenario_overview_row[:op_dem]*(scenario_overview_row[:stop_op]-scenario_overview_row[:start_op]+1))
-        # # Hypothetical emission profile from reference scenario, corrected for overlapping policy
-        # ref_e = ref_results[:Emissions] 
-        # for y in range(scenario_overview_row[:start_op]-2016, stop=scenario_overview_row[:stop_op]-2016)
-        #     ref_e[y] = ref_e[y] - scenario_overview_row[:op_dem]
-        # end        
-        # # ETS: compute hypothetical actions MSR under hypothetical emission profile 
-        # ref_ETS = Dict() 
-        # define_ETS_parameters!(ref_ETS,data,scenario_overview[scen_number,:])       
-        # update_supply!(ref_e,ref_ETS,data,scenario_overview[scen_number,:]) 
-        # # Calculate direct waterbed leakage: change in supply of allowances as result of overlapping policy
-        # dirWBL = (sum(ref_ETS["C"])-sum(ref_results[:Cancellation]))/(scenario_overview_row[:op_dem]*(scenario_overview_row[:stop_op]-scenario_overview_row[:start_op]+1))
-        # # Calculate indirect waterbed leakage 
-        # indirWBL = WBL - dirWBL
-    elseif scenario_overview_row[:op_supply] != 0   ########### NEEDS TO BE UPDATED ############
-        # # Reference results
-        # ref_results = CSV.read(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row[:ref_scen_number],".csv")),DataFrame;delim=";")
-        # # WBL 
-        # WBL = - (sum(ETS["C"])-sum(ref_results[:Cancellation]))/(scenario_overview_row[:op_supply]*(scenario_overview_row[:stop_op]-scenario_overview_row[:start_op]+1))  
-        # # ETS: compute hypothetical actions MSR under reference emission profile 
-        # ref_ETS = Dict() 
-        # define_ETS_parameters!(ref_ETS,data,scenario_overview[scen_number,:])       
-        # update_supply!(ref_results[:Emissions],ref_ETS,data,scenario_overview[scen_number,:]) 
-        # # Calculate direct waterbed leakage: change in supply of allowances as result of overlapping policy
-        # dirWBL = - (sum(ref_ETS["C"])-sum(ref_results[:Cancellation]))/(scenario_overview_row[:op_supply]*(scenario_overview_row[:stop_op]-scenario_overview_row[:start_op]+1))
-        # # Calculate indirect waterbed leakage 
-        # indirWBL = WBL - dirWBL
-    else
-        WBL = NaN
-        dirWBL = NaN
-        indirWBL = NaN
-    end
     vector_output = [scenario_overview_row["scen_number"]; ADMM["n_iter"]; ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
                      ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Dual"]["ETS"][end];
                      ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; mdict["Ind"].ext[:parameters][:β];
-                     results[ "λ"]["EUA"][end][5]; sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]); sum(ETS["C"]); WBseal; WBL; dirWBL; indirWBL]
+                     results[ "λ"]["EUA"][end][5]; sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]); sum(ETS["C"]); WBseal]
     CSV.write(joinpath(home_dir,"overview_results.csv"), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
     # ADMM Convergence
-    mat_output = [Iterations ADMM["Residuals"]["Primal"]["ETS"][1:end] ADMM["Residuals"]["Primal"]["MSR"][1:end] ADMM["Residuals"]["Primal"]["EOM"][1:end] ADMM["Residuals"]["Primal"]["REC"][1:end] ADMM["Residuals"]["Primal"]["H2"][1:end] ADMM["Residuals"]["Primal"]["H2CN_prod"][1:end] ADMM["Residuals"]["Primal"]["H2CN_cap"][1:end] ADMM["Residuals"]["Dual"]["ETS"][1:end] ADMM["Residuals"]["Dual"]["EOM"][1:end]  ADMM["Residuals"]["Dual"]["REC"][1:end] ADMM["Residuals"]["Dual"]["H2"][1:end] ADMM["Residuals"]["Dual"]["H2CN_prod"][1:end] ADMM["Residuals"]["Dual"]["H2CN_cap"][1:end]]
-    CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_convergence.csv")), DataFrame(mat_output,:auto), delim=";",header=["Iterations";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";
-              "PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap";"DualResidual_ETS";"DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap"])
+    # mat_output = [Iterations ADMM["Residuals"]["Primal"]["ETS"][1:end] ADMM["Residuals"]["Primal"]["MSR"][1:end] ADMM["Residuals"]["Primal"]["EOM"][1:end] ADMM["Residuals"]["Primal"]["REC"][1:end] ADMM["Residuals"]["Primal"]["H2"][1:end] ADMM["Residuals"]["Primal"]["H2CN_prod"][1:end] ADMM["Residuals"]["Primal"]["H2CN_cap"][1:end] ADMM["Residuals"]["Dual"]["ETS"][1:end] ADMM["Residuals"]["Dual"]["EOM"][1:end]  ADMM["Residuals"]["Dual"]["REC"][1:end] ADMM["Residuals"]["Dual"]["H2"][1:end] ADMM["Residuals"]["Dual"]["H2CN_prod"][1:end] ADMM["Residuals"]["Dual"]["H2CN_cap"][1:end]]
+    # CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_convergence.csv")), DataFrame(mat_output,:auto), delim=";",header=["Iterations";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap";"DualResidual_ETS";"DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap"])
 
+    # # Temporary - plot of residuals 
+    # p = plot(Iterations,[ADMM["Residuals"]["Primal"]["ETS"][1:end]./ADMM["Residuals"]["Primal"]["ETS"][1] ADMM["Residuals"]["Primal"]["MSR"][1:end]./ADMM["Residuals"]["Primal"]["MSR"][1] ADMM["Residuals"]["Primal"]["EOM"][1:end]./ADMM["Residuals"]["Primal"]["EOM"][1] ADMM["Residuals"]["Primal"]["REC"][1:end]./ADMM["Residuals"]["Primal"]["REC"][1] ADMM["Residuals"]["Primal"]["H2"][1:end]./ADMM["Residuals"]["Primal"]["H2"][1]], label = ["PrimalResidual_ETS" "PrimalResidual_MSR" "PrimalResidual_EOM" "PrimalResidual_REC" "PrimalResidual_H2"], yaxis=(:log10))
+    # savefig(p, joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_primal_convergence.pdf"))) 
+
+    # p = plot(Iterations[2:end],[ADMM["Residuals"]["Dual"]["ETS"][2:end]./ADMM["Residuals"]["Dual"]["ETS"][2] ADMM["Residuals"]["Dual"]["EOM"][2:end]./ADMM["Residuals"]["Dual"]["EOM"][2] ADMM["Residuals"]["Dual"]["REC"][2:end]./ADMM["Residuals"]["Dual"]["REC"][2] ADMM["Residuals"]["Dual"]["H2"][2:end]./ADMM["Residuals"]["Dual"]["H2"][2]], label = ["DualResidual_ETS" "DualResidual_EOM" "DualResidual_REC" "DualResidual_H2"],yaxis=(:log10))
+    # savefig(p, joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_dual_convergence.pdf"))) 
+
+    # p = plot(Iterations[2:end],[ADMM["Residuals"]["Primal"]["ETS"][2:end]./ADMM["Residuals"]["Dual"]["ETS"][2:end] ADMM["Residuals"]["Primal"]["EOM"][2:end]./ADMM["Residuals"]["Dual"]["EOM"][2:end] ADMM["Residuals"]["Primal"]["REC"][2:end]./ADMM["Residuals"]["Dual"]["REC"][2:end] ADMM["Residuals"]["Primal"]["H2"][2:end]./ADMM["Residuals"]["Dual"]["H2"][2:end]], label = ["DualResidual_ETS" "DualResidual_EOM" "DualResidual_REC" "DualResidual_H2"],yaxis=(:log10))
+    # savefig(p, joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_ratio_convergence.pdf"))) 
+
+    # ADMM["Residuals"]["Primal"]["H2CN_prod"][1:end] ADMM["Residuals"]["Primal"]["H2CN_cap"][1:end]
+    # "PrimalResidual_H2CN_prod" "PrimalResidual_H2CN_cap"
+   
     # ETS
     mat_output = [Years ETS["CAP"] ETS["S"] sum(ETS["C"][:,:],dims=2) ETS["MSR"][:,12] ETS["TNAC"] sum(results["e"][m][end] for m in agents[:ind]) sum(results["e"][m][end] for m in setdiff(agents[:ets],agents[:ind])) results[ "λ"]["EUA"][end] sum(results["b"][m][end] for m in agents[:ind]) sum(results["b"][m][end] for m in setdiff(agents[:ets],agents[:ind]))]
     CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_ETS.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";"CAP";"Supply";"Cancellation";"MSR";"TNAC";"Emissions_Ind"; "Emissions_PS"; "EUAprice"; "EUAs_Ind"; "EUAs_PS"]);
@@ -70,21 +46,28 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         mm = mm+1
     end
     λ_EOM_avg = [sum(EOM["Dw"][:,:,jy].*results[ "λ"]["EOM"][end][:,:,jy])./sum(EOM["Dw"][:,:,jy]) for jy in mdict[agents[:ps][1]].ext[:sets][:JY]]
-    mat_output = [Years λ_EOM_avg results[ "λ"]["REC"][end] transpose(available_cap) transpose(fuel_shares)]
-    CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_PS.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";"EOM_avg";"REC";string.("CAP_",agents[:ps]);string.("FS_",agents[:ps])]);
+    λ_REC_d_avg = [sum(results[ "λ"]["REC_d"][end][:,jy])/data["nReprDays"]  for jy in mdict[agents[:ps][1]].ext[:sets][:JY]]
+    λ_REC_h_avg = [sum(results[ "λ"]["REC_h"][end][:,:,jy])/(data["nReprDays"]*data["nTimesteps"]) for jy in mdict[agents[:ps][1]].ext[:sets][:JY]]
+    mat_output = [Years λ_EOM_avg results["λ"]["REC_y"][end] λ_REC_d_avg λ_REC_h_avg transpose(available_cap) transpose(fuel_shares)]
+    CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_PS.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";"EOM_avg";"REC_y";"REC_d";"REC_h";string.("CAP_",agents[:ps]);string.("FS_",agents[:ps])]);
     
     # Hydrogen sector 
-    h2_cap = zeros(length(agents[:h2]),data["nyears"])
-    h2_prod = zeros(length(agents[:h2]),data["nyears"])
+    h2_cap = zeros(length(agents[:h2s]),data["nyears"])
+    h2_prod = zeros(length(agents[:h2s]),data["nyears"])
     mm = 1
-    for m in agents[:h2]
+    for m in agents[:h2s]
         CAP_LT = mdict[m].ext[:parameters][:CAP_LT]
         LEG_CAP = mdict[m].ext[:parameters][:LEG_CAP]
         cap = value.(mdict[m].ext[:variables][:capH])
         h2_cap[mm,:] = [sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy] for jy in mdict[m].ext[:sets][:JY]]    
-        h2_prod[mm,:] = value.(mdict[m].ext[:variables][:gH])
+        h2_prod[mm,:] = value.(mdict[m].ext[:variables][:gH])./data["conv_factor"]
         mm = mm+1
     end
-    mat_output = [Years transpose(h2_cap) transpose(h2_prod) results["λ"]["H2"][end] results["λ"]["H2CN_prod"][end] results["λ"]["H2CN_cap"][end]]
-    CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_H2.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2]);string.("PROD_",agents[:h2]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
+    mat_output = [Years transpose(h2_cap) transpose(h2_prod) results["λ"]["H2"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_prod"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_cap"][end]]
+    CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_H2.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2s]);string.("PROD_",agents[:h2s]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
+
+# to be computed 
+# Hydrogen: cost per kg or Mt => price of hydrogen? does this cover the REC as well? 
+# Hydrogen: carbon content per kg or Mt -> can this be done? or only ex-post by comparing system emissions? or marginal emission intensity?
+# Total system cost
 end

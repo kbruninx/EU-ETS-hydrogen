@@ -30,16 +30,24 @@ function build_ps_agent!(mod::Model)
     ρ_EUA = mod.ext[:parameters][:ρ_EUA] # rho-value in ADMM related to EUA auctions
     λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
     g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
-    ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EUA auctions
-    λ_REC = mod.ext[:parameters][:λ_REC] # EOM prices
-    r_bar = mod.ext[:parameters][:r_bar] # element in ADMM penalty term related to REC auctions
-    ρ_REC = mod.ext[:parameters][:ρ_REC] # rho-value in ADMM related to EUA auctions
+    ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EOM auctions
+    λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
+    r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
+    ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
+    λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
+    r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
+    ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
+    λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
+    r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
+    ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
 
     # Create variables
     cap = mod.ext[:variables][:cap] = @variable(mod, [jy=JY], lower_bound=0, base_name="capacity")
     g = mod.ext[:variables][:g] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="generation")
     b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
-    r = mod.ext[:variables][:r] = @variable(mod, [jy=JY], lower_bound=0, base_name="REC") 
+    r_y = mod.ext[:variables][:r_y] = @variable(mod, [jy=JY], lower_bound=0, base_name="REC_y") 
+    r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], lower_bound=0, base_name="REC_d") 
+    r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="REC_h") 
 
     # Create affine expressions 
     mod.ext[:expressions][:curt] = @expression(mod, [jh=JH,jd=JD,jy=JY],
@@ -51,8 +59,11 @@ function build_ps_agent!(mod::Model)
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    mod.ext[:expressions][:gtot] = @expression(mod, [jy=JY],
+    mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
         sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+    )
+    mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
+        sum(g[jh,jd,jy] for jh in JH)
     )
 
     # Objective 
@@ -60,11 +71,15 @@ function build_ps_agent!(mod::Model)
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
         + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
         - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-        - sum(A[jy]*λ_REC[jy]*r[jy] for jy in JY)
+        - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+        - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+        - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
         + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
         + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
         + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-        + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
+        + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+        + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+        + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
     )
 
     if DELTA_CAP_MAX > 0 
@@ -80,12 +95,24 @@ function build_ps_agent!(mod::Model)
 
         # Generation of RES from new capacity that participates in REC auction
         if mod.ext[:parameters][:REC] == 1
-            mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
-                r[jy] <= sum(W[jd]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000 # scaling factor needed to go from GW -> TWh
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+                r_y[jy] <= sum(W[jd]*AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy])  for jh in JH, jd in JD)/1000 - sum(W[jd]*r_h[jh,jd,jy] for jh in JH,jd in JD) - sum(W[jd]*r_d[jd,jy] for jd in JD)  # scaling factor needed to go from GW -> TWh
+            )
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+                r_d[jd,jy] <=  sum(AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH)/1000 - sum(r_h[jh,jd,jy] for jh in JH)
+            )
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+                r_h[jh,jd,jy] <=  AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy)/1000 
             )
         else
-            mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
-                r[jy] == 0 
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+                r_y[jy] == 0
+            )
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+                r_d[jd,jy] == 0 
+            )
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+                r_h[jh,jd,jy] == 0 
             )
         end
 
@@ -100,9 +127,21 @@ function build_ps_agent!(mod::Model)
             cap[jy] == 0
         ) 
 
-        # Generation of RES from new capacity that participates in REC auction
-        mod.ext[:constraints][:REC_balance] = @constraint(mod, [jy=JY],
-            r[jy] == 0 
+        # Generation of RES from existing capacity that participates in REC auction - only for annual 
+        if mod.ext[:parameters][:REC] == 1
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+                r_y[jy] == sum(W[jd]*AF[jh,jd]*LEG_CAP[jy] for jh in JH, jd in JD)/1000 
+            )
+        else
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+                r_y[jy] == 0
+            )
+        end
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] == 0 
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] == 0 
         )
     end
 

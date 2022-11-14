@@ -21,15 +21,23 @@ function solve_ps_agent!(mod::Model)
     λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
     g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
     ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EUA auctions
-    λ_REC = mod.ext[:parameters][:λ_REC] # EOM prices
-    r_bar = mod.ext[:parameters][:r_bar] # element in ADMM penalty term related to REC auctions
-    ρ_REC = mod.ext[:parameters][:ρ_REC] # rho-value in ADMM related to EUA auctions
-
+    λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
+    r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
+    ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
+    λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
+    r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
+    ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
+    λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
+    r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
+    ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
+    
     # Extract variables and expressions
     cap = mod.ext[:variables][:cap]  
     g = mod.ext[:variables][:g]  
     b = mod.ext[:variables][:b]  
-    r = mod.ext[:variables][:r]
+    r_y = mod.ext[:variables][:r_y]
+    r_d = mod.ext[:variables][:r_d]
+    r_h = mod.ext[:variables][:r_h]
 
     # Update objective
     if  mod.ext[:parameters][:REC] == 1 && mod.ext[:parameters][:ETS] == 0
@@ -38,17 +46,25 @@ function solve_ps_agent!(mod::Model)
             + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
             + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-            - sum(A[jy]*λ_REC[jy]*r[jy] for jy in JY)
+            - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+            - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+            - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-            + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
+            + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+            + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+            + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
             )
         else
             mod.ext[:objective] = @objective(mod, Min,
             + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-            - sum(A[jy]*λ_REC[jy]*r[jy] for jy in JY)
+            - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+            - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+            - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-            + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
+            + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+            + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+            + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
             )
         end
     elseif mod.ext[:parameters][:REC] == 0 && mod.ext[:parameters][:ETS] == 1
@@ -91,21 +107,29 @@ function solve_ps_agent!(mod::Model)
             + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
             + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-            - sum(A[jy]*λ_REC[jy]*r[jy] for jy in JY)
+            - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+            - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+            - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
             + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
             + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-            + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
+            + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+            + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+            + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
             )
         else
             mod.ext[:objective] = @objective(mod, Min,
             + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-            - sum(A[jy]*λ_REC[jy]*r[jy] for jy in JY)
+            - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+            - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+            - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
             + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
             + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
             + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-            + sum(ρ_REC/2*(r[jy] - r_bar[jy])^2 for jy in JY)
+            + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+            + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+            + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
             )
         end
     end

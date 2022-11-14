@@ -27,6 +27,16 @@ function solve_h2s_agent!(mod::Model)
    λ_H2CN_cap = mod.ext[:parameters][:λ_H2CN_cap] # Carbon neutral H2 capacity subsidy
    capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
    ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
+   λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
+   r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
+   ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
+   λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
+   r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
+   ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
+   λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
+   r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
+   ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
+   ADD_SF = mod.ext[:parameters][:ADD_SF] 
 
     # Extract variables and expressions
     capH = mod.ext[:variables][:capH] 
@@ -42,7 +52,7 @@ function solve_h2s_agent!(mod::Model)
         
         mod.ext[:objective] = @objective(mod, Min,
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) 
-        - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy]+λ_h_REC[jh,jd,jy]+λ_d_REC[jd,jy]+ADD_SF[jy]*λ_y_REC[jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
         + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
         - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY) 
         - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
@@ -51,6 +61,9 @@ function solve_h2s_agent!(mod::Model)
         + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
         + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)
         + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)
+        + sum(ρ_y_REC/2*ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH,jd in JD) - r_y_bar[jy])^2 for jy in JY)
+        + sum(ρ_d_REC/2*W[jd]*(sum(g[jh,jd,jy] for jh in JH) - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+        + sum(ρ_h_REC/2*W[jd]*(g[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
         )            
     
     elseif mod.ext[:parameters][:H2CN_prod] == 0 && mod.ext[:parameters][:ETS] == 1

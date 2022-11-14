@@ -4,95 +4,9 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
     iterations = ProgressBar(1:data["ADMM"]["max_iter"])
     for iter in iterations
         if convergence == 0
-            for m in agents[:all] 
-                # Calculate penalty terms ADMM and update price to most recent value 
-                @timeit TO "Compute ADMM penalty terms" begin
-                    if mdict[m].ext[:parameters][:ETS] == 1
-                        mdict[m].ext[:parameters][:b_bar] = results["b"][m][end] + 1/(ETS["nAgents"]+1)*ADMM["Imbalances"]["ETS"][end]
-                        mdict[m].ext[:parameters][:λ_EUA] = results[ "λ"]["EUA"][end] 
-                        mdict[m].ext[:parameters][:ρ_EUA] = ADMM["ρ"]["EUA"][end]
-                    end
-                    if mdict[m].ext[:parameters][:EOM] == 1
-                        mdict[m].ext[:parameters][:g_bar] = results["g"][m][end] - 1/(EOM["nAgents"]+1)*ADMM["Imbalances"]["EOM"][end]
-                        mdict[m].ext[:parameters][:λ_EOM] = results[ "λ"]["EOM"][end] 
-                        mdict[m].ext[:parameters][:ρ_EOM] = ADMM["ρ"]["EOM"][end]
-                    end
-                    if mdict[m].ext[:parameters][:REC] == 1
-                        mdict[m].ext[:parameters][:r_bar] = results["r"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC"][end]
-                        mdict[m].ext[:parameters][:λ_REC] = results[ "λ"]["REC"][end] 
-                        mdict[m].ext[:parameters][:ρ_REC] = ADMM["ρ"]["REC"][end]
-                    end
-                    if mdict[m].ext[:parameters][:H2] == 1
-                        mdict[m].ext[:parameters][:gH_bar] = results["h2"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2"][end]
-                        mdict[m].ext[:parameters][:λ_H2] = results[ "λ"]["H2"][end] 
-                        mdict[m].ext[:parameters][:ρ_H2] = ADMM["ρ"]["H2"][end]
-                    end
-                    if mdict[m].ext[:parameters][:H2CN_prod] == 1
-                        mdict[m].ext[:parameters][:gHCN_bar] = results["h2cn_prod"][m][end] - 1/(H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["H2CN_prod"][end]
-                        mdict[m].ext[:parameters][:λ_H2CN_prod] = results[ "λ"]["H2CN_prod"][end] 
-                        mdict[m].ext[:parameters][:ρ_H2CN_prod] = ADMM["ρ"]["H2CN_prod"][end]
-                    end
-                    if mdict[m].ext[:parameters][:H2CN_cap] == 1
-                        mdict[m].ext[:parameters][:capHCN_bar] = results["h2cn_cap"][m][end] - 1/(H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["H2CN_cap"][end]
-                        mdict[m].ext[:parameters][:λ_H2CN_cap] = results[ "λ"]["H2CN_cap"][end] 
-                        mdict[m].ext[:parameters][:ρ_H2CN_cap] = ADMM["ρ"]["H2CN_cap"][end]
-                    end
-                    if mdict[m].ext[:parameters][:NG] == 1
-                        # mdict[m].ext[:parameters][:r_bar] = results["r"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC"][end]
-                        mdict[m].ext[:parameters][:λ_NG] =  results[ "λ"]["REC"][end] 
-                        # mdict[m].ext[:parameters][:ρ_REC] = ADMM["ρ"]["REC"][end]
-                    end
-                end
-
-                # Solve agents decision problems:
-                if m in agents[:ind]
-                    @timeit TO "Solve industry" begin
-                        update_ind_emissions!(mdict[m],merge(data["General"],data["Industry"]),ETS,scenario_overview_row) 
-                        solve_ind_agent!(mdict[m])  
-                    end
-                    @timeit TO "Query results" begin
-                        push!(results["b"][m], collect(value.(mdict[m].ext[:variables][:b])))
-                        push!(results["e"][m], mdict[m].ext[:parameters][:e][:])
-                    end
-                elseif m in agents[:ps]
-                    @timeit TO "Solve power sector" begin
-                        solve_ps_agent!(mdict[m])  
-                    end
-                    @timeit TO "Query results" begin
-                        if mdict[m].ext[:parameters][:REC] == 1
-                            push!(results["r"][m], collect(value.(mdict[m].ext[:variables][:r])))
-                        end
-                        if mdict[m].ext[:parameters][:ETS] == 1
-                            push!(results["b"][m], collect(value.(mdict[m].ext[:variables][:b])))
-                            push!(results["e"][m], collect(value.(mdict[m].ext[:expressions][:e])))
-                        end
-                        if mdict[m].ext[:parameters][:EOM] == 1
-                            push!(results["g"][m], collect(value.(mdict[m].ext[:variables][:g])))
-                            push!(results["gtot"][m], collect(value.(mdict[m].ext[:expressions][:gtot])))
-                        end
-                    end
-                elseif m in agents[:h2s]
-                    @timeit TO "Solve power sector" begin
-                        solve_h2s_agent!(mdict[m])  
-                    end
-                    @timeit TO "Query results" begin
-                        push!(results["h2"][m], collect(value.(mdict[m].ext[:variables][:gH])))
-                        if mdict[m].ext[:parameters][:ETS] == 1
-                            push!(results["b"][m], collect(value.(mdict[m].ext[:variables][:b])))
-                            push!(results["e"][m], collect(value.(mdict[m].ext[:expressions][:e])))
-                        end
-                        if mdict[m].ext[:parameters][:EOM] == 1
-                            push!(results["g"][m], collect(value.(mdict[m].ext[:variables][:g])))
-                            push!(results["gtot"][m], collect(value.(mdict[m].ext[:expressions][:gtot])))
-                        end                     
-                        if mdict[m].ext[:parameters][:H2CN_prod] == 1
-                            push!(results["h2cn_prod"][m], collect(value.(mdict[m].ext[:variables][:gHCN])))
-                        end
-                        if mdict[m].ext[:parameters][:H2CN_cap] == 1
-                            push!(results["h2cn_cap"][m], collect(value.(mdict[m].ext[:variables][:capHCN])))
-                        end
-                    end
-                end
+            @sync for m in agents[:all] 
+                # created subroutine to allow multi-treading to solve agents' decision problems
+                @spawn ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
             end
 
             # Update supply of allowances 
@@ -105,11 +19,17 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             @timeit TO "Compute imbalances" begin
                 push!(ADMM["Imbalances"]["ETS"], results["s"][end]-sum(results["b"][m][end] for m in agents[:ets]))
                 push!(ADMM["Imbalances"]["EOM"], sum(results["g"][m][end] for m in agents[:eom]) - EOM["D"][:,:,:])
-                # push!(ADMM["Imbalances"]["REC"], sum(results["r"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
-                # Principle of additionality hardcoded
-                push!(ADMM["Imbalances"]["REC"], sum(results["r"][m][end] for m in agents[:rec]) + sum(results["gtot"][m][end] for m in agents[:h2]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
+                if scenario_overview_row["Additionality"] == "Yearly"
+                    push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:] - sum(results["g_y"][m][end] for m in agents[:h2_eom]).*ceil.(REC["RT"]))
+                elseif scenario_overview_row["Additionality"] == "Daily"
+                    push!(ADMM["Imbalances"]["REC_d"], sum(results["r_d"][m][end] for m in agents[:rec]) + sum(results["g_d"][m][end] for m in agents[:h2_eom]))
+                elseif scenario_overview_row["Additionality"] == "Hourly"
+                    push!(ADMM["Imbalances"]["REC_h"], sum(results["r_h"][m][end] for m in agents[:rec]) + sum(results["g"][m][end] for m in agents[:h2_eom]))
+                else
+                    push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*(EOM["D_cum"][:]-sum(results["g_y"][m][end] for m in agents[:h2_eom])))
+                end
                 push!(ADMM["Imbalances"]["MSR"], results["s"][end]-results["s"][end-1])
-                push!(ADMM["Imbalances"]["H2"], sum(results["h2"][m][end] for m in agents[:h2]) - H2["D"][:])
+                push!(ADMM["Imbalances"]["H2"], sum(results["h2"][m][end] for m in agents[:h2s]) - H2["D"][:])
                 push!(ADMM["Imbalances"]["H2CN_prod"], sum(results["h2cn_prod"][m][end] for m in agents[:h2cn_prod]) - H2CN_prod["H2CN_PRODT"][:])
                 push!(ADMM["Imbalances"]["H2CN_cap"], sum(results["h2cn_cap"][m][end] for m in agents[:h2cn_cap]) - H2CN_cap["H2CN_CAPT"][:])
             end
@@ -125,7 +45,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 push!(ADMM["Residuals"]["Primal"]["ETS"], sqrt(sum(ADMM["Imbalances"]["ETS"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["MSR"], sqrt(sum(ADMM["Imbalances"]["MSR"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["EOM"], sqrt(sum(ADMM["Imbalances"]["EOM"][end].^2)))
-                push!(ADMM["Residuals"]["Primal"]["REC"], sqrt(sum(ADMM["Imbalances"]["REC"][end].^2)))
+                push!(ADMM["Residuals"]["Primal"]["REC"], sqrt(sum(ADMM["Imbalances"]["REC_y"][end].^2)) + sqrt(sum(ADMM["Imbalances"]["REC_d"][end].^2)) +  sqrt(sum(ADMM["Imbalances"]["REC_h"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["H2"], sqrt(sum(ADMM["Imbalances"]["H2"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["H2CN_prod"], sqrt(sum(ADMM["Imbalances"]["H2CN_prod"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["H2CN_cap"], sqrt(sum(ADMM["Imbalances"]["H2CN_cap"][end].^2)))
@@ -136,8 +56,16 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             if iter > 1
                 push!(ADMM["Residuals"]["Dual"]["ETS"], sqrt(sum(sum((ADMM["ρ"]["EUA"][end]*((results["b"][m][end]-sum(results["b"][mstar][end] for mstar in agents[:ets])./(ETS["nAgents"]+1)) - (results["b"][m][end-1]-sum(results["b"][mstar][end-1] for mstar in agents[:ets])./(ETS["nAgents"]+1)))).^2 for m in agents[:ets])))) 
                 push!(ADMM["Residuals"]["Dual"]["EOM"], sqrt(sum(sum((ADMM["ρ"]["EOM"][end]*((results["g"][m][end]-sum(results["g"][mstar][end] for mstar in agents[:eom])./(EOM["nAgents"]+1)) - (results["g"][m][end-1]-sum(results["g"][mstar][end-1] for mstar in agents[:eom])./(EOM["nAgents"]+1)))).^2 for m in agents[:eom]))))               
-                push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC"][end]*((results["r"][m][end]-sum(results["r"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r"][m][end-1]-sum(results["r"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))
-                push!(ADMM["Residuals"]["Dual"]["H2"], sqrt(sum(sum((ADMM["ρ"]["H2"][end]*((results["h2"][m][end]-sum(results["h2"][mstar][end] for mstar in agents[:h2])./(H2["nAgents"]+1)) - (results["h2"][m][end-1]-sum(results["h2"][mstar][end-1] for mstar in agents[:h2])./(H2["nAgents"]+1)))).^2 for m in agents[:h2]))))
+                if scenario_overview_row["Additionality"] == "NA" 
+                    push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))
+                elseif scenario_overview_row["Additionality"] == "Yearly"
+                    push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) + sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["g_y"][m][end]-sum(results["g_y"][mstar][end] for mstar in agents[:h2cn_prod])./(REC["nAgents"]+1)) - (results["g_y"][m][end-1]-sum(results["g_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:h2cn_prod]))))     
+                elseif scenario_overview_row["Additionality"] == "Daily"
+                    push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_d"][end]*((results["r_d"][m][end]-sum(results["r_d"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_d"][m][end-1]-sum(results["r_d"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) + sqrt(sum(sum((ADMM["ρ"]["REC_d"][end]*((results["g_d"][m][end]-sum(results["g_d"][mstar][end] for mstar in agents[:h2cn_prod])./(REC["nAgents"]+1)) - (results["g_d"][m][end-1]-sum(results["g_d"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:h2cn_prod]))))
+                elseif scenario_overview_row["Additionality"] == "Hourly"
+                    push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_h"][end]*((results["r_h"][m][end]-sum(results["r_h"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_h"][m][end-1]-sum(results["r_h"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) + sqrt(sum(sum((ADMM["ρ"]["REC_h"][end]*((results["g"][m][end]-sum(results["g"][mstar][end] for mstar in agents[:h2cn_prod])./(REC["nAgents"]+1)) - (results["g"][m][end-1]-sum(results["g"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:h2cn_prod]))))             
+                end                               
+                push!(ADMM["Residuals"]["Dual"]["H2"], sqrt(sum(sum((ADMM["ρ"]["H2"][end]*((results["h2"][m][end]-sum(results["h2"][mstar][end] for mstar in agents[:h2s])./(H2["nAgents"]+1)) - (results["h2"][m][end-1]-sum(results["h2"][mstar][end-1] for mstar in agents[:h2s])./(H2["nAgents"]+1)))).^2 for m in agents[:h2s]))))
                 push!(ADMM["Residuals"]["Dual"]["H2CN_prod"], sqrt(sum(sum((ADMM["ρ"]["H2CN_prod"][end]*((results["h2cn_prod"][m][end]-sum(results["h2cn_prod"][mstar][end] for mstar in agents[:h2cn_prod])./(H2CN_prod["nAgents"]+1)) - (results["h2cn_prod"][m][end-1]-sum(results["h2cn_prod"][mstar][end-1] for mstar in agents[:h2cn_prod])./(H2CN_prod["nAgents"]+1)))).^2 for m in agents[:h2cn_prod]))))
                 push!(ADMM["Residuals"]["Dual"]["H2CN_cap"], sqrt(sum(sum((ADMM["ρ"]["H2CN_cap"][end]*((results["h2cn_cap"][m][end]-sum(results["h2cn_cap"][mstar][end] for mstar in agents[:h2cn_cap])./(H2CN_cap["nAgents"]+1)) - (results["h2cn_cap"][m][end-1]-sum(results["h2cn_cap"][mstar][end-1] for mstar in agents[:h2cn_cap])./(H2CN_cap["nAgents"]+1)))).^2 for m in agents[:h2cn_cap]))))
             end
@@ -146,21 +74,24 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # Price updates 
             @timeit TO "Update prices" begin
                 if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2017-2018 prices fixed, 2019 prices are free variable
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/8760*ADMM["Imbalances"]["ETS"][end][3:end]])    
                 else # 2017-2019 ETS prices fixed to historical values
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["ETS"][end][4:end]])    
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/8760*ADMM["Imbalances"]["ETS"][end][4:end]])    
                 end
+
                 push!(results[ "λ"]["EOM"], results[ "λ"]["EOM"][end] - ADMM["ρ"]["EOM"][end]*ADMM["Imbalances"]["EOM"][end])
-                push!(results[ "λ"]["REC"], results[ "λ"]["REC"][end] - ADMM["ρ"]["EUA"][end]/1000*ADMM["Imbalances"]["REC"][end])
-                push!(results[ "λ"]["H2"], results[ "λ"]["H2"][end] - ADMM["ρ"]["H2"][end]/1000*ADMM["Imbalances"]["H2"][end])
-                push!(results[ "λ"]["H2CN_prod"], results[ "λ"]["H2CN_prod"][end] - ADMM["ρ"]["H2CN_prod"][end]/1000*ADMM["Imbalances"]["H2CN_prod"][end])
+                push!(results[ "λ"]["REC_y"], results[ "λ"]["REC_y"][end] - ADMM["ρ"]["REC_y"][end]/8760*ADMM["Imbalances"]["REC_y"][end])
+                push!(results[ "λ"]["REC_d"], results[ "λ"]["REC_d"][end] - ADMM["ρ"]["REC_d"][end]/365*ADMM["Imbalances"]["REC_d"][end])
+                push!(results[ "λ"]["REC_h"], results[ "λ"]["REC_h"][end] - ADMM["ρ"]["REC_h"][end]*ADMM["Imbalances"]["REC_h"][end])
+                push!(results[ "λ"]["H2"], results[ "λ"]["H2"][end] - ADMM["ρ"]["H2"][end]/8760*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2"][end])
+                push!(results[ "λ"]["H2CN_prod"], results[ "λ"]["H2CN_prod"][end] - ADMM["ρ"]["H2CN_prod"][end]/8760*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2CN_prod"][end])
                 push!(results[ "λ"]["H2CN_cap"], results[ "λ"]["H2CN_cap"][end] - ADMM["ρ"]["H2CN_cap"][end]*ADMM["Imbalances"]["H2CN_cap"][end])
                 push!(results[ "λ"]["NG"], NG["λ"])
             end
 
             # Update ρ-values
             @timeit TO "Update ρ" begin
-                update_rho!(ADMM,iter)
+                 update_rho!(ADMM,iter)
             end
 
             # Progress bar

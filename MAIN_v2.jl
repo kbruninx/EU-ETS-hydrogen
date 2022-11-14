@@ -1,18 +1,17 @@
 ## Topic: EU ETS, MSR and overlapping policies
 # Author: Kenneth Bruninx
-# Last update: November 2021
+# Last update: September 2022
 
 ## 0. Set-up code
-# Range of scenarios to be simulated
-start_scen = 5
-stop_scen = 5
-
 # Include packages 
 using JuMP, Gurobi # Optimization packages
 using DataFrames, CSV, YAML, DataStructures # dataprocessing
 using ProgressBars, Printf # progress bar
 using Plots # visuals
 using TimerOutputs # profiling 
+using JLD2
+using Base.Threads: @spawn 
+using ArgParse # Parsing arguments from the command line
 
 # Home directory
 const home_dir = @__DIR__
@@ -37,6 +36,7 @@ include(joinpath(home_dir,"Source","build_ps_agent.jl"))
 include(joinpath(home_dir,"Source","build_H2S_agent.jl"))
 include(joinpath(home_dir,"Source","define_results.jl"))
 include(joinpath(home_dir,"Source","ADMM_v2.jl"))
+include(joinpath(home_dir,"Source","ADMM_subroutine.jl"))
 include(joinpath(home_dir,"Source","update_ind_emissions.jl"))
 include(joinpath(home_dir,"Source","solve_ind_agent.jl"))
 include(joinpath(home_dir,"Source","solve_ps_agent.jl"))
@@ -56,8 +56,7 @@ scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFra
 
 # Create file with results 
 if isfile(joinpath(home_dir,"overview_results.csv")) != 1
-    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";
-            "PrimalResidual_REC"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"Beta";"EUA_2021";"CumulativeEmissions";"Cancellation"; "WBseal"; "WBL"; "dirWBL"; "indirWBL"])
+    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"Beta";"EUA_2021";"CumulativeEmissions";"Cancellation"; "WBseal"])
 end
 
 # Create folder for results
@@ -66,6 +65,27 @@ if isdir(joinpath(home_dir,"Results")) != 1
 end
 
 # Scenario number 
+if HPC == 1
+   function parse_commandline()
+       s = ArgParseSettings()
+       @add_arg_table! s begin
+           "--sim_number"
+               help = "Enter the simulation number here"
+               arg_type = Int
+               default = 1
+       end
+       return parse_args(s)
+   end
+   # Simulation number as argument:
+   dict_sim_number =  parse_commandline()
+   start_scen = dict_sim_number["start_scen"]
+   stop_scen = dict_sim_number["stop_scen"]
+else
+    # Range of scenarios to be simulated
+    start_scen = 1
+    stop_scen = 15
+end
+
 for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
@@ -86,13 +106,42 @@ agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind])
 agents[:eom] = []                  
 agents[:ets] = []                  
 agents[:rec] = []                  
-agents[:h2] = []                    
+agents[:h2_eom] = []                    
 agents[:h2cn_prod] = []         
 agents[:h2cn_cap] = []   
 agents[:ng] = []                    
 mdict = Dict(i => Model(optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_ENV))) for i in agents[:all])
 
 ## 3. Define parameters for markets and representative agents
+# Parameters/variables ETS 
+ETS = Dict()
+define_ETS_parameters!(ETS,merge(data["General"],data["ETS"]),scenario_overview_row)
+
+# Parameters/variables EOM
+EOM = Dict()
+define_EOM_parameters!(EOM,merge(data["General"],data["EOM"]),ts,repr_days,scenario_overview_row)
+
+# Parameters/variables REC 
+REC = Dict()
+define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scenario_overview_row)
+
+# Parameters/variables incentive scheme carbon neutral hydrogen 
+H2CN_prod = Dict()
+define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2CN_prod"]),ts,repr_days,scenario_overview_row)
+
+# Parameters/variables incentive scheme carbon neutral hydrogen production capacity
+H2CN_cap = Dict()
+define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["H2CN_cap"]),ts,repr_days,scenario_overview_row)
+
+# Parameters/variables Hydrogen Market
+H2 = Dict()
+define_H2_parameters!(H2,merge(data["General"],data["H2"]),ts,repr_days,scenario_overview_row,H2CN_prod)
+
+# Parameters/variables natural gas market
+NG = Dict()
+define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days,scenario_overview_row)
+
+# Parameters/variables natural gas market
 for m in agents[:ind]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents,scenario_overview_row)           # Parameters common to all agents
     define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"]),scenario_overview_row)                                     # Industry
@@ -103,36 +152,8 @@ for m in agents[:ps]
 end
 for m in agents[:h2s]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents,scenario_overview_row)  # Parameters common to all agents
-    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m]),ts,repr_days,scenario_overview_row)                            # Hydrogen sector
+    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m]),ts,repr_days,scenario_overview_row,REC)                            # Hydrogen sector
 end
-
-# Parameters/variables ETS 
-ETS = Dict()
-define_ETS_parameters!(ETS,merge(data["General"],data["ETS"]),scenario_overview[scen_number,:])
-
-# Parameters/variables EOM
-EOM = Dict()
-define_EOM_parameters!(EOM,merge(data["General"],data["EOM"]),ts,repr_days,scenario_overview[scen_number,:])
-
-# Parameters/variables REC 
-REC = Dict()
-define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scenario_overview[scen_number,:])
-
-# Parameters/variables Hydrogen Market
-H2 = Dict()
-define_H2_parameters!(H2,merge(data["General"],data["H2"]),ts,repr_days,scenario_overview[scen_number,:])
-
-# Parameters/variables incentive scheme carbon neutral hydrogen 
-H2CN_prod = Dict()
-define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2CN_prod"]),ts,repr_days,scenario_overview[scen_number,:])
-
-# Parameters/variables incentive scheme carbon neutral hydrogen production capacity
-H2CN_cap = Dict()
-define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["H2CN_cap"]),ts,repr_days,scenario_overview[scen_number,:])
-
-# Parameters/variables natural gas market
-NG = Dict()
-define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days,scenario_overview[scen_number,:])
 
 println("Inititate model, sets and parameters: done")
 println("   ")
@@ -152,6 +173,11 @@ println("Build model: done")
 println("   ")
 
 ## 5. ADMM proces to calculate equilibrium
+println("Find equilibrium solution...")
+println("   ")
+println("(Progress indicators on primal residuals, relative to tolerance: <1 indicates convergence)")
+println("   ")
+
 results = Dict()
 ADMM = Dict()
 TO = TimerOutput()
@@ -165,6 +191,8 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"
 
     mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])^(1/scenario_overview_row[:gamma]))
 
+    println(string("Required iterations: ",ADMM["n_iter"]))
+    println(string("Required walltime: ",ADMM["walltime"], " minutes"))
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 
@@ -174,6 +202,7 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"
 end
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60   # wall time 
 
+println(string("Done!"))
 println(string("        "))
 println(string("Required iterations: ",ADMM["n_iter"]))
 println(string("Required walltime: ",ADMM["walltime"], " minutes"))
@@ -194,7 +223,8 @@ println(string("RD H2CN_cap: ",  ADMM["Residuals"]["Dual"]["H2CN_cap"][end], " -
 println(string("        "))
 
 ## 6. Postprocessing and save results 
-save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"]),agents,scenario_overview_row) 
+save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row) 
+@save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
 
 println("Postprocessing & save results: done")
 println("   ")

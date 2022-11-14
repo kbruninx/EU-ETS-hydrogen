@@ -21,7 +21,7 @@ function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::Data
             ETS["LRF"][5:14] = ETS["LRF"][5]*(data["CAP_2021_NoGreenDeal"])/ETS["CAP"][5]*ones(10);                    # 2021-2030
             ETS["LRF"][15:end] = ETS["LRF"][15]*(data["CAP_2021_NoGreenDeal"])/ETS["CAP"][5]*ones(data["nyears"]-14);  # 2030 - end ETS
             ETS["CAP"][5] = data["CAP_2021_NoGreenDeal"]                                                               # 2021 Cap
-        elseif scenario_overview_row[:MSR] == 2021  # Account for Green Deal, Brexit and the inclusion of aviation - rebasing the cap (see Data-file)
+        elseif scenario_overview_row[:MSR] == 2021  # Account for Fit-for-55, Brexit and the inclusion of aviation - rebasing the cap (see Data-file)
             ETS["LRF"][5:14] = ETS["LRF"][5]*(data["CAP_2021_GreenDeal"])/ETS["CAP"][5]*ones(10);                      # 2021-2030
             ETS["LRF"][15:end] = ETS["LRF"][15]*(data["CAP_2021_GreenDeal"])/ETS["CAP"][5]*ones(data["nyears"]-14);    # 2030 - end ETS
             ETS["CAP"][5] = data["CAP_2021_GreenDeal"]                                                                 # 2021 Cap
@@ -83,14 +83,15 @@ function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::Data
             end
         end 
 
-        # Overlapping policy on demand for emission allowances
-        if y in range(scenario_overview_row[:start_op]-2016, stop=scenario_overview_row[:stop_op]-2016)
-            ETS["Δe"][y] = ETS["Δe"][y] - scenario_overview_row[:op_dem]
-        end
+        # Not used/needed in this setting
+        # # Overlapping policy on demand for emission allowances
+        # if y in range(scenario_overview_row[:start_op]-2016, stop=scenario_overview_row[:stop_op]-2016)
+        #     ETS["Δe"][y] = ETS["Δe"][y] - scenario_overview_row[:op_dem]
+        # end
 
-        if y in range(scenario_overview_row[:start_op]-2016, stop=scenario_overview_row[:stop_op]-2016)
-            ETS["Δs"][y] = scenario_overview_row[:op_supply]
-        end
+        # if y in range(scenario_overview_row[:start_op]-2016, stop=scenario_overview_row[:stop_op]-2016)
+        #     ETS["Δs"][y] = scenario_overview_row[:op_supply]
+        # end
     end
 
     # Historical prices
