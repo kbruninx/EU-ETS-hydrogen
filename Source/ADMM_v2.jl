@@ -23,8 +23,10 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:] - sum(results["g_y"][m][end] for m in agents[:h2_eom]).*ceil.(REC["RT"]))
                 elseif scenario_overview_row["Additionality"] == "Daily"
                     push!(ADMM["Imbalances"]["REC_d"], sum(results["r_d"][m][end] for m in agents[:rec]) + sum(results["g_d"][m][end] for m in agents[:h2_eom]))
+                    push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]))
                 elseif scenario_overview_row["Additionality"] == "Hourly"
                     push!(ADMM["Imbalances"]["REC_h"], sum(results["r_h"][m][end] for m in agents[:rec]) + sum(results["g"][m][end] for m in agents[:h2_eom]))
+                    push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]))
                 else
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2017"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*(EOM["D_cum"][:]-sum(results["g_y"][m][end] for m in agents[:h2_eom])))
                 end

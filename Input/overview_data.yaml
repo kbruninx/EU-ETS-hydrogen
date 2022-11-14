@@ -1,7 +1,7 @@
 General: 
   nyears: 45
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 4 # days
+  nReprDays: 1 # days
   inflation: 0.02
   discount_rate: 0.1
 
@@ -18,7 +18,7 @@ ADMM:
 
 EOM: 
   SF_load: 1.061801876 # based on Sandbag data, rescaling factor
-  nAgents: 8 # number of agents
+  nAgents: 13 # number of agents
 
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
@@ -166,27 +166,27 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
-#  SPP_lignite_new:
-#   fuelCosts: 9.9 # MEUR/TWh
-#   emissions: 0.83 # MtCO2/TWh
-#   efficiency: 0 # not used
-#   OC: 1540 # MEUR/GW
-#   YoY_OC: 0 # % change in overnight investment cost YoY
-#   YoY_VC: 0 # % change in variable cost YoY
-#   Lifetime: 40 # years
-#   Leadtime: 8 # years
-#   Legcap: 2.561 # GW
-#   Legcap_out: 30 # years
-#   AF: 0.7 # -
-#   max_YoY_new_cap: 10000 # GW
-#   AF_ts: "NA" # key to find time series with historical output
-#   REC: "NO" # eligible for RECs?
-#   ETS: "YES" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "NO" # participate in the natural gas market
+ SPP_lignite_new:
+  fuelCosts: 9.9 # MEUR/TWh
+  emissions: 0.83 # MtCO2/TWh
+  efficiency: 0 # not used
+  OC: 1540 # MEUR/GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 2.561 # GW
+  Legcap_out: 30 # years
+  AF: 0.7 # -
+  max_YoY_new_cap: 10000 # GW
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  SPP_coal_old:
   fuelCosts: 15.9 # MEUR/TWh
@@ -210,49 +210,49 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
-#  SPP_coal_new:
-#   fuelCosts: 12 # MEUR/TWh
-#   emissions: 0.89 # MtCO2/TWh
-#   efficiency: 0 # not used
-#   OC: 1232 # MEUR/GW
-#   Lifetime: 40 # years
-#   Leadtime: 8 # years
-#   Legcap: 18.947 # GW
-#   Legcap_out: 30 # years
-#   AF: 0.85 # -
-#   max_YoY_new_cap: 10000 # GW
-#   YoY_OC: 0 # % change in overnight investment cost YoY
-#   YoY_VC: 2 # % change in variable cost YoY
-#   AF_ts: "NA" # key to find time series with historical output
-#   REC: "NO" # eligible for RECs?
-#   ETS: "YES" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "NO" # participate in the natural gas market
+ SPP_coal_new:
+  fuelCosts: 12 # MEUR/TWh
+  emissions: 0.89 # MtCO2/TWh
+  efficiency: 0 # not used
+  OC: 1232 # MEUR/GW
+  Lifetime: 40 # years
+  Leadtime: 8 # years
+  Legcap: 18.947 # GW
+  Legcap_out: 30 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
-#  SPP_gas:
-#   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
-#   efficiency: 0.4 # NG -> electricity
-#   emissions: 0.6 # Mton/TWh
-#   OC: 1698 # MEUR/TW
-#   Lifetime: 40 # years
-#   Leadtime: 4 # years
-#   Legcap: 7.569 # GW
-#   Legcap_out: 20 # years
-#   AF: 0.85 # -
-#   max_YoY_new_cap: 0 # GW
-#   YoY_OC: 0 # % change in overnight investment cost YoY
-#   YoY_VC: 2 # % change in variable cost YoY
-#   AF_ts: "NA" # key to find time series with historical output
-#   REC: "NO" # eligible for RECs?
-#   ETS: "YES" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "YES" # participate in the natural gas market
+ SPP_gas:
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.4 # NG -> electricity
+  emissions: 0.6 # Mton/TWh
+  OC: 1698 # MEUR/TW
+  Lifetime: 40 # years
+  Leadtime: 4 # years
+  Legcap: 7.569 # GW
+  Legcap_out: 20 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 0 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
  CCGT_old:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
@@ -298,49 +298,49 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "YES" # participate in the natural gas market
 
-#  OCGT:
-#   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
-#   efficiency: 0.45 # NG -> electricity  
-#   emissions: 0.52 # Mton/TWh
-#   OC: 524 # MEUR/GW
-#   Lifetime: 15 # years
-#   Leadtime: 1 # years
-#   Legcap: 6.576 # GW
-#   Legcap_out: 5 # years
-#   AF: 0.85 # -
-#   max_YoY_new_cap: 10000 # GW
-#   YoY_OC: 0 # % change in overnight investment cost YoY
-#   YoY_VC: 2 # % change in variable cost YoY
-#   AF_ts: "NA" # key to find time series with historical output
-#   REC: "NO" # eligible for RECs?
-#   ETS: "YES" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "YES" # participate in the natural gas market
+ OCGT:
+  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  efficiency: 0.45 # NG -> electricity  
+  emissions: 0.52 # Mton/TWh
+  OC: 524 # MEUR/GW
+  Lifetime: 15 # years
+  Leadtime: 1 # years
+  Legcap: 6.576 # GW
+  Legcap_out: 5 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "YES" # participate in the natural gas market
 
-#  ICE:
-#   fuelCosts: 85.8 # MEUR/TWh
-#   emissions: 0.83 # Mton/TWh
-#   efficiency: 0 # not used
-#   OC: 524 # MEUR/GW
-#   Lifetime: 15 # years
-#   Leadtime: 1 # years
-#   Legcap: 20.364 # GW
-#   Legcap_out: 5 # years
-#   AF: 0.85 # -
-#   max_YoY_new_cap: 10000 # GW
-#   YoY_OC: 0 # % change in overnight investment cost YoY
-#   YoY_VC: 2 # % change in variable cost YoY
-#   AF_ts: "NA" # key to find time series with historical output
-#   REC: "NO" # eligible for RECs?
-#   ETS: "YES" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "NO" # participate in the natural gas market
+ ICE:
+  fuelCosts: 85.8 # MEUR/TWh
+  emissions: 0.83 # Mton/TWh
+  efficiency: 0 # not used
+  OC: 524 # MEUR/GW
+  Lifetime: 15 # years
+  Leadtime: 1 # years
+  Legcap: 20.364 # GW
+  Legcap_out: 5 # years
+  AF: 0.85 # -
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: 0 # % change in overnight investment cost YoY
+  YoY_VC: 2 # % change in variable cost YoY
+  AF_ts: "NA" # key to find time series with historical output
+  REC: "NO" # eligible for RECs?
+  ETS: "YES" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
  Solar:
   fuelCosts: 0 # MEUR/TWh
@@ -386,26 +386,26 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
-#  WindOffshore:
-#   fuelCosts: 0 # MEUR/TWh
-#   emissions: 0 # Mton/TWh
-#   efficiency: 0 # not used
-#   OC: 3748 # MEUR/GW
-#   Legcap: 15.780 # GW
-#   Legcap_out: 18 # years
-#   Lifetime: 20 # years
-#   Leadtime: 1 # years
-#   max_YoY_new_cap: 10000 # GW
-#   YoY_OC: -3 # % change in overnight investment cost YoY
-#   YoY_VC: 0 # % change in variable cost YoY
-#   AF: 1 # - 
-#   AF_ts: "WIND_OFFSHORE" # key to find time series with historical output
-#   REC: "YES" # eligible for RECs?
-#   ETS: "NO" # covered by ETS
-#   EOM: "YES" # participates in EOM?
-#   H2: "NO" # participate in the carbon neutral H2 market
-#   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-#   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-#   NG: "NO" # participate in the natural gas market
+ WindOffshore:
+  fuelCosts: 0 # MEUR/TWh
+  emissions: 0 # Mton/TWh
+  efficiency: 0 # not used
+  OC: 3748 # MEUR/GW
+  Legcap: 15.780 # GW
+  Legcap_out: 18 # years
+  Lifetime: 20 # years
+  Leadtime: 1 # years
+  max_YoY_new_cap: 10000 # GW
+  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
+  AF: 1 # - 
+  AF_ts: "WIND_OFFSHORE" # key to find time series with historical output
+  REC: "YES" # eligible for RECs?
+  ETS: "NO" # covered by ETS
+  EOM: "YES" # participates in EOM?
+  H2: "NO" # participate in the carbon neutral H2 market
+  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+  NG: "NO" # participate in the natural gas market
 
 

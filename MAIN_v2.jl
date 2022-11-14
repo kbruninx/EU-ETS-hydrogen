@@ -13,6 +13,9 @@ using JLD2
 using Base.Threads: @spawn 
 using ArgParse # Parsing arguments from the command line
 
+# HPC or not?
+HPC = 0
+
 # Home directory
 const home_dir = @__DIR__
 
@@ -86,7 +89,9 @@ else
     stop_scen = 15
 end
 
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 1 
+
+# for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -229,6 +234,6 @@ save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data[
 println("Postprocessing & save results: done")
 println("   ")
 
-end # end for loop over scenarios
+# end # end for loop over scenarios
 
 println(string("##############################################################################################"))

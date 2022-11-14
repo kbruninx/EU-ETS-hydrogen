@@ -6,4 +6,4 @@
 #PBS -M kenneth.bruninx@kuleuven.be
 
 cd $VSC_DATA/BR_EV/
-julia MAIN_v4.jl --sim_number 111
+julia MAIN_v4.jl --start_scen 1 --stop_scen 2
