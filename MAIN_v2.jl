@@ -82,7 +82,7 @@ if HPC == 1
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1
+    start_scen = 1   
     stop_scen = 15
 end
 
