@@ -4,14 +4,16 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
     iterations = ProgressBar(1:data["ADMM"]["max_iter"])
     for iter in iterations
         if convergence == 0
+            # Multi-threaded version
             @sync for m in agents[:all] 
                 # created subroutine to allow multi-treading to solve agents' decision problems
                 @spawn ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
             end
-            for m in agents[:all] 
-                # created subroutine to allow multi-treading to solve agents' decision problems
-                ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
-            end
+            # Single threaded version
+            # for m in agents[:all] 
+            #     # created subroutine to allow multi-treading to solve agents' decision problems
+            #     ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
+            # end
 
             # Update supply of allowances 
             @timeit TO "Update EUA supply" begin
