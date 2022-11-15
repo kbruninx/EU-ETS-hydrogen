@@ -14,13 +14,13 @@ using Base.Threads: @spawn
 using ArgParse # Parsing arguments from the command line
 
 # HPC or not?
-HPC = 0
+HPC = "NA" # NA, TUDelft or KULeuven
 
 # Home directory
 const home_dir = @__DIR__
 
 # Gurobi environment to suppress output
-if HPC == 1  # only for running this on DelftBlue
+if HPC == "TUDelft"  # only for running this on DelftBlue
     ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
 end
 const GUROBI_ENV = Gurobi.Env()
@@ -71,7 +71,7 @@ if isdir(joinpath(home_dir,"Results")) != 1
 end
 
 # Scenario number 
-if HPC == 1
+if HPC == "TUDelft" || HPC == "KULeuven"
    function parse_commandline()
        s = ArgParseSettings()
        @add_arg_table! s begin
