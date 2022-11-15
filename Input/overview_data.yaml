@@ -1,7 +1,7 @@
 General: 
   nyears: 45
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 1 # days
+  nReprDays: 4 # days
   inflation: 0.02
   discount_rate: 0.1
 
@@ -12,7 +12,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 10000 # maximum number of iterations
+ max_iter: 3000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 

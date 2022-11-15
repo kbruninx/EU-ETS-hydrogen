@@ -20,6 +20,9 @@ HPC = 0
 const home_dir = @__DIR__
 
 # Gurobi environment to suppress output
+if HPC == 1  # only for running this on DelftBlue
+    ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
+end
 const GUROBI_ENV = Gurobi.Env()
 
 # Include functions
