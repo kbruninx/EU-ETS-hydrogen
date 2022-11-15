@@ -9,7 +9,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             #     # created subroutine to allow multi-treading to solve agents' decision problems
             #     @spawn ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
             # end
-            # Single threaded version
+
             for m in agents[:all] 
                 # created subroutine to allow multi-treading to solve agents' decision problems
                 ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
@@ -83,17 +83,17 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
 
             # Price updates 
             @timeit TO "Update prices" begin
-                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2017-2018 prices fixed, 2019 prices are free variable
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/8760*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/100*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                    # push!(results[ "λ"]["EUA"], results[ "λ"]["EUA"][end] - ADMM["ρ"]["EUA"][end]/100*ADMM["Imbalances"]["ETS"][end])
                 else # 2017-2019 ETS prices fixed to historical values
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/8760*ADMM["Imbalances"]["ETS"][end][4:end]])    
+                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]*ADMM["Imbalances"]["ETS"][end][4:end]])    
                 end
-
                 push!(results[ "λ"]["EOM"], results[ "λ"]["EOM"][end] - ADMM["ρ"]["EOM"][end]*ADMM["Imbalances"]["EOM"][end])
-                push!(results[ "λ"]["REC_y"], results[ "λ"]["REC_y"][end] - ADMM["ρ"]["REC_y"][end]/8760*ADMM["Imbalances"]["REC_y"][end])
-                push!(results[ "λ"]["REC_d"], results[ "λ"]["REC_d"][end] - ADMM["ρ"]["REC_d"][end]/365*ADMM["Imbalances"]["REC_d"][end])
+                push!(results[ "λ"]["REC_y"], results[ "λ"]["REC_y"][end] - ADMM["ρ"]["REC_y"][end]*ADMM["Imbalances"]["REC_y"][end])
+                push!(results[ "λ"]["REC_d"], results[ "λ"]["REC_d"][end] - ADMM["ρ"]["REC_d"][end]*ADMM["Imbalances"]["REC_d"][end])
                 push!(results[ "λ"]["REC_h"], results[ "λ"]["REC_h"][end] - ADMM["ρ"]["REC_h"][end]*ADMM["Imbalances"]["REC_h"][end])
-                push!(results[ "λ"]["H2"], results[ "λ"]["H2"][end] - ADMM["ρ"]["H2"][end]/8760*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2"][end])
+                push!(results[ "λ"]["H2"], results[ "λ"]["H2"][end] - ADMM["ρ"]["H2"][end]/100*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2"][end])
                 push!(results[ "λ"]["H2CN_prod"], results[ "λ"]["H2CN_prod"][end] - ADMM["ρ"]["H2CN_prod"][end]/8760*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2CN_prod"][end])
                 push!(results[ "λ"]["H2CN_cap"], results[ "λ"]["H2CN_cap"][end] - ADMM["ρ"]["H2CN_cap"][end]*ADMM["Imbalances"]["H2CN_cap"][end])
                 push!(results[ "λ"]["NG"], NG["λ"])

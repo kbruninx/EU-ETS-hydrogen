@@ -9,7 +9,6 @@
 #SBATCH --account=innovation
 
 module load 2022r2
-module load openmpi
 module load julia
 
-srun julia MAIN_v2.jl > run.log
+srun julia --threads=4 MAIN_v2.jl > run.log

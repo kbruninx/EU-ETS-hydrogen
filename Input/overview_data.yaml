@@ -1,7 +1,7 @@
 General: 
   nyears: 45
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 4 # days
+  nReprDays: 1 # days
   inflation: 0.02
   discount_rate: 0.1
 
@@ -12,9 +12,9 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 3000 # maximum number of iterations
+ max_iter: 1000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
- CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
+ CircularBufferSize: 10 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
   SF_load: 1.061801876 # based on Sandbag data, rescaling factor
@@ -23,7 +23,7 @@ EOM:
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
   RES_share_other_2017: 0.165 # RES share from biomass, hydro, etc. in 2017
-  nAgents: 4 # number of agents  
+  nAgents: 3 # number of agents  
 
 ETS: 
   LRF_2017: 38.264246
@@ -41,7 +41,7 @@ ETS:
   X_MSR_MAX_POS_2023: 0.12
   X_MSR_MAX_NEG_2019: 100
   X_MSR_MAX_NEG_2023: 100
-  nAgents: 4 # number of agents
+  nAgents: 11 # number of agents
   P_2017: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2018: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2019: 24.72 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
@@ -57,7 +57,7 @@ NG:
   YoY: 2 # percentage change in NG prices
 
 H2:
-  demand: 10 # 10 # baseline demand for hydrogen, mtH2
+  demand: 10 # baseline demand for hydrogen, mtH2
   conv_factor: 33 # 1 mt H2 = 33 TWh 
   nAgents: 2 # number of agents
 
@@ -178,7 +178,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap: 2.561 # GW
   Legcap_out: 30 # years
   AF: 0.7 # -
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 0 # GW
   AF_ts: "NA" # key to find time series with historical output
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
@@ -220,7 +220,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap: 18.947 # GW
   Legcap_out: 30 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 0 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -286,7 +286,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap: 151.982 # GW
   Legcap_out: 20 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 1000 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -308,7 +308,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap: 6.576 # GW
   Legcap_out: 5 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 1000 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -330,7 +330,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap: 20.364 # GW
   Legcap_out: 5 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 1000 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output

@@ -4,11 +4,10 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     Iterations = range(1,stop=data["CircularBufferSize"])
 
     # Aggregate metrics 
-    WBseal = Years[findfirst(ETS["TNAC"] .< ETS["TNAC_MAX"])]
     vector_output = [scenario_overview_row["scen_number"]; ADMM["n_iter"]; ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
                      ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Dual"]["ETS"][end];
                      ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; mdict["Ind"].ext[:parameters][:β];
-                     results[ "λ"]["EUA"][end][5]; sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]); sum(ETS["C"]); WBseal]
+                     results[ "λ"]["EUA"][end][5]; sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY])]
     CSV.write(joinpath(home_dir,"overview_results.csv"), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
     # ADMM Convergence

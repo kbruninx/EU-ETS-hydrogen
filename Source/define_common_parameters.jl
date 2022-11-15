@@ -91,7 +91,7 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
         mod.ext[:parameters][:ETS] = 0
     end
     
-    # Covered by ETS?
+    # Covered by EOM?
     if data["EOM"] == "YES" 
         mod.ext[:parameters][:EOM] = 1
         push!(agents[:eom],m)

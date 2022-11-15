@@ -1,0 +1,15 @@
+Set parameter TSPort to value 27099
+Set parameter TokenServer to value "flexserv-x1.tudelft.nl"
+    
+######################                  Scenario 1                 #########################
+    
+Including all required input data: done
+   
+Inititate model, sets and parameters: done
+   
+Build model: done
+   
+Find equilibrium solution...
+   
+(Progress indicators on primal residuals, relative to tolerance: <1 indicates convergence)
+   

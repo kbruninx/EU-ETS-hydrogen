@@ -3,26 +3,28 @@
 # Last update: September 2022
 
 ## 0. Set-up code
-# Include packages 
-using JuMP, Gurobi # Optimization packages
-using DataFrames, CSV, YAML, DataStructures # dataprocessing
-using ProgressBars, Printf # progress bar
-using Plots # visuals
-using TimerOutputs # profiling 
-using JLD2
-using Base.Threads: @spawn 
-using ArgParse # Parsing arguments from the command line
-
 # HPC or not?
 HPC = "NA" # NA, TUDelft or KULeuven
 
 # Home directory
 const home_dir = @__DIR__
 
-# Gurobi environment to suppress output
 if HPC == "TUDelft"  # only for running this on DelftBlue
     ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
+    ENV["GUROBI_HOME"] = "./scratch/kbruninx/gurobi950/linux64"
 end
+
+# Include packages 
+using JuMP, Gurobi # Optimization packages
+using DataFrames, CSV, YAML, DataStructures # dataprocessing
+using ProgressBars, Printf # progress bar
+# using Plots # visuals doesn't work on HPC
+using TimerOutputs # profiling 
+using JLD2
+using Base.Threads: @spawn 
+using ArgParse # Parsing arguments from the command line
+
+# Gurobi environment to suppress output
 const GUROBI_ENV = Gurobi.Env()
 
 # Include functions
@@ -62,7 +64,7 @@ scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFra
 
 # Create file with results 
 if isfile(joinpath(home_dir,"overview_results.csv")) != 1
-    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"Beta";"EUA_2021";"CumulativeEmissions";"Cancellation"; "WBseal"])
+    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"Beta";"EUA_2021";"CumulativeEmissions"])
 end
 
 # Create folder for results
@@ -92,9 +94,7 @@ else
     stop_scen = 15
 end
 
-scen_number = 1 
-
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -232,11 +232,11 @@ println(string("        "))
 
 ## 6. Postprocessing and save results 
 save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row) 
-@save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
+# @save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
 
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end for loop over scenarios
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

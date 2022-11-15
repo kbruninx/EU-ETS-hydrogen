@@ -6,4 +6,4 @@
 #PBS -M kenneth.bruninx@kuleuven.be
 
 cd $VSC_DATA/BR_EV/
-julia MAIN_v4.jl --sim_number ${PBS_ARRAYID}
+julia--threads=4 MAIN_v4.jl --sim_number ${PBS_ARRAYID}

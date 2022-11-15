@@ -1,0 +1,203 @@
+0.0%┣                                            ┫ 0/1.0k [00:00<00:-50, -0s/it]
+[1AΔETS: 114.218 -- ΔMSR: 186.409 -- ΔEOM 30.872 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.1%┣┫ 1/1.0k [00:07<Inf:Inf, InfGs/it]
+[1AΔETS: 129.175 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.2%┣┫ 2/1.0k [00:08<02:18:47, 8s/it]
+[1AΔETS: 105.732 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.3%┣┫ 3/1.0k [00:09<01:11:35, 4s/it]
+[1AΔETS: 121.552 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.4%┣┫ 4/1.0k [00:09<49:04, 3s/it]
+[1AΔETS: 100.364 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.5%┣┫ 5/1.0k [00:09<37:55, 2s/it]
+[1AΔETS: 116.388 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.6%┣┫ 6/1.0k [00:09<31:12, 2s/it]
+[1AΔETS: 96.946 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.7%┣┫ 7/1.0k [00:10<26:38, 2s/it]
+[1AΔETS: 112.837 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.8%┣┫ 8/1.0k [00:10<23:26, 1s/it]
+[1AΔETS: 94.860 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  0.9%┣┫ 9/1.0k [00:10<20:58, 1s/it]
+[1AΔETS: 110.473 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.0%┣┫ 10/1.0k [00:10<19:07, 1s/it]
+[1AΔETS: 93.642 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.1%┣┫ 11/1.0k [00:11<17:35, 1s/it]
+[1AΔETS: 108.926 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.2%┣┫ 12/1.0k [00:11<16:21, 1it/s]
+[1AΔETS: 93.010 -- ΔMSR: 0.000 -- ΔEOM 30.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.3%┣┫ 13/1.0k [00:11<15:17, 1it/s]
+[1AΔETS: 107.964 -- ΔMSR: 0.000 -- ΔEOM 30.213 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.4%┣┫ 14/1.0k [00:11<14:25, 1it/s]
+[1AΔETS: 92.789 -- ΔMSR: 0.000 -- ΔEOM 29.986 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.5%┣┫ 15/1.0k [00:12<13:38, 1it/s]
+[1AΔETS: 107.433 -- ΔMSR: 0.000 -- ΔEOM 29.388 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.6%┣┫ 16/1.0k [00:12<13:00, 1it/s]
+[1AΔETS: 92.868 -- ΔMSR: 0.000 -- ΔEOM 28.702 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.7%┣┫ 17/1.0k [00:12<12:25, 1it/s]
+[1AΔETS: 107.230 -- ΔMSR: 0.000 -- ΔEOM 28.186 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.8%┣┫ 18/1.0k [00:12<11:56, 1it/s]
+[1AΔETS: 93.176 -- ΔMSR: 0.000 -- ΔEOM 27.938 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  1.9%┣┫ 19/1.0k [00:13<11:29, 1it/s]
+[1AΔETS: 107.288 -- ΔMSR: 0.000 -- ΔEOM 26.872 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.0%┣┫ 20/1.0k [00:13<11:06, 1it/s]
+[1AΔETS: 93.655 -- ΔMSR: 0.000 -- ΔEOM 27.046 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.1%┣┫ 21/1.0k [00:13<10:44, 2it/s]
+[1AΔETS: 107.620 -- ΔMSR: 0.000 -- ΔEOM 25.749 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.2%┣┫ 22/1.0k [00:13<10:26, 2it/s]
+[1AΔETS: 94.032 -- ΔMSR: 0.000 -- ΔEOM 26.118 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.3%┣┫ 23/1.0k [00:14<10:09, 2it/s]
+[1AΔETS: 107.903 -- ΔMSR: 0.000 -- ΔEOM 24.463 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.4%┣┫ 24/1.0k [00:14<09:53, 2it/s]
+[1AΔETS: 94.431 -- ΔMSR: 0.000 -- ΔEOM 25.004 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.5%┣┫ 25/1.0k [00:14<09:40, 2it/s]
+[1AΔETS: 108.252 -- ΔMSR: 0.000 -- ΔEOM 23.257 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.6%┣┫ 26/1.0k [00:15<09:26, 2it/s]
+[1AΔETS: 94.821 -- ΔMSR: 0.000 -- ΔEOM 23.818 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.7%┣┫ 27/1.0k [00:15<09:15, 2it/s]
+[1AΔETS: 108.564 -- ΔMSR: 0.000 -- ΔEOM 22.053 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.8%┣┫ 28/1.0k [00:15<09:03, 2it/s]
+[1AΔETS: 95.303 -- ΔMSR: 0.000 -- ΔEOM 22.764 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  2.9%┣┫ 29/1.0k [00:15<08:53, 2it/s]
+[1AΔETS: 108.969 -- ΔMSR: 0.000 -- ΔEOM 21.088 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.0%┣┫ 30/1.0k [00:16<08:43, 2it/s]
+[1AΔETS: 95.764 -- ΔMSR: 0.000 -- ΔEOM 22.011 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.1%┣┫ 31/1.0k [00:16<08:35, 2it/s]
+[1AΔETS: 109.352 -- ΔMSR: 0.000 -- ΔEOM 20.501 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.2%┣┫ 32/1.0k [00:16<08:26, 2it/s]
+[1AΔETS: 96.224 -- ΔMSR: 0.000 -- ΔEOM 21.344 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.3%┣┫ 33/1.0k [00:16<08:18, 2it/s]
+[1AΔETS: 109.732 -- ΔMSR: 0.000 -- ΔEOM 19.186 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.4%┣┫ 34/1.0k [00:17<08:11, 2it/s]
+[1AΔETS: 96.677 -- ΔMSR: 0.000 -- ΔEOM 19.730 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.5%┣┫ 35/1.0k [00:18<08:23, 2it/s]
+[1AΔETS: 110.118 -- ΔMSR: 0.000 -- ΔEOM 17.182 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.6%┣┫ 36/1.0k [00:19<08:35, 2it/s]
+[1AΔETS: 97.092 -- ΔMSR: 0.000 -- ΔEOM 18.756 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.7%┣┫ 37/1.0k [00:20<08:45, 2it/s]
+[1AΔETS: 110.428 -- ΔMSR: 0.000 -- ΔEOM 16.648 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.8%┣┫ 38/1.0k [00:21<08:55, 2it/s]
+[1AΔETS: 97.531 -- ΔMSR: 0.000 -- ΔEOM 19.231 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  3.9%┣┫ 39/1.0k [00:22<09:12, 2it/s]
+[1AΔETS: 110.767 -- ΔMSR: 0.000 -- ΔEOM 17.432 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.0%┣┫ 40/1.0k [00:23<09:23, 2it/s]
+[1AΔETS: 97.892 -- ΔMSR: 0.000 -- ΔEOM 19.566 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.1%┣┫ 41/1.0k [00:24<09:34, 2it/s]
+[1AΔETS: 110.999 -- ΔMSR: 0.000 -- ΔEOM 16.714 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.2%┣┫ 42/1.0k [00:25<09:46, 2it/s]
+[1AΔETS: 98.248 -- ΔMSR: 0.000 -- ΔEOM 17.841 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.3%┣┫ 43/1.0k [00:26<09:54, 2it/s]
+[1AΔETS: 111.194 -- ΔMSR: 0.000 -- ΔEOM 13.653 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.4%┣┫ 44/1.0k [00:27<10:04, 2it/s]
+[1AΔETS: 98.588 -- ΔMSR: 0.000 -- ΔEOM 14.789 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.5%┣┫ 45/1.0k [00:28<10:11, 2it/s]
+[1AΔETS: 111.552 -- ΔMSR: 0.000 -- ΔEOM 10.203 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.6%┣┫ 46/1.0k [00:29<10:15, 2it/s]
+[1AΔETS: 98.838 -- ΔMSR: 0.000 -- ΔEOM 13.390 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.7%┣┫ 47/1.0k [00:30<10:25, 2it/s]
+[1AΔETS: 111.797 -- ΔMSR: 0.000 -- ΔEOM 10.869 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.8%┣┫ 48/1.0k [00:32<10:54, 1it/s]
+[1AΔETS: 99.045 -- ΔMSR: 0.000 -- ΔEOM 15.261 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  4.9%┣┫ 49/1.0k [00:35<11:25, 1it/s]
+[1AΔETS: 111.898 -- ΔMSR: 0.000 -- ΔEOM 13.392 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.0%┣┫ 50/1.0k [00:37<11:49, 1it/s]
+[1AΔETS: 99.201 -- ΔMSR: 0.000 -- ΔEOM 16.355 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.1%┣┫ 51/1.0k [00:39<12:21, 1it/s]
+[1AΔETS: 111.850 -- ΔMSR: 0.000 -- ΔEOM 13.262 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.2%┣┫ 52/1.0k [00:41<12:41, 1it/s]
+[1AΔETS: 99.314 -- ΔMSR: 0.000 -- ΔEOM 15.212 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.3%┣┫ 53/1.0k [00:43<12:59, 1it/s]
+[1AΔETS: 111.750 -- ΔMSR: 0.000 -- ΔEOM 11.667 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.4%┣┫ 54/1.0k [00:45<13:20, 1it/s]
+[1AΔETS: 99.331 -- ΔMSR: 0.000 -- ΔEOM 13.922 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.5%┣┫ 55/1.0k [00:47<13:39, 1it/s]
+[1AΔETS: 111.535 -- ΔMSR: 0.000 -- ΔEOM 11.032 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.6%┣┫ 56/1.0k [00:49<14:08, 1it/s]
+[1AΔETS: 99.257 -- ΔMSR: 0.000 -- ΔEOM 13.656 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.7%┣┫ 57/1.0k [00:51<14:23, 1it/s]
+[1AΔETS: 111.251 -- ΔMSR: 0.000 -- ΔEOM 10.996 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.8%┣┫ 58/1.0k [00:53<14:43, 1it/s]
+[1AΔETS: 99.094 -- ΔMSR: 0.000 -- ΔEOM 13.017 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  5.9%┣┫ 59/1.0k [00:56<15:01, 1it/s]
+[1AΔETS: 110.942 -- ΔMSR: 0.000 -- ΔEOM 9.466 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.0%┣┫ 60/1.0k [00:58<15:29, 1it/s]
+[1AΔETS: 98.850 -- ΔMSR: 0.000 -- ΔEOM 11.669 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.1%┣┫ 61/1.0k [01:00<15:42, 1s/it]
+[1AΔETS: 110.560 -- ΔMSR: 0.000 -- ΔEOM 8.175 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.2%┣┫ 62/1.0k [01:02<15:55, 1s/it]
+[1AΔETS: 98.586 -- ΔMSR: 0.000 -- ΔEOM 11.417 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.3%┣┫ 63/1.0k [01:04<16:08, 1s/it]
+[1AΔETS: 110.150 -- ΔMSR: 0.000 -- ΔEOM 8.385 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.4%┣┫ 64/1.0k [01:06<16:27, 1s/it]
+[1AΔETS: 98.432 -- ΔMSR: 0.000 -- ΔEOM 11.597 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.5%┣┫ 65/1.0k [01:08<16:37, 1s/it]
+[1AΔETS: 109.877 -- ΔMSR: 0.000 -- ΔEOM 7.902 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.6%┣┫ 66/1.0k [01:11<16:57, 1s/it]
+[1AΔETS: 98.367 -- ΔMSR: 0.000 -- ΔEOM 11.384 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.7%┣┫ 67/1.0k [01:13<17:07, 1s/it]
+[1AΔETS: 109.722 -- ΔMSR: 0.000 -- ΔEOM 8.063 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.8%┣┫ 68/1.0k [01:16<17:39, 1s/it]
+[1AΔETS: 98.586 -- ΔMSR: 0.000 -- ΔEOM 11.114 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  6.9%┣┫ 69/1.0k [01:19<17:55, 1s/it]
+[1AΔETS: 109.787 -- ΔMSR: 0.000 -- ΔEOM 8.086 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.0%┣┫ 70/1.0k [01:20<17:59, 1s/it]
+[1AΔETS: 98.653 -- ΔMSR: 0.000 -- ΔEOM 10.897 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.1%┣┫ 71/1.0k [01:22<18:11, 1s/it]
+[1AΔETS: 109.628 -- ΔMSR: 0.000 -- ΔEOM 8.127 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.2%┣┫ 72/1.0k [01:24<18:18, 1s/it]
+[1AΔETS: 98.644 -- ΔMSR: 0.000 -- ΔEOM 10.653 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.3%┣┫ 73/1.0k [01:26<18:26, 1s/it]
+[1AΔETS: 109.387 -- ΔMSR: 0.000 -- ΔEOM 7.614 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.4%┣┫ 74/1.0k [01:28<18:34, 1s/it]
+[1AΔETS: 98.596 -- ΔMSR: 0.000 -- ΔEOM 10.106 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.5%┣┫ 75/1.0k [01:30<18:46, 1s/it]
+[1AΔETS: 109.105 -- ΔMSR: 0.000 -- ΔEOM 6.912 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.6%┣┫ 76/1.0k [01:32<18:55, 1s/it]
+[1AΔETS: 98.506 -- ΔMSR: 0.000 -- ΔEOM 9.791 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.7%┣┫ 77/1.0k [01:34<19:02, 1s/it]
+[1AΔETS: 108.812 -- ΔMSR: 0.000 -- ΔEOM 6.579 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.8%┣┫ 78/1.0k [01:36<19:11, 1s/it]
+[1AΔETS: 98.397 -- ΔMSR: 0.000 -- ΔEOM 9.645 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  7.9%┣┫ 79/1.0k [01:38<19:22, 1s/it]
+[1AΔETS: 108.472 -- ΔMSR: 0.000 -- ΔEOM 6.478 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.0%┣┫ 80/1.0k [01:41<19:35, 1s/it]
+[1AΔETS: 98.230 -- ΔMSR: 0.000 -- ΔEOM 9.427 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.1%┣┫ 81/1.0k [01:43<19:42, 1s/it]
+[1AΔETS: 108.144 -- ΔMSR: 0.000 -- ΔEOM 6.491 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.2%┣┫ 82/1.0k [01:45<19:45, 1s/it]
+[1AΔETS: 98.034 -- ΔMSR: 0.000 -- ΔEOM 9.236 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.3%┣┫ 83/1.0k [01:47<19:52, 1s/it]
+[1AΔETS: 107.783 -- ΔMSR: 0.000 -- ΔEOM 6.569 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.4%┣┫ 84/1.0k [01:49<19:58, 1s/it]
+[1AΔETS: 97.780 -- ΔMSR: 0.000 -- ΔEOM 9.112 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.5%┣┫ 85/1.0k [01:51<20:07, 1s/it]
+[1AΔETS: 107.288 -- ΔMSR: 0.000 -- ΔEOM 6.537 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.6%┣┫ 86/1.0k [01:53<20:14, 1s/it]
+[1AΔETS: 97.494 -- ΔMSR: 0.000 -- ΔEOM 8.934 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.7%┣┫ 87/1.0k [01:55<20:18, 1s/it]
+[1AΔETS: 106.790 -- ΔMSR: 0.000 -- ΔEOM 6.247 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.8%┣┫ 88/1.0k [01:57<20:26, 1s/it]
+[1AΔETS: 97.088 -- ΔMSR: 0.000 -- ΔEOM 8.581 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  8.9%┣┫ 89/1.0k [01:59<20:33, 1s/it]
+[1AΔETS: 106.207 -- ΔMSR: 0.000 -- ΔEOM 5.992 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.0%┣┫ 90/1.0k [02:01<20:35, 1s/it]
+[1AΔETS: 96.663 -- ΔMSR: 0.000 -- ΔEOM 8.293 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.1%┣┫ 91/1.0k [02:03<20:44, 1s/it]
+[1AΔETS: 105.621 -- ΔMSR: 0.000 -- ΔEOM 5.856 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.2%┣┫ 92/1.0k [02:05<20:48, 1s/it]
+[1AΔETS: 96.226 -- ΔMSR: 0.000 -- ΔEOM 8.075 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.3%┣┫ 93/1.0k [02:07<20:55, 1s/it]
+[1AΔETS: 104.998 -- ΔMSR: 0.000 -- ΔEOM 5.676 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.4%┣┫ 94/1.0k [02:09<20:57, 1s/it]
+[1AΔETS: 95.729 -- ΔMSR: 0.000 -- ΔEOM 7.860 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.5%┣┫ 95/1.0k [02:11<21:02, 1s/it]
+[1AΔETS: 104.264 -- ΔMSR: 0.000 -- ΔEOM 5.526 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.6%┣┫ 96/1.0k [02:14<21:13, 1s/it]
+[1AΔETS: 95.067 -- ΔMSR: 0.000 -- ΔEOM 7.631 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.7%┣┫ 97/1.0k [02:16<21:15, 1s/it]
+[1AΔETS: 103.437 -- ΔMSR: 0.000 -- ΔEOM 5.472 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.8%┣┫ 98/1.0k [02:18<21:25, 1s/it]
+[1AΔETS: 94.272 -- ΔMSR: 0.000 -- ΔEOM 7.419 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  9.9%┣┫ 99/1.0k [02:21<21:34, 1s/it]
+[1AΔETS: 102.498 -- ΔMSR: 0.000 -- ΔEOM 5.495 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.0%┣┫ 100/1.0k [02:22<21:34, 1s/it]
+[1AΔETS: 93.366 -- ΔMSR: 0.000 -- ΔEOM 7.225 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.1%┣┫ 101/1.0k [02:24<21:39, 1s/it]
+[1AΔETS: 101.472 -- ΔMSR: 0.000 -- ΔEOM 5.383 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.2%┣┫ 102/1.0k [02:27<21:45, 1s/it]
+[1AΔETS: 92.360 -- ΔMSR: 0.000 -- ΔEOM 6.980 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.3%┣┫ 103/1.0k [02:29<21:48, 1s/it]
+[1AΔETS: 100.355 -- ΔMSR: 0.000 -- ΔEOM 5.224 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.4%┣┫ 104/1.0k [02:31<21:50, 1s/it]
+[1AΔETS: 91.290 -- ΔMSR: 0.000 -- ΔEOM 6.734 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.5%┣┫ 105/1.0k [02:33<21:55, 1s/it]
+[1AΔETS: 99.207 -- ΔMSR: 0.000 -- ΔEOM 5.172 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.6%┣┫ 106/1.0k [02:35<21:56, 1s/it]
+[1AΔETS: 90.192 -- ΔMSR: 0.000 -- ΔEOM 6.473 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.7%┣┫ 107/1.0k [02:37<22:00, 1s/it]
+[1AΔETS: 98.159 -- ΔMSR: 0.000 -- ΔEOM 5.136 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.8%┣┫ 108/1.0k [02:38<22:00, 1s/it]
+[1AΔETS: 89.118 -- ΔMSR: 0.000 -- ΔEOM 6.208 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  10.9%┣┫ 109/1.0k [02:40<22:02, 1s/it]
+[1AΔETS: 97.054 -- ΔMSR: 0.000 -- ΔEOM 5.083 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.0%┣┫ 110/1.0k [02:42<22:03, 1s/it]
+[1AΔETS: 88.029 -- ΔMSR: 0.000 -- ΔEOM 5.965 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.1%┣┫ 111/1.0k [02:44<22:07, 1s/it]
+[1AΔETS: 95.976 -- ΔMSR: 0.000 -- ΔEOM 5.028 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.2%┣┫ 112/1.0k [02:46<22:10, 1s/it]
+[1AΔETS: 86.906 -- ΔMSR: 0.000 -- ΔEOM 5.745 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.3%┣┫ 113/1.0k [02:48<22:10, 1s/it]
+[1AΔETS: 94.889 -- ΔMSR: 0.000 -- ΔEOM 4.976 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.4%┣┫ 114/1.0k [02:50<22:14, 2s/it]
+[1AΔETS: 85.810 -- ΔMSR: 0.000 -- ΔEOM 5.575 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.5%┣┫ 115/1.0k [02:52<22:18, 2s/it]
+[1AΔETS: 93.897 -- ΔMSR: 0.000 -- ΔEOM 4.906 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.6%┣┫ 116/1.0k [02:55<22:22, 2s/it]
+[1AΔETS: 84.815 -- ΔMSR: 0.000 -- ΔEOM 5.434 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.7%┣┫ 117/1.0k [02:57<22:24, 2s/it]
+[1AΔETS: 92.991 -- ΔMSR: 0.000 -- ΔEOM 4.837 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.8%┣┫ 118/1.0k [02:59<22:27, 2s/it]
+[1AΔETS: 83.858 -- ΔMSR: 0.000 -- ΔEOM 5.294 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  11.9%┣┫ 119/1.0k [03:01<22:29, 2s/it]
+[1AΔETS: 92.148 -- ΔMSR: 0.000 -- ΔEOM 4.744 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.0%┣┫ 120/1.0k [03:03<22:34, 2s/it]
+[1AΔETS: 82.983 -- ΔMSR: 0.000 -- ΔEOM 5.200 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.1%┣┫ 121/1.0k [03:05<22:34, 2s/it]
+[1AΔETS: 91.438 -- ΔMSR: 0.000 -- ΔEOM 4.695 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.2%┣┫ 122/1.0k [03:07<22:36, 2s/it]
+[1AΔETS: 82.248 -- ΔMSR: 0.000 -- ΔEOM 5.176 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.3%┣┫ 123/1.0k [03:09<22:40, 2s/it]
+[1AΔETS: 90.837 -- ΔMSR: 0.000 -- ΔEOM 4.700 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.4%┣┫ 124/1.0k [03:11<22:39, 2s/it]
+[1AΔETS: 81.624 -- ΔMSR: 0.000 -- ΔEOM 5.138 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.5%┣┫ 125/1.0k [03:13<22:42, 2s/it]
+[1AΔETS: 90.380 -- ΔMSR: 0.000 -- ΔEOM 4.713 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.6%┣┫ 126/1.0k [03:15<22:45, 2s/it]
+[1AΔETS: 81.097 -- ΔMSR: 0.000 -- ΔEOM 5.086 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.7%┣┫ 127/1.0k [03:17<22:44, 2s/it]
+[1AΔETS: 90.073 -- ΔMSR: 0.000 -- ΔEOM 4.697 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.8%┣┫ 128/1.0k [03:19<22:44, 2s/it]
+[1AΔETS: 80.683 -- ΔMSR: 0.000 -- ΔEOM 5.002 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  12.9%┣┫ 129/1.0k [03:21<22:46, 2s/it]
+[1AΔETS: 89.945 -- ΔMSR: 0.000 -- ΔEOM 4.626 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.0%┣┫ 130/1.0k [03:23<22:48, 2s/it]
+[1AΔETS: 80.485 -- ΔMSR: 0.000 -- ΔEOM 4.921 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.1%┣┫ 131/1.0k [03:25<22:48, 2s/it]
+[1AΔETS: 89.851 -- ΔMSR: 0.000 -- ΔEOM 4.560 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.2%┣┫ 132/1.0k [03:27<22:50, 2s/it]
+[1AΔETS: 80.342 -- ΔMSR: 0.000 -- ΔEOM 4.856 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.3%┣┫ 133/1.0k [03:29<22:52, 2s/it]
+[1AΔETS: 89.740 -- ΔMSR: 0.000 -- ΔEOM 4.488 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.4%┣┫ 134/1.0k [03:31<22:51, 2s/it]
+[1AΔETS: 80.214 -- ΔMSR: 0.000 -- ΔEOM 4.852 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.5%┣┫ 135/1.0k [03:33<22:53, 2s/it]
+[1AΔETS: 89.658 -- ΔMSR: 0.000 -- ΔEOM 4.466 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.6%┣┫ 136/1.0k [03:35<22:55, 2s/it]
+[1AΔETS: 80.122 -- ΔMSR: 0.000 -- ΔEOM 4.865 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.7%┣┫ 137/1.0k [03:37<22:56, 2s/it]
+[1AΔETS: 89.643 -- ΔMSR: 0.000 -- ΔEOM 4.439 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.8%┣┫ 138/1.0k [03:40<23:03, 2s/it]
+[1AΔETS: 80.098 -- ΔMSR: 0.000 -- ΔEOM 4.865 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  13.9%┣┫ 139/1.0k [03:42<23:03, 2s/it]
+[1AΔETS: 89.725 -- ΔMSR: 0.000 -- ΔEOM 4.405 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.0%┣┫ 140/1.0k [03:43<23:01, 2s/it]
+[1AΔETS: 80.154 -- ΔMSR: 0.000 -- ΔEOM 4.828 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.1%┣┫ 141/1.0k [03:45<23:03, 2s/it]
+[1AΔETS: 89.789 -- ΔMSR: 0.000 -- ΔEOM 4.357 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.2%┣┫ 142/1.0k [03:47<23:03, 2s/it]
+[1AΔETS: 80.217 -- ΔMSR: 0.000 -- ΔEOM 4.803 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.3%┣┫ 143/1.0k [03:49<23:03, 2s/it]
+[1AΔETS: 89.835 -- ΔMSR: 0.000 -- ΔEOM 4.363 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.4%┣┫ 144/1.0k [03:51<23:03, 2s/it]
+[1AΔETS: 80.272 -- ΔMSR: 0.000 -- ΔEOM 4.777 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.5%┣┫ 145/1.0k [03:53<23:04, 2s/it]
+[1AΔETS: 89.875 -- ΔMSR: 0.000 -- ΔEOM 4.331 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.6%┣┫ 146/1.0k [03:55<23:06, 2s/it]
+[1AΔETS: 80.321 -- ΔMSR: 0.000 -- ΔEOM 4.768 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.7%┣┫ 147/1.0k [03:57<23:05, 2s/it]
+[1AΔETS: 89.917 -- ΔMSR: 0.000 -- ΔEOM 4.316 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.8%┣┫ 148/1.0k [03:59<23:05, 2s/it]
+[1AΔETS: 80.358 -- ΔMSR: 0.000 -- ΔEOM 4.748 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  14.9%┣┫ 149/1.0k [04:02<23:12, 2s/it]
+[1AΔETS: 89.950 -- ΔMSR: 0.000 -- ΔEOM 4.303 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.0%┣┫ 150/1.0k [04:04<23:11, 2s/it]
+[1AΔETS: 80.355 -- ΔMSR: 0.000 -- ΔEOM 4.732 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.1%┣┫ 151/1.0k [04:06<23:11, 2s/it]
+[1AΔETS: 89.930 -- ΔMSR: 0.000 -- ΔEOM 4.251 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.2%┣┫ 152/1.0k [04:08<23:11, 2s/it]
+[1AΔETS: 80.315 -- ΔMSR: 0.000 -- ΔEOM 4.661 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.3%┣┫ 153/1.0k [04:09<23:10, 2s/it]
+[1AΔETS: 89.879 -- ΔMSR: 0.000 -- ΔEOM 4.194 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.4%┣┫ 154/1.0k [04:11<23:08, 2s/it]
+[1AΔETS: 80.247 -- ΔMSR: 0.000 -- ΔEOM 4.654 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.5%┣┫ 155/1.0k [04:13<23:06, 2s/it]
+[1AΔETS: 89.801 -- ΔMSR: 0.000 -- ΔEOM 4.189 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.6%┣┫ 156/1.0k [04:15<23:06, 2s/it]
+[1AΔETS: 80.155 -- ΔMSR: 0.000 -- ΔEOM 4.602 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.7%┣┫ 157/1.0k [04:16<23:06, 2s/it]
+[1AΔETS: 89.689 -- ΔMSR: 0.000 -- ΔEOM 4.156 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.8%┣┫ 158/1.0k [04:19<23:06, 2s/it]
+[1AΔETS: 80.033 -- ΔMSR: 0.000 -- ΔEOM 4.569 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  15.9%┣┫ 159/1.0k [04:20<23:06, 2s/it]
+[1AΔETS: 89.550 -- ΔMSR: 0.000 -- ΔEOM 4.135 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.0%┣┫ 160/1.0k [04:22<23:06, 2s/it]
+[1AΔETS: 79.898 -- ΔMSR: 0.000 -- ΔEOM 4.526 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.1%┣┫ 161/1.0k [04:24<23:06, 2s/it]
+[1AΔETS: 89.392 -- ΔMSR: 0.000 -- ΔEOM 4.098 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.2%┣┫ 162/1.0k [04:26<23:06, 2s/it]
+[1AΔETS: 79.766 -- ΔMSR: 0.000 -- ΔEOM 4.492 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.3%┣┫ 163/1.0k [04:29<23:08, 2s/it]
+[1AΔETS: 89.234 -- ΔMSR: 0.000 -- ΔEOM 4.052 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.4%┣┫ 164/1.0k [04:30<23:07, 2s/it]
+[1AΔETS: 79.617 -- ΔMSR: 0.000 -- ΔEOM 4.430 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.5%┣┫ 165/1.0k [04:33<23:08, 2s/it]
+[1AΔETS: 89.068 -- ΔMSR: 0.000 -- ΔEOM 4.032 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.6%┣┫ 166/1.0k [04:35<23:09, 2s/it]
+[1AΔETS: 79.587 -- ΔMSR: 0.000 -- ΔEOM 4.415 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.7%┣┫ 167/1.0k [04:37<23:08, 2s/it]
+[1AΔETS: 89.047 -- ΔMSR: 0.000 -- ΔEOM 3.982 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.8%┣┫ 168/1.0k [04:39<23:08, 2s/it]
+[1AΔETS: 79.573 -- ΔMSR: 0.000 -- ΔEOM 4.360 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  16.9%┣┫ 169/1.0k [04:41<23:08, 2s/it]
+[1AΔETS: 89.048 -- ΔMSR: 0.000 -- ΔEOM 3.934 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.0%┣┫ 170/1.0k [04:42<23:07, 2s/it]
+[1AΔETS: 79.550 -- ΔMSR: 0.000 -- ΔEOM 4.346 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.1%┣┫ 171/1.0k [04:44<23:06, 2s/it]
+[1AΔETS: 89.046 -- ΔMSR: 0.000 -- ΔEOM 3.937 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.2%┣┫ 172/1.0k [04:47<23:07, 2s/it]
+[1AΔETS: 79.521 -- ΔMSR: 0.000 -- ΔEOM 4.310 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.3%┣┫ 173/1.0k [04:48<23:06, 2s/it]
+[1AΔETS: 89.040 -- ΔMSR: 0.000 -- ΔEOM 3.904 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.4%┣┫ 174/1.0k [04:51<23:07, 2s/it]
+[1AΔETS: 79.490 -- ΔMSR: 0.000 -- ΔEOM 4.271 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.5%┣┫ 175/1.0k [04:52<23:06, 2s/it]
+[1AΔETS: 88.995 -- ΔMSR: 0.000 -- ΔEOM 3.875 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.6%┣┫ 176/1.0k [04:54<23:06, 2s/it]
+[1AΔETS: 79.475 -- ΔMSR: 0.000 -- ΔEOM 4.250 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.7%┣┫ 177/1.0k [04:56<23:06, 2s/it]
+[1AΔETS: 88.985 -- ΔMSR: 0.000 -- ΔEOM 3.810 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.8%┣┫ 178/1.0k [04:59<23:07, 2s/it]
+[1AΔETS: 79.473 -- ΔMSR: 0.000 -- ΔEOM 4.240 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  17.9%┣┫ 179/1.0k [05:01<23:08, 2s/it]
+[1AΔETS: 88.988 -- ΔMSR: 0.000 -- ΔEOM 3.785 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.0%┣┫ 180/1.0k [05:03<23:07, 2s/it]
+[1AΔETS: 79.478 -- ΔMSR: 0.000 -- ΔEOM 4.216 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.1%┣┫ 181/1.0k [05:05<23:06, 2s/it]
+[1AΔETS: 88.999 -- ΔMSR: 0.000 -- ΔEOM 3.776 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.2%┣┫ 182/1.0k [05:07<23:05, 2s/it]
+[1AΔETS: 79.486 -- ΔMSR: 0.000 -- ΔEOM 4.193 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.3%┣┫ 183/1.0k [05:08<23:04, 2s/it]
+[1AΔETS: 89.009 -- ΔMSR: 0.000 -- ΔEOM 3.702 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.4%┣┫ 184/1.0k [05:10<23:03, 2s/it]
+[1AΔETS: 79.497 -- ΔMSR: 0.000 -- ΔEOM 4.130 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.5%┣┫ 185/1.0k [05:12<23:02, 2s/it]
+[1AΔETS: 89.023 -- ΔMSR: 0.000 -- ΔEOM 3.647 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.6%┣┫ 186/1.0k [05:14<23:01, 2s/it]
+[1AΔETS: 79.510 -- ΔMSR: 0.000 -- ΔEOM 4.127 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.7%┣┫ 187/1.0k [05:17<23:03, 2s/it]
+[1AΔETS: 89.040 -- ΔMSR: 0.000 -- ΔEOM 3.592 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.8%┣┫ 188/1.0k [05:18<23:02, 2s/it]
+[1AΔETS: 79.513 -- ΔMSR: 0.000 -- ΔEOM 4.089 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  18.9%┣┫ 189/1.0k [05:20<23:02, 2s/it]
+[1AΔETS: 89.042 -- ΔMSR: 0.000 -- ΔEOM 3.550 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.0%┣┫ 190/1.0k [05:22<23:01, 2s/it]
+[1AΔETS: 79.472 -- ΔMSR: 0.000 -- ΔEOM 4.089 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.1%┣┫ 191/1.0k [05:24<23:00, 2s/it]
+[1AΔETS: 89.008 -- ΔMSR: 0.000 -- ΔEOM 3.518 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.2%┣┫ 192/1.0k [05:26<23:00, 2s/it]
+[1AΔETS: 79.389 -- ΔMSR: 0.000 -- ΔEOM 4.045 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.3%┣┫ 193/1.0k [05:28<22:59, 2s/it]
+[1AΔETS: 88.940 -- ΔMSR: 0.000 -- ΔEOM 3.484 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.4%┣┫ 194/1.0k [05:30<22:59, 2s/it]
+[1AΔETS: 79.343 -- ΔMSR: 0.000 -- ΔEOM 4.033 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.5%┣┫ 195/1.0k [05:32<22:58, 2s/it]
+[1AΔETS: 88.885 -- ΔMSR: 0.000 -- ΔEOM 3.446 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.6%┣┫ 196/1.0k [05:34<22:58, 2s/it]
+[1AΔETS: 79.311 -- ΔMSR: 0.000 -- ΔEOM 3.986 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.7%┣┫ 197/1.0k [05:36<22:58, 2s/it]
+[1AΔETS: 88.829 -- ΔMSR: 0.000 -- ΔEOM 3.434 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.8%┣┫ 198/1.0k [05:38<22:56, 2s/it]
+[1AΔETS: 79.284 -- ΔMSR: 0.000 -- ΔEOM 3.995 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  19.9%┣┫ 199/1.0k [05:40<22:54, 2s/it]
+[1AΔETS: 88.775 -- ΔMSR: 0.000 -- ΔEOM 3.415 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  20.0%┣┫ 200/1.0k [05:42<22:54, 2s/it]
+[1AΔETS: 79.258 -- ΔMSR: 0.000 -- ΔEOM 3.952 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  20.1%┣┫ 201/1.0k [05:44<22:53, 2s/it]
+[1AΔETS: 88.719 -- ΔMSR: 0.000 -- ΔEOM 3.382 -- ΔREC NaN -- ΔH2 NaN -- ΔH2CN-PROD NaN -- ΔH2CN-CAP NaN  20.2%┣┫ 202/1.0k [05:46<22:53, 2s/it]
