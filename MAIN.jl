@@ -4,17 +4,18 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, TUDelft or VSC
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
 
-if HPC == "TUDelft"  # only for running this on DelftBlue
+if HPC == "DelftBlue"  # only for running this on DelftBlue
     ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
     ENV["GUROBI_HOME"] = "./scratch/kbruninx/gurobi950/linux64"
+    println(string("Number of threads: ", Threads.nthreads()))
 end
 
-if HPC == "VSC"  # only for running this on VSC
+if HPC == "ThinKing"  # only for running this on VSC
     # ENV["GRB_LICENSE_FILE"] = " "
     # ENV["GUROBI_HOME"] = " "
 end
@@ -76,7 +77,7 @@ if isdir(joinpath(home_dir,"Results")) != 1
 end
 
 # Scenario number 
-if HPC == "TUDelft" || HPC == "VSC"
+if HPC == "DelftBlue" || HPC == "ThinKing"
    function parse_commandline()
        s = ArgParseSettings()
        @add_arg_table! s begin
@@ -253,7 +254,7 @@ println(string("        "))
 
 ## 6. Postprocessing and save results 
 save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row) 
-# @save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
+@save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
 
 println("Postprocessing & save results: done")
 println("   ")

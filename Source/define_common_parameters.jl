@@ -1,6 +1,6 @@
 function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFrame, repr_days::DataFrame, agents::Dict, scenario_overview_row::DataFrameRow)
     # Solver settings
-    set_optimizer_attribute(mod, "OutputFlag",0)
+    set_optimizer_attribute(mod, "OutputFlag",0,"Threads",4);
 
     # Define dictonaries for sets, parameters, timeseries, variables, constraints & expressions
     mod.ext[:sets] = Dict()

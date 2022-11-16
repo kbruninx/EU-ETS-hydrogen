@@ -58,7 +58,28 @@ If the scenario at hand is a scenario in which the marginal abatement cost needs
 
 If the scenario at hand can use a calibrated marginal abatement cost curve from the specified reference scenario (see above), the ADMM procedure is executed once.
 
-## Running the code on DelftBleu (TU Delft)
+## Running the code on DelftBlue (TU Delft)
+
+# Interactive jobs (to be updated for fair share accounting)
+1. srun --job-name="your_job" --partition=compute --time=00:30:00 --ntasks=1 --cpus-per-task=17 --mem-per-cpu=4GB --pty bash
+2. cd /home/kbruninx/EU-ETS
+3. module load 2022r2
+4. module load julia 
+5. julia--threads=16 MAIN.jl --start_scen 1 --stop_scen 15 > run.log
+
+Tips: 
+- The decision problems of the agents are solved in parallel in each iteration. Gurobi uses 4 threads to solve each problem.
+- The number of cpus should be equal to the number of agents + 1 (1 master and 1 per agent)
+- Set the number of cpu's equal to the number of threads used for julia x 4 (e.g., 17 x 4 = 68), as by default 4 threads are used by Gurobi
+- Check resource use via seff [job_id]
+
+To be added once fair share has been granted: 
+- --account=research-tpm-ess
+
+Resources: 
+- For basic info on how to use DelftBlue, see https://doc.dhpc.tudelft.nl/delftblue/crash-course/. 
+- For interactive jobs, see https://doc.dhpc.tudelft.nl/delftblue/Slurm-scheduler/#interactive-use 
+
 
 ## Running the code on ThinKing (VSC) 
 

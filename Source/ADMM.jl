@@ -5,16 +5,16 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
     for iter in iterations
         if convergence == 0
             # Multi-threaded version
-            # @sync for m in agents[:all] 
-            #     # created subroutine to allow multi-treading to solve agents' decision problems
-            #     @spawn ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
-            # end
+            @sync for m in agents[:all] 
+                # created subroutine to allow multi-treading to solve agents' decision problems
+                @spawn ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
+            end
 
             # Single-threaded version
-            for m in agents[:all] 
-                # created subroutine to allow multi-treading to solve agents' decision problems
-                ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
-            end
+            # for m in agents[:all] 
+            #     # created subroutine to allow multi-treading to solve agents' decision problems
+            #     ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
+            # end
 
             # Update supply of allowances 
             @timeit TO "Update EUA supply" begin

@@ -59,7 +59,7 @@ H2:
 
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC
-  tolerance_calibration: 0.1 # €/tCO2  - tolerance in calibration MACC
+  tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
   SF_ind: 0.41970387243 # relative share of emissions in 2017
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
