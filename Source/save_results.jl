@@ -37,6 +37,8 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     mm = 1
     for m in agents[:ps]
         gw = value.(mdict[m].ext[:expressions][:gw])
+        # gy = value.(mod.ext[:expressions][:g_y])
+        # gd = value.(mod.ext[:expressions][:g_d])
         fuel_shares[mm,:] = sum(gw[jh,jd,:] for jh in mdict[m].ext[:sets][:JH], jd in mdict[m].ext[:sets][:JD])
         CAP_LT = mdict[m].ext[:parameters][:CAP_LT]
         LEG_CAP = mdict[m].ext[:parameters][:LEG_CAP]

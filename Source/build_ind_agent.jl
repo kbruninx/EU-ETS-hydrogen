@@ -1,8 +1,4 @@
 function build_ind_agent!(mod)
-# Solver settings
-# set_optimizer_attribute(mod, "NumericFocus",3)
-set_optimizer_attribute(mod, "OutputFlag",0)
-
 # Extract sets
 JY = mod.ext[:sets][:JY]
 

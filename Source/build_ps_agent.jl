@@ -1,8 +1,4 @@
 function build_ps_agent!(mod::Model)
-    # Solver settings
-    # set_optimizer_attribute(mod, "NumericFocus",3)
-    set_optimizer_attribute(mod, "OutputFlag",0)
-
     # Extract sets
     JH = mod.ext[:sets][:JH]
     JD = mod.ext[:sets][:JD]
@@ -49,7 +45,7 @@ function build_ps_agent!(mod::Model)
     r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], lower_bound=0, base_name="REC_d") 
     r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="REC_h") 
 
-    # Create affine expressions 
+    # Create affine expressions - used in postprocessing
     mod.ext[:expressions][:curt] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[jy] for y2=1:jy) + LEG_CAP[jy]) - g[jh,jd,jy]
     )
@@ -59,12 +55,12 @@ function build_ps_agent!(mod::Model)
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
-        sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
-    )
-    mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
-        sum(g[jh,jd,jy] for jh in JH)
-    )
+    # mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
+    #     sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+    # )
+    # mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
+    #     sum(g[jh,jd,jy] for jh in JH)
+    # )
 
     # Objective 
     mod.ext[:objective] = @objective(mod, Min,
@@ -127,7 +123,7 @@ function build_ps_agent!(mod::Model)
             cap[jy] == 0
         ) 
 
-        # Generation of RES from existing capacity that participates in REC auction - only for annual 
+        # Generation of RES from existing capacity that participates in REC auction - only for annual REC
         if mod.ext[:parameters][:REC] == 1
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
                 r_y[jy] == sum(W[jd]*AF[jh,jd]*LEG_CAP[jy] for jh in JH, jd in JD)/1000 

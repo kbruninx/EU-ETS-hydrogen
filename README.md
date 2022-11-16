@@ -2,10 +2,12 @@ This code was developed to study the interaction between the power sector, the e
 
 (Variations on) this research code documented below have been used in the following papers:
 
-[1] K. Bruninx & Marten Ovaere, "COVID-19, Green Deal & the recovery plan permanently change emissions and prices in EU ETS Phase IV", Under review with Nature Communications, 2021.
-Available online:
+[1] K. Bruninx & Marten Ovaere, "COVID-19, Green Deal & the recovery plan permanently change emissions and prices in EU ETS Phase IV", Nature Communications, Volume 13, art. no. 1165, 2022.
 
-[2] Kenneth Bruninx, Marten Ovaere, Erik Delarue, "The long-term impact of the market stability reserve on the EU emission trading system," Energy Economics, Volume 89, 2020, art. no. 104746.
+[2] Kenneth Bruninx, Marten Ovaere, Erik Delarue, "The long-term impact of the market stability reserve on the EU emission trading system," Energy Economics, Volume 89, art. no. 104746, 2020.
+
+[3] K. Bruninx & Marten Ovaere, “Estimating the impact of COVID-19 on emissions and emission allowance prices under EU ETS”, IAEE Energy Forum / Covid-19 Issue 2020, 2020. 
+
 
 ## Installation, hardware & software requirements
 ### Installation
@@ -56,8 +58,12 @@ If the scenario at hand is a scenario in which the marginal abatement cost needs
 
 If the scenario at hand can use a calibrated marginal abatement cost curve from the specified reference scenario (see above), the ADMM procedure is executed once.
 
+## Running the code on DelftBleu (TU Delft)
+
+## Running the code on ThinKing (VSC) 
+
 ### Output & Postprocessing
-Running the code will generate two output files:
+Running the code will generate X output files:
 
 1. "overview_results.csv", in which aggregate metrics of all simulations will be listed:
     -   n_iter: number of iterations required to compute equilibrium
@@ -78,9 +84,13 @@ Running the code will generate two output files:
     -   EUAs: annually procured emission allowances (MtCO2)
 
 ### Demos & reproducing the results  
+## Some simulation
+## Studying overlapping policies
 
 ## License
 The software is made available under the MIT license (https://opensource.org/licenses/MIT).
  
 ## Contributors
 K. Bruninx (k.bruninx@tudelft.nl)
+J. A. Moncada (jorgeandres.moncadaescudero@kuleuven.be)
+A. Hoogsteyn (alexander.hoogsteyn@kuleuven.be)

@@ -1,8 +1,4 @@
 function build_h2s_agent!(mod::Model)
-    # Solver settings
-    # set_optimizer_attribute(mod, "NumericFocus",3)
-    set_optimizer_attribute(mod, "OutputFlag",0)
-
     # Extract sets
     JH = mod.ext[:sets][:JH]
     JD = mod.ext[:sets][:JD]
@@ -60,19 +56,19 @@ function build_h2s_agent!(mod::Model)
     r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], upper_bound=0, base_name="REC_d") 
     r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="REC_h") 
 
-    # Create affine expressions 
+    # Create affine expressions - used in postprocessing
     mod.ext[:expressions][:e] = @expression(mod, [jy=JY],
         CI*dNG[jy]
     )
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
-        sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
-    )
-    mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
-        sum(g[jh,jd,jy] for jh in JH)
-    )
+    # mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
+    #     sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+    # )
+    # mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
+    #     sum(g[jh,jd,jy] for jh in JH)
+    # )
 
     # Definition of the objective function
     mod.ext[:objective] = @objective(mod, Min,
@@ -134,7 +130,7 @@ function build_h2s_agent!(mod::Model)
         )
     end
 
-    if CI == 0 # Mton CO2/TWh, equivalent to 3 kgCO2/kgH2
+    if CI == 0 # Mton CO2/TWh 
         mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
             b[jy] == 0 # [MtonCO2]
         )
