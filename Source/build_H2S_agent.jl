@@ -56,7 +56,10 @@ function build_h2s_agent!(mod::Model)
     g = mod.ext[:variables][:g] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="demand_electricity_hydrogen") # note this is defined as a negative number, consumption
     dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_natural_gas_hydrogen")
     b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
-      
+    r_y = mod.ext[:variables][:r_y] = @variable(mod, [jy=JY], upper_bound=0, base_name="REC_y") 
+    r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], upper_bound=0, base_name="REC_d") 
+    r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="REC_h") 
+
     # Create affine expressions 
     mod.ext[:expressions][:e] = @expression(mod, [jy=JY],
         CI*dNG[jy]
@@ -74,7 +77,10 @@ function build_h2s_agent!(mod::Model)
     # Definition of the objective function
     mod.ext[:objective] = @objective(mod, Min,
     + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
-    - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy]+λ_h_REC[jh,jd,jy]+λ_d_REC[jd,jy]+ADD_SF[jy]*λ_y_REC[jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+    - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+    - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+    - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+    - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
     - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
     - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
@@ -85,9 +91,9 @@ function build_h2s_agent!(mod::Model)
     + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
     + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
     + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
-    + sum(ρ_y_REC/2*ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH,jd in JD) - r_y_bar[jy])^2 for jy in JY)
-    + sum(ρ_d_REC/2*W[jd]*(sum(g[jh,jd,jy] for jh in JH) - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
-    + sum(ρ_h_REC/2*W[jd]*(g[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
+    + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+    + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+    + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
     )
     
     # Constraints
@@ -110,30 +116,63 @@ function build_h2s_agent!(mod::Model)
         gH[jy] <= -sum(W[jd]*η_E_H2*g[jh,jd,jy] for jh in JH, jd in JD) + (η_NG_H2*dNG[jy]) # [TWh]
     )
     
-    if CI == 0
+    if CI <= 0.1 # Mton CO2/TWh, equivalent to 3 kgCO2/kgH2
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
         gHCN[jy] <= gH[jy] # [TWh]
-        )
-
-        mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
-        b[jy] == 0 # [MtonCO2]
         )
 
         mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
         capHCN[jy] <= capH[jy] # [GW]
         )
-
     else
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
             gHCN[jy] == 0 # [TWh]
         )
 
+        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
+            capHCN[jy] == 0 # [GW]
+        )
+    end
+
+    if CI == 0 # Mton CO2/TWh, equivalent to 3 kgCO2/kgH2
+        mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
+            b[jy] == 0 # [MtonCO2]
+        )
+    else
         mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
             sum(b[y2] for y2=1:jy) >=  sum(CI*dNG[y2] for y2=1:jy) # [MtonCO2]
         )
+    end
 
-        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
-            capHCN[jy] == 0 # [GW]
+    # recall that g and r are negative numbers (demand for electricity or renewable electricity)
+    if mod.ext[:parameters][:REC] == 1
+        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+            -η_E_H2*r_y[jy] >= ADD_SF[jy]*gHCN[jy] 
+        )
+        mod.ext[:constraints][:REC_balance_yearly_2] = @constraint(mod, [jy=JY],
+            r_y[jy] >= ADD_SF[jy]*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+        )
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jy=JY],
+            -η_E_H2*sum(W[jd]*r_d[jd,jy] for jd in JD)  >= gHCN[jy] 
+        )
+        mod.ext[:constraints][:REC_balance_daily_2] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] >= sum(g[jh,jd,jy] for jh in JH)
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jy=JY],
+            -η_E_H2*sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD) >= gHCN[jy]   
+        )
+        mod.ext[:constraints][:REC_balance_hourly_2] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] >= g[jh,jd,jy] 
+        )
+    else
+        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+            r_y[jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] == 0 
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] == 0 
         )
     end
 

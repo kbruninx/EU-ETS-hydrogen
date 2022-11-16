@@ -18,10 +18,10 @@ function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::
         end
     end
     
-    if scenario_overview_row["Additionality"] == "NA"
-        mod.ext[:parameters][:ADD_SF] = REC["RT"] # Scaling factor for RECs when additionality is not applied = RES target
+    if scenario_overview_row["Additionality"] == "Yearly"
+        mod.ext[:parameters][:ADD_SF] = ones(data["nyears"],1) 
     else
-        mod.ext[:parameters][:ADD_SF] = ones(data["nyears"],1) # Scaling factor for RECs when additionality is not applied
+        mod.ext[:parameters][:ADD_SF] = REC["RT"] # Scaling factor for RECs when additionality is not applied = RES target
     end
 
     return mod

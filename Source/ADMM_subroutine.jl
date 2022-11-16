@@ -14,15 +14,15 @@ TO_local = TimerOutput()
     end
     if mdict[m].ext[:parameters][:REC] == 1  
         # Yearly
-        mdict[m].ext[:parameters][:r_y_bar] = results["r_y"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_y"][end]
+        mdict[m].ext[:parameters][:r_y_bar] = results["r_y"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_y"][end]
         mdict[m].ext[:parameters][:λ_y_REC] = results["λ"]["REC_y"][end] 
         mdict[m].ext[:parameters][:ρ_y_REC] = ADMM["ρ"]["REC_y"][end]
         # Daily
-        mdict[m].ext[:parameters][:r_d_bar] = results["r_d"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_d"][end]
+        mdict[m].ext[:parameters][:r_d_bar] = results["r_d"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_d"][end]
         mdict[m].ext[:parameters][:λ_d_REC] = results["λ"]["REC_d"][end] 
         mdict[m].ext[:parameters][:ρ_d_REC] = ADMM["ρ"]["REC_d"][end]
         # Hourly
-        mdict[m].ext[:parameters][:r_h_bar] = results["r_h"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_h"][end]
+        mdict[m].ext[:parameters][:r_h_bar] = results["r_h"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_h"][end]
         mdict[m].ext[:parameters][:λ_h_REC] = results["λ"]["REC_h"][end] 
         mdict[m].ext[:parameters][:ρ_h_REC] = ADMM["ρ"]["REC_h"][end]
     end
@@ -35,18 +35,18 @@ TO_local = TimerOutput()
         mdict[m].ext[:parameters][:gHCN_bar] = results["h2cn_prod"][m][end] - 1/(H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["H2CN_prod"][end]
         mdict[m].ext[:parameters][:λ_H2CN_prod] = results["λ"]["H2CN_prod"][end] 
         mdict[m].ext[:parameters][:ρ_H2CN_prod] = ADMM["ρ"]["H2CN_prod"][end]
-        # Yearly
-        mdict[m].ext[:parameters][:r_y_bar] = results["g_y"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_y"][end]
-        mdict[m].ext[:parameters][:λ_y_REC] = results["λ"]["REC_y"][end] 
-        mdict[m].ext[:parameters][:ρ_y_REC] = ADMM["ρ"]["REC_y"][end]
-        # Daily
-        mdict[m].ext[:parameters][:r_d_bar] = results["g_d"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_d"][end]
-        mdict[m].ext[:parameters][:λ_d_REC] = results["λ"]["REC_d"][end] 
-        mdict[m].ext[:parameters][:ρ_d_REC] = ADMM["ρ"]["REC_d"][end]
-        # Hourly
-        mdict[m].ext[:parameters][:r_h_bar] = results["g"][m][end] - 1/(REC["nAgents"]+1)*ADMM["Imbalances"]["REC_h"][end]
-        mdict[m].ext[:parameters][:λ_h_REC] = results["λ"]["REC_h"][end] 
-        mdict[m].ext[:parameters][:ρ_h_REC] = ADMM["ρ"]["REC_h"][end]
+        # # Yearly additionality
+        # mdict[m].ext[:parameters][:r_y_bar] = results["g_y"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_y"][end]
+        # mdict[m].ext[:parameters][:λ_y_REC] = results["λ"]["REC_y"][end] 
+        # mdict[m].ext[:parameters][:ρ_y_REC] = ADMM["ρ"]["REC_y"][end]
+        # # Daily additionality
+        # mdict[m].ext[:parameters][:r_d_bar] = results["g_d"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_d"][end]
+        # mdict[m].ext[:parameters][:λ_d_REC] = results["λ"]["REC_d"][end] 
+        # mdict[m].ext[:parameters][:ρ_d_REC] = ADMM["ρ"]["REC_d"][end]
+        # # Hourly additionality
+        # mdict[m].ext[:parameters][:r_h_bar] = results["g"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_h"][end]
+        # mdict[m].ext[:parameters][:λ_h_REC] = results["λ"]["REC_h"][end] 
+        # mdict[m].ext[:parameters][:ρ_h_REC] = ADMM["ρ"]["REC_h"][end]
     end
     if mdict[m].ext[:parameters][:H2CN_cap] == 1
         mdict[m].ext[:parameters][:capHCN_bar] = results["h2cn_cap"][m][end] - 1/(H2CN_cap["nAgents"]+1)*ADMM["Imbalances"]["H2CN_cap"][end]

@@ -46,27 +46,47 @@ function solve_h2s_agent!(mod::Model)
     g = mod.ext[:variables][:g] 
     dNG = mod.ext[:variables][:dNG] 
     b = mod.ext[:variables][:b]    
+    r_y = mod.ext[:variables][:r_y] 
+    r_d = mod.ext[:variables][:r_d]  
+    r_h = mod.ext[:variables][:r_h] 
  
     # Update objective
-    if  mod.ext[:parameters][:H2CN_prod] == 1 && mod.ext[:parameters][:ETS] == 0 
-        
+    if  mod.ext[:parameters][:H2CN_prod] == 1 && mod.ext[:parameters][:ETS] == 0 &&  mod.ext[:parameters][:EOM] == 1 # e.g. electrolysis 
+
         mod.ext[:objective] = @objective(mod, Min,
-        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) 
-        - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy]+λ_h_REC[jh,jd,jy]+λ_d_REC[jd,jy]+ADD_SF[jy]*λ_y_REC[jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
+        - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+        - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+        - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+        - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
         + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
-        - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY) 
+        - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
         - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
-        - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY)  
-        + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
+        - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
+        + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
         + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
-        + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)
-        + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)
-        + sum(ρ_y_REC/2*ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH,jd in JD) - r_y_bar[jy])^2 for jy in JY)
-        + sum(ρ_d_REC/2*W[jd]*(sum(g[jh,jd,jy] for jh in JH) - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
-        + sum(ρ_h_REC/2*W[jd]*(g[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-        )            
-    
-    elseif mod.ext[:parameters][:H2CN_prod] == 0 && mod.ext[:parameters][:ETS] == 1
+        + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
+        + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
+        + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+        + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+        + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
+        )
+
+    elseif  mod.ext[:parameters][:H2CN_prod] == 1 && mod.ext[:parameters][:ETS] == 0 &&  mod.ext[:parameters][:EOM] == 0 # e.g. SMR + CCS
+
+        mod.ext[:objective] = @objective(mod, Min,
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
+        + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
+        - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
+        - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
+        - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
+        + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
+        + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
+        + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
+        )
+
+    elseif mod.ext[:parameters][:H2CN_prod] == 0 && mod.ext[:parameters][:ETS] == 1 && mod.ext[:parameters][:EOM] == 0  # e.g. SMR 
+
         mod.ext[:objective] = @objective(mod, Min,
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)  
         + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
@@ -74,6 +94,29 @@ function solve_h2s_agent!(mod::Model)
         + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
         + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
         + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
+        )
+
+    else # any other tech
+
+        mod.ext[:objective] = @objective(mod, Min,
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
+        - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+        - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+        - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+        - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
+        - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
+        - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
+        - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
+        + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
+        + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
+        + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
+        + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
+        + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
+        + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
+        + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+        + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+        + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
         )
 
     end

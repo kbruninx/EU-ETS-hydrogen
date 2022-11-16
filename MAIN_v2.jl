@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, TUDelft or KULeuven
+HPC = "NA" # NA, TUDelft or VSC
 
 # Home directory
 const home_dir = @__DIR__
@@ -12,6 +12,10 @@ const home_dir = @__DIR__
 if HPC == "TUDelft"  # only for running this on DelftBlue
     ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
     ENV["GUROBI_HOME"] = "./scratch/kbruninx/gurobi950/linux64"
+end
+
+if HPC == "VSC"  # only for running this on VSC
+    # to define license etc... 
 end
 
 # Include packages 
@@ -73,7 +77,7 @@ if isdir(joinpath(home_dir,"Results")) != 1
 end
 
 # Scenario number 
-if HPC == "TUDelft" || HPC == "KULeuven"
+if HPC == "TUDelft" || HPC == "VSC"
    function parse_commandline()
        s = ArgParseSettings()
        @add_arg_table! s begin
@@ -90,11 +94,12 @@ if HPC == "TUDelft" || HPC == "KULeuven"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1   
+    start_scen = 4  
     stop_scen = 15
 end
 
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 4
+# for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -107,7 +112,7 @@ scenario_overview_row = scenario_overview[scen_number,:]
 
 ## 2. Initiate models for representative agents 
 agents = Dict()
-agents[:ps] = [id for id in keys(data["PowerSector"])]
+agents[:ps] = [id for id in keys(data["PowerSector"])] 
 agents[:h2s] = [id for id in keys(data["HydrogenSector"])]
 agents[:ind] = ["Ind"] 
 agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind])   
@@ -237,6 +242,6 @@ save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data[
 println("Postprocessing & save results: done")
 println("   ")
 
-end # end for loop over scenarios
+# end # end for loop over scenarios
 
 println(string("##############################################################################################"))
