@@ -63,12 +63,10 @@ function build_h2s_agent!(mod::Model)
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    # mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
-    #     sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
-    # )
-    # mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
-    #     sum(g[jh,jd,jy] for jh in JH)
-    # )
+    mod.ext[:expressions][:tot_cost] = @expression(mod, 
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)  
+        + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
+    )
 
     # Definition of the objective function
     mod.ext[:objective] = @objective(mod, Min,

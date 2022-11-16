@@ -1,8 +1,6 @@
 function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict) 
     results["e"] = Dict()
     results["g"] = Dict()
-    results["g_d"] = Dict()
-    results["g_y"] = Dict()
     results["r_y"] = Dict()
     results["r_d"] = Dict()
     results["r_h"] = Dict()
@@ -28,10 +26,6 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     for m in agents[:eom]
         results["g"][m] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"]) 
         push!(results["g"][m],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
-        # results["g_y"][m] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 
-        # push!(results["g_y"][m],zeros(data["nyears"]))
-        # results["g_d"][m] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"]) 
-        # push!(results["g_d"][m],zeros(data["nReprDays"],data["nyears"]))
     end
     for m in agents[:h2]
         results["h2"][m] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 

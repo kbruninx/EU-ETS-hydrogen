@@ -19,7 +19,7 @@ The program can be executed in the Julia terminal. Any text editor can be used t
 
 If the user does not have any of these programs installed, the installation should take approximately one hour.
 
-### Software requirements: (to be updated)
+### Software requirements: (to be updated) 
 This code has been developed using Julia v1.5. The solver used is Gurobi v.9.0.
 
 The following Julia packages are required:
@@ -33,11 +33,11 @@ The following Julia packages are required:
 
 If the user does not have any of these programs installed, the installation should take less than one hour.
 
-### Hardware requirements
+### Hardware requirements 
 No specific hardware is required. Depending on the configuration (number of agents and markets considered), computational effort may significantly increase.
 
 ## Running the program
-### Input
+### Input (to be updated)
 There are three places where the user can change the input.
 
 1. On line 9 of the "Main.jl"-file, the user can specify the set of scenarios one would like to study, ranging from "start_scen" to "stop_scen". This determines which scenarios in the "overview_scenarios.csv"-file will be executed.
@@ -51,7 +51,7 @@ There are three places where the user can change the input.
     - ref_scen (Integer): reference scenario. If this is the same as the scenario number (scen_number), the beta-parameter in the marginal abatement cost curve will be calibrated to reproduce emission allowance prices in 2019. If it differs from the scenario number in the  same row, the beta-value from the reference scenario will be retrieved and used in the marginal abatement cost curve. Note that the user must ensure that the results of the reference scenario are available.
 3. The file "overview_data.yaml" contains a number of input parameters that are common to all scenarios. Examples include the number of years the analysis considers, the historical emissions and prices that will be used to calibrate the marginal abatement cost curve and the parameters of the market stability reserve for each of the two designs. Note that the impact of COVID (240 MtCO2, linearly decreasing between 2020-2025) can only be switched on/off (see above).
 
-### Running the code
+### Running the code (to be updated)
 The user should execute the "MAIN.jl"-file, after having specified the scenario one would like to study. The "MAIN.jl"-file is properly documented to maximize transparency.
 
 If the scenario at hand is a scenario in which the marginal abatement cost needs to be calibrated, the ADMM procedure will be executed a number of times until the emission allowance price in 2019 is replicated with a user-specified tolerance (default: 0.1 €/MWh, see "overview_data.yaml"). The code will report (in the terminal) the progress of the ADMM procedure and the difference between the computed emission allowance price in 2019 and the historical value. Only the final result (i.e., based on the calibrated MACC) will be stored.
@@ -62,7 +62,7 @@ If the scenario at hand can use a calibrated marginal abatement cost curve from 
 
 ## Running the code on ThinKing (VSC) 
 
-### Output & Postprocessing
+### Output & Postprocessing (to be updated)
 Running the code will generate X output files:
 
 1. "overview_results.csv", in which aggregate metrics of all simulations will be listed:
@@ -83,9 +83,14 @@ Running the code will generate X output files:
     -   EUAprice: price of emission allowances (€/tCO2)
     -   EUAs: annually procured emission allowances (MtCO2)
 
-### Demos & reproducing the results  
+### Demos & reproducing the results (to be updated)
 ## Some simulation
 ## Studying overlapping policies
+
+### Extensions/future developments
+- Allow user to study subset of markets, defined based on participating agents in yaml file (e.g. if "empty" power sector?)
+- Additionality on monthly basis 
+- Integrated selection of representative days?
 
 ## License
 The software is made available under the MIT license (https://opensource.org/licenses/MIT).

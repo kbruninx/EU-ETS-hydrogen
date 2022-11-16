@@ -12,6 +12,9 @@ function update_ind_emissions!(mod::Model,data::Dict,ETS::Dict,scenario_overview
                 mod.ext[:parameters][:e][y] = mod.ext[:parameters][:e][y-1]-scenario_overview_row[:max_em_change]*mod.ext[:parameters][:e][3]/100
             end
         end
+        
+        # Compute abatement cost
+        mod.ext[:parameters][:AC][y] = mod.ext[:parameters][:β]*(E_REF[y]-mod.ext[:parameters][:e][y])^(scenario_overview_row[:gamma]+1)/(scenario_overview_row[:gamma]+1)
 
         # Add covid or overlapping policy
         mod.ext[:parameters][:e][y] = mod.ext[:parameters][:e][y]+ETS["Δe"][y]

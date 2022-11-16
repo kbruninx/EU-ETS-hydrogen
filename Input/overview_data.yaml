@@ -18,12 +18,10 @@ ADMM:
 
 EOM: 
   SF_load: 1.061801876 # based on Sandbag data, rescaling factor
-  nAgents: 13 # number of agents
 
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
   RES_share_other_2017: 0.165 # RES share from biomass, hydro, etc. in 2017
-  nAgents: 3 # number of agents  
 
 ETS: 
   LRF_2017: 38.264246
@@ -41,7 +39,6 @@ ETS:
   X_MSR_MAX_POS_2023: 0.12
   X_MSR_MAX_NEG_2019: 100
   X_MSR_MAX_NEG_2023: 100
-  nAgents: 11 # number of agents
   P_2017: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2018: 5 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
   P_2019: 24.72 # €/ton or M€/MtCO2 in 2019, after adoption MSR according to EEX (2020 prices are distorted due to COVID-19)
@@ -59,14 +56,6 @@ NG:
 H2:
   demand: 10 # baseline demand for hydrogen, mtH2
   conv_factor: 33 # 1 mt H2 = 33 TWh 
-  nAgents: 2 # number of agents
-
-H2CN_prod:
-  nAgents: 1 # number of agents
-  conv_factor: 33 # 1 mt H2 = 33 TWh 
-
-H2CN_cap:
-  nAgents: 1 # number of agents
 
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC

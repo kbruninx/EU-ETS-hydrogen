@@ -56,7 +56,6 @@ include(joinpath(home_dir,"Source","solve_H2S_agent.jl"))
 include(joinpath(home_dir,"Source","update_supply.jl"))
 include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
-include(joinpath(home_dir,"Source","plot_results.jl"))
 
 # Data common to all scenarios data 
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml"))
@@ -68,7 +67,7 @@ scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFra
 
 # Create file with results 
 if isfile(joinpath(home_dir,"overview_results.csv")) != 1
-    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"Beta";"EUA_2021";"CumulativeEmissions"])
+    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
 end
 
 # Create folder for results
@@ -81,8 +80,12 @@ if HPC == "TUDelft" || HPC == "VSC"
    function parse_commandline()
        s = ArgParseSettings()
        @add_arg_table! s begin
-           "--sim_number"
-               help = "Enter the simulation number here"
+           "--start_scen"
+               help = "Enter the number of the first scenario here"
+               arg_type = Int
+               default = 1
+            "--stop_scen"
+               help = "Enter the number of the last scenario here"
                arg_type = Int
                default = 1
        end
@@ -94,11 +97,13 @@ if HPC == "TUDelft" || HPC == "VSC"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 7  
+    start_scen = 1  
     stop_scen = 15
 end
 
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 1 
+
+# for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -140,11 +145,11 @@ define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scena
 
 # Parameters/variables incentive scheme carbon neutral hydrogen 
 H2CN_prod = Dict()
-define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2CN_prod"]),ts,repr_days,scenario_overview_row)
+define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2"]),ts,repr_days,scenario_overview_row)
 
 # Parameters/variables incentive scheme carbon neutral hydrogen production capacity
 H2CN_cap = Dict()
-define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["H2CN_cap"]),ts,repr_days,scenario_overview_row)
+define_H2CN_cap_parameters!(H2CN_cap,data["General"],ts,repr_days,scenario_overview_row)
 
 # Parameters/variables Hydrogen Market
 H2 = Dict()
@@ -167,6 +172,15 @@ for m in agents[:h2s]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents,scenario_overview_row)  # Parameters common to all agents
     define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m]),ts,repr_days,scenario_overview_row,REC)                       # Hydrogen sector
 end
+
+# Calculate number of agents in each market
+ETS["nAgents"] =  length(agents[:ets])
+EOM["nAgents"] = length(agents[:eom])
+REC["nAgents"] = length(agents[:rec])
+H2["nAgents"] =  length(agents[:h2])
+H2CN_prod["nAgents"] = length(agents[:h2cn_prod])
+H2CN_cap["nAgents"] = length(agents[:h2cn_cap])
+NG["nAgents"] = length(agents[:ng])
 
 println("Inititate model, sets and parameters: done")
 println("   ")
@@ -244,6 +258,6 @@ save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data[
 println("Postprocessing & save results: done")
 println("   ")
 
-end # end for loop over scenarios
+# end # end for loop over scenarios
 
 println(string("##############################################################################################"))

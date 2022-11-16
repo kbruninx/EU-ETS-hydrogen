@@ -20,5 +20,8 @@ function define_ind_parameters!(mod::Model, data::Dict, scenario_overview_row::D
         mod.ext[:parameters][:β] = overview_results_row[!,:Beta][1]
     end
 
+    # Abatement costs
+    mod.ext[:parameters][:AC] = zeros(data["nyears"],1)  
+    
     return mod
 end

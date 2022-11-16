@@ -1,6 +1,6 @@
 function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::DataFrameRow)
     # Number of agents
-    ETS["nAgents"] = data["nAgents"]
+    # ETS["nAgents"] = data["nAgents"]
 
     # LRF 2017 - 2021, no Brexit, expansion of scope (aviation, maritime) or Green Deal
     ETS["LRF"] = zeros(data["nyears"]);

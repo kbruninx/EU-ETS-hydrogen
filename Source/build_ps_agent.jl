@@ -45,7 +45,7 @@ function build_ps_agent!(mod::Model)
     r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], lower_bound=0, base_name="REC_d") 
     r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="REC_h") 
 
-    # Create affine expressions - used in postprocessing
+    # Create affine expressions - used in postprocessing, haven't tested impact on computational cost of having these here computed in every iteration
     mod.ext[:expressions][:curt] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[jy] for y2=1:jy) + LEG_CAP[jy]) - g[jh,jd,jy]
     )
@@ -55,12 +55,10 @@ function build_ps_agent!(mod::Model)
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
     )
-    # mod.ext[:expressions][:g_y] = @expression(mod, [jy=JY],
-    #     sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
-    # )
-    # mod.ext[:expressions][:g_d] = @expression(mod, [jd=JD,jy=JY],
-    #     sum(g[jh,jd,jy] for jh in JH)
-    # )
+    mod.ext[:expressions][:tot_cost] = @expression(mod, 
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
+        + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+    )
 
     # Objective 
     mod.ext[:objective] = @objective(mod, Min,
