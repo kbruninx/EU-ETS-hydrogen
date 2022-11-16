@@ -37,7 +37,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     #     gw_res[m] = value.(mdict[m].ext[:expressions][:gw])
     # end
     gw = Dict()
-    for m in agents[:rec]
+    for m in agents[:eom]
         gw[m] = value.(mdict[m].ext[:expressions][:gw])
     end
     gw_tot = sum(gw[m] for m in agents[:eom]) # total electricity generation

@@ -10,7 +10,7 @@ HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 const home_dir = @__DIR__
 
 if HPC == "DelftBlue"  # only for running this on DelftBlue
-    ENV["GRB_LICENSE_FILE"] = "./hpc/gurobi.lic"
+    ENV["GRB_LICENSE_FILE"] = "./Hpc/gurobi.lic"
     ENV["GUROBI_HOME"] = "./scratch/kbruninx/gurobi950/linux64"
     println(string("Number of threads: ", Threads.nthreads()))
 end
