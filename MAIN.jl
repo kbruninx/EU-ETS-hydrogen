@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "DelftBlue" # NA, DelftBlue or ThinKing
+HPC = "NA" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -98,13 +98,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1  
+    start_scen = 2
     stop_scen = 15
 end
 
-scen_number = 1 
-
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -259,6 +257,6 @@ save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data[
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end for loop over scenarios
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

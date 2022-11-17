@@ -44,7 +44,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     gw_res_tot = sum(results["r_y"][m][end][:] for m in agents[:rec]) # total renewable electricty generation participating in the res auctions
     # For the production weighted averages below I assume that REC support for RES from electrolyzers (or electricity costs) are internal transfers - not taken into account:
     λ_EOM_avg = [sum(gw_tot[:,:,jy].*results[ "λ"]["EOM"][end][:,:,jy])./sum(gw_tot[:,:,jy]) for jy in mdict[agents[:ps][1]].ext[:sets][:JY]] # production weighted average electricity price
-    λ_REC_avg = [sum(gw_res_tot[:,:,jy].*results[ "λ"]["REC"][end][:,:,jy])./sum(gw_res_tot[:,:,jy]) for jy in mdict[agents[:ps][1]].ext[:sets][:JY]] # production weighted support for RES  
+    λ_REC_avg = [gw_res_tot[jy].*results[ "λ"]["REC_y"][end][jy]./gw_res_tot[jy] for jy in mdict[agents[:ps][1]].ext[:sets][:JY]] # production weighted support for RES  
     mat_output = [Years λ_EOM_avg λ_REC_avg transpose(available_cap) transpose(fuel_shares)]
     CSV.write(joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"],"_PS.csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";"EOM_avg";"REC_y";string.("CAP_",agents[:ps]);string.("FS_",agents[:ps])]);
     
