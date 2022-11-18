@@ -61,7 +61,7 @@ If the scenario at hand can use a calibrated marginal abatement cost curve from 
 ## Running the code on DelftBlue (TU Delft)
 
 # Interactive jobs (to be updated for fair share accounting)
-1. srun --job-name="your_job" --partition=compute --time=00:30:00 --ntasks=1 --cpus-per-task=17 --mem-per-cpu=4GB --pty bash
+1. srun --job-name="your_job" --account=research-tpm-ess --partition=compute --time=00:30:00 --ntasks=1 --cpus-per-task=17 --mem-per-cpu=4GB --pty bash
 2. cd /home/kbruninx/EU-ETS
 3. module load 2022r2
 4. module load julia 
@@ -72,9 +72,6 @@ Tips:
 - The number of cpus should be equal to the number of agents + 1 (1 master and 1 per agent)
 - Set the number of cpu's equal to the number of threads used for julia x 4 (e.g., 17 x 4 = 68), as by default 4 threads are used by Gurobi
 - Check resource use via seff [job_id]
-
-To be added once fair share has been granted: 
-- --account=research-tpm-ess
 
 Resources: 
 - For basic info on how to use DelftBlue, see https://doc.dhpc.tudelft.nl/delftblue/crash-course/. 

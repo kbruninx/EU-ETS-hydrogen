@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -98,7 +98,7 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
+    start_scen = 1
     stop_scen = 15
 end
 
@@ -208,7 +208,7 @@ results = Dict()
 ADMM = Dict()
 TO = TimerOutput()
 define_results!(merge(data["General"],data["ADMM"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,TO)                      # calculate equilibrium 
+ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                 # calculate equilibrium 
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
 
 # Calibration of industry MACC
@@ -225,9 +225,8 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"
 
     # Calculate equilibrium with new estimate beta
     define_results!(merge(data["General"],data["ADMM"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,TO)                      # calculate equilibrium 
+    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)      # calculate equilibrium 
     ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
-
 end
 
 println(string("Done!"))
