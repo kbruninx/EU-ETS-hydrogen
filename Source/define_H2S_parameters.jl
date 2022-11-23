@@ -1,6 +1,4 @@
 function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame,scenario_overview_row::DataFrameRow,REC::Dict)
-    set_optimizer_attribute(mod, "OutputFlag",0)
-
     # Parameters 
     mod.ext[:parameters][:η_E_H2] = data["efficiency_E_H2"] # - 
     mod.ext[:parameters][:η_NG_H2] = data["efficiency_NG_H2"] # -
@@ -25,5 +23,4 @@ function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::
     end
 
     return mod
-    
 end

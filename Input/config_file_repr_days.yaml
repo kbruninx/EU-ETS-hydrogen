@@ -1,0 +1,52 @@
+# Specify csv files for time series and other options
+time_series:
+  default: # These values will be used unless specified in the entries below
+    source: "timeseries_May2018.csv"
+    csv_options: # These options are passed to CSV.read
+        delim: ","
+    timestamp: "Datetime" # optional
+    weight: 1 # weight of time series in objective / clustering
+    interpolation_type: "linear" # or "constant" or don't specify
+    sampling_time: "Hour(1)" # Only necessary if a timestamp is not given
+    start: 1 # Can also specify an integer which corresponds to rows in the .csv file
+
+  Load:
+    value_column: "LOAD" # Column name to be read in csv file
+
+  Solar: 
+    value_column: "SOLAR"
+
+  WindOnshore: 
+    value_column: "WIND_ONSHORE"
+
+  WindOnshore: 
+    value_column: "WIND_OFFSHORE"
+
+  Other: 
+    value_column: "OTHER"
+
+method:
+  options: # Method agnostic options
+    mandatory_periods: [] # Leave empty to specify none
+    total_periods: 365
+    representative_periods: 4
+    time_steps_per_period: 24
+    sampling_time: "Hour(1)" # This is a DateTime format - for quarter hours, Hour(0.25)
+  
+  optimization:
+    integral_weights: false
+    binary_ordering: true
+    equal_weights: false
+    duration_curve_error:
+      weight: 1
+      number_bins: 40
+      type: "absolute" # Or "squared"
+    time_series_error:
+      weight: 1
+      type: "absolute" # Or "squared"
+
+results:
+  save_results: true
+  # Options for exactly what to save here
+  result_dir: 'output_repr_days' # Relative to this file
+  create_plots: true

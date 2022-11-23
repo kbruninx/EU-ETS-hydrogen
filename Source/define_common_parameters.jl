@@ -1,8 +1,5 @@
 function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFrame, repr_days::DataFrame, agents::Dict, scenario_overview_row::DataFrameRow)
     # Solver settings
-    set_optimizer_attribute(mod,"Threads",4)
-    set_optimizer_attribute(mod, "OutputFlag",0)
-
     # Define dictonaries for sets, parameters, timeseries, variables, constraints & expressions
     mod.ext[:sets] = Dict()
     mod.ext[:parameters] = Dict()
@@ -13,11 +10,14 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
 
     # Sets
     mod.ext[:sets][:JY] = 1:data["nyears"]    
+    mod.ext[:sets][:JM] = 1:12
     mod.ext[:sets][:JD] = 1:data["nReprDays"]
     mod.ext[:sets][:JH] = 1:data["nTimesteps"]
 
     # Parameters
-    mod.ext[:parameters][:W] = Dict(jd => repr_days[!,:Period_weight][jd] for jd=1:data["nReprDays"])   # weights of each representative day
+    months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+    mod.ext[:parameters][:W] = [repr_days[!,:weights][jd] for jd in mod.ext[:sets][:JD]]                              # weights of each representative day
+    mod.ext[:parameters][:Wm] = [repr_days[!,months[jm]][jd] for jd in mod.ext[:sets][:JD],jm in mod.ext[:sets][:JM]]    # weights of each representative day => month
     mod.ext[:parameters][:A] = ones(data["nyears"],1)                                                   # Discount rate, 2019 as base year due to calibration to 2019 data
     for y in 4:data["nyears"]
         mod.ext[:parameters][:A][y] = 1/(1+data["discount_rate"])^(y-3)
@@ -40,6 +40,14 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
         mod.ext[:parameters][:ρ_y_REC] = data["rho_REC"]            # ADMM rho value 
     else
         mod.ext[:parameters][:ρ_y_REC] = 0                          # ADMM rho value 
+    end
+
+    mod.ext[:parameters][:λ_m_REC] = zeros(12,data["nyears"])                     # Price structure
+    mod.ext[:parameters][:r_m_bar] = zeros(12,data["nyears"])                     # ADMM penalty term
+    if scenario_overview_row["Additionality"] == "Monthly" 
+        mod.ext[:parameters][:ρ_m_REC] = data["rho_REC"]                            # ADMM rho value 
+    else
+        mod.ext[:parameters][:ρ_m_REC] = 0                                          # ADMM rho value 
     end
 
     mod.ext[:parameters][:λ_d_REC] = zeros(data["nReprDays"],data["nyears"])       # Price structure

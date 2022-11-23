@@ -1,6 +1,5 @@
 function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame,scenario_overview_row::DataFrameRow)
     # Parameters 
-    mod.ext[:parameters][:W] = Dict(jd => repr_days[!,:Period_weight][jd] for jd=1:data["nReprDays"]) # weights of each representative day
     mod.ext[:parameters][:VC] = data["fuelCosts"].*[(1+data["YoY_VC"]/100)^(jy-1) for jy in 1:data["nyears"]] # EUR/MWh or MEUR/TWh
     mod.ext[:parameters][:η] = data["efficiency"] # - 
     mod.ext[:parameters][:CI] = data["emissions"] # tCO2/MWh or MtCO2/TWh
@@ -19,7 +18,7 @@ function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::D
 
    # Availability factors
     if data["AF_ts"] != "NA" 
-        mod.ext[:timeseries][:AF] = [ts[!,data["AF_ts"]][round(Int,data["nTimesteps"]*repr_days[!,:Period_index][jd]+jh)]/10^3/data["Legcap"] for jh=1:data["nTimesteps"], jd=1:data["nReprDays"]] # scaling: from MW to GW
+        mod.ext[:timeseries][:AF] = [ts[!,data["AF_ts"]][round(Int,data["nTimesteps"]*repr_days[!,:periods][jd]+jh)]/10^3/data["Legcap"] for jh=1:data["nTimesteps"], jd=1:data["nReprDays"]] # scaling: from MW to GW
     else
         mod.ext[:timeseries][:AF] = ones(data["nTimesteps"],data["nReprDays"]) 
     end 

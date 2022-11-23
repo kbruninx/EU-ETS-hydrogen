@@ -2,6 +2,7 @@ General:
   nyears: 45
   nTimesteps: 24 # number of timesteps per representative day
   nReprDays: 4 # days
+  nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
 
@@ -89,6 +90,26 @@ HydrogenSector:
    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
    NG: "YES" # participate in the natural gas market 
+
+  SMRCCS:
+   OC: 1000 # M€/GW.  
+   fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
+   Lifetime: 25 # years.  
+   Leadtime: 3  # years  
+   Legcap: 0 # GW  
+   efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
+   efficiency_NG_H2: 0.62 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh] % assumed capture rate of 90%
+   max_YoY_new_cap: 1000 # [GW]
+   YoY_OC: 0 # % change in overnight investment cost YoY
+   Legcap_out: 15 # years # MW  
+   REC: "NO" # eligible for RECs?
+   ETS: "YES" # covered by ETS
+   EOM: "NO" # participates in EOM?
+   H2: "YES" # participate in the carbon neutral H2 market
+   H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "YES" # participate in the carbon neutral H2 market (capacity)
+   NG: "YES" # participate in the natural gas market  
 
   electrolysis:
    OC: 1000 # M€/GW. See https://irena.org/-/media/Files/IRENA/Agency/Publication/2020/Dec/IRENA_Green_hydrogen_cost_2020.pdf

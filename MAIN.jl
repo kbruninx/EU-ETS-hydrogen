@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "DelftBlue" # NA, DelftBlue or ThinKing
+HPC = "NA" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -28,9 +28,17 @@ using TimerOutputs # profiling
 using JLD2
 using Base.Threads: @spawn 
 using ArgParse # Parsing arguments from the command line
+using RepresentativePeriodsFinder # representative day finder  - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/
 
 # Gurobi environment to suppress output
+println("Define Gurobi environment...")
+println("        ")
 const GUROBI_ENV = Gurobi.Env()
+# set parameters:
+GRBsetparam(GUROBI_ENV, "OutputFlag", "0")   
+GRBsetparam(GUROBI_ENV, "Threads", "4")   
+GRBsetparam(GUROBI_ENV, "TimeLimit", "300")  # will only affect solutions if you're selecting representative days  
+println("        ")
 
 # Include functions
 include(joinpath(home_dir,"Source","define_common_parameters.jl"))
@@ -61,10 +69,51 @@ include(joinpath(home_dir,"Source","save_results.jl"))
 # Data common to all scenarios data 
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml"))
 ts = CSV.read(joinpath(home_dir,"Input","timeseries_May2018.csv"),delim=",",DataFrame)
-repr_days = CSV.read(joinpath(home_dir,"Input",string("Period_definitions_",data["General"]["nReprDays"],".csv")),delim=",",DataFrame)
+if isfile(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
+    repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
+else    
+    # select representative days from the "timeseries_May2018.csv" file
+    println("Selecting representative days (may take up to 300 seconds)... ")
+    println("        ")
+    config_file = joinpath(home_dir,"Input","config_file_repr_days.yaml") # contains general info/specification of representative day finder package
+    pf = PeriodsFinder(config_file; populate_entries=true)
+    # specific settings to select representative days
+    pf.config["method"]["optimization"]["binary_ordering"] = true
+    pf.config["method"]["options"]["representative_periods"] = data["General"]["nReprDays"]
+    pf.config["results"]["result_dir"] = string("output_",data["General"]["nReprDays"],"_repr_days")
+    delete!(pf.config["method"]["optimization"], "time_series_error")
+    pf = find_representative_periods(pf, optimizer=optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_ENV)))
+    repr_days = CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame)
+    
+    println("        ")
+    println("Done!")
+    println("         ")
+    println("Computing mapping representative days to months...")
+
+    # Create syntethic time series - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/examples/days_re_ordering/ 
+    pf = PeriodsFinder(config_file; populate_entries=true)
+    # specific settings to create syntethic time series
+    pf.config["method"]["optimization"]["binary_ordering"] = false
+    pf.config["method"]["options"]["representative_periods"] = data["General"]["nReprDays"]
+    pf.config["results"]["result_dir"] = string("output_",data["General"]["nReprDays"],"_repr_days")
+    delete!(pf.config["method"]["optimization"], "duration_curve_error")
+    pf.config["method"]["options"]["mandatory_periods"] = repr_days[!,:periods]
+    pf.u = zeros(Bool, pf.config["method"]["options"]["total_periods"])
+    pf.u[repr_days[!,:periods]] .= 1 
+    find_representative_periods(pf, optimizer=optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_ENV)), reset=false);
+    write_out_synthetic_timeseries(pf)
+    # compute mapping day -> month
+    n_days_month = [0 31 28 31 30 31 30 31 31 30 31 30 31 0] # to compute weights of day -> month
+    weight_day_month = [repr_days[!,:periods] [sum(pf.v[1+sum(n_days_month[1:m]):sum(n_days_month[1:m+1]),jd]) for jd=1:data["General"]["nReprDays"],m=1:12]]
+    CSV.write(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),DataFrame(weight_day_month,:auto),delim=",",header=[:periods, :January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December])
+    rightjoin(repr_days, CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
+    println("        ")
+    println("Done!")
+    println("        ")
+end
 
 # Overview scenarios
-scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFrame;delim=";")
+scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFrame,delim=";")
 
 # Create file with results 
 if isfile(joinpath(home_dir,"overview_results.csv")) != 1

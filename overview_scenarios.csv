@@ -1,16 +1,13 @@
-scen_number;LRF_2021;LRF_2031;COVID;MSR;RES_target_2030;CNH2_cap_target_2024;CNH2_cap_target_2030;CNH2_demand_2024;CNH2_demand_2030;gamma;max_em_change;Additionality;ref_scen_number;remarks
-1;0.022;0.022;0;2018;0.34;0;0;0;0;1;10;NA;1;2018 policies, used to calibrate MACC
-2;0.042;0.042;1;2021;0.4;0;0;0;0;1;10;NA;1;COVID +  Fit for 55
-3;0.042;0.042;1;2021;0.4;0;0;1;10;1;10;NA;1;COVID +  Fit for 55
-4;0.042;0.042;1;2021;0.4;0;0;1;10;1;10;Yearly;1;COVID +  Fit for 55
-5;0.042;0.042;1;2021;0.4;0;0;1;10;1;10;Daily;1;COVID +  Fit for 55
-6;0.042;0.042;1;2021;0.4;0;0;1;10;1;10;Hourly;1;COVID +  Fit for 55
-7;0.042;0.042;1;2021;0.4;4;40;1;10;1;10;NA;1;COVID +  Fit for 55
-8;0.042;0.042;1;2021;0.4;4;40;1;10;1;10;Yearly;1;COVID +  Fit for 55
-9;0.042;0.042;1;2021;0.4;4;40;1;10;1;10;Daily;1;COVID +  Fit for 55
-10;0.042;0.042;1;2021;0.4;4;40;1;10;1;10;Hourly;1;COVID +  Fit for 55
-11;0.022;0.022;0;2018;0.34;0;0;0;0;2;10;NA;11;2018 policies, used to calibrate MACC
-12;0.042;0.042;1;2021;0.4;4;40;1;10;2;10;NA;11;COVID +  Fit for 55
-13;0.042;0.042;1;2021;0.4;4;40;1;10;2;10;Yearly;11;COVID +  Fit for 55
-14;0.042;0.042;1;2021;0.4;4;40;1;10;2;10;Daily;11;COVID +  Fit for 55
-15;0.042;0.042;1;2021;0.4;4;40;1;10;2;10;Hourly;11;COVID +  Fit for 55
+scen_number;LRF_2021;LRF_2031;COVID;MSR;RES_target_2030;H2_demand_2030;H2_demand_2050;CNH2_cap_target_2024;CNH2_cap_target_2030;CNH2_demand_2024;CNH2_demand_2030;gamma;max_em_change;Additionality;ref_scen_number;remarks
+1;0.022;0.022;0;2018;0.34;10;10;0;0;0;0;1;10;NA;1;2018 policies, used to calibrate MACC
+2;0.042;0.042;1;2021;0.4;10;10;0;0;0;0;1;10;NA;1;COVID +  Fit for 55
+3;0.042;0.042;1;2021;0.4;10;10;0;0;1;10;1;10;NA;1;COVID +  Fit for 55
+4;0.042;0.042;1;2021;0.4;10;10;0;0;1;10;1;10;Yearly;1;COVID +  Fit for 55
+5;0.042;0.042;1;2021;0.4;10;10;0;0;1;10;1;10;Monthly;1;COVID +  Fit for 55
+6;0.042;0.042;1;2021;0.4;10;10;0;0;1;10;1;10;Daily;1;COVID +  Fit for 55
+7;0.042;0.042;1;2021;0.4;10;10;0;0;1;10;1;10;Hourly;1;COVID +  Fit for 55
+8;0.042;0.042;1;2021;0.4;10;10;4;40;1;10;1;10;NA;1;COVID +  Fit for 55
+9;0.042;0.042;1;2021;0.4;10;10;4;40;1;10;1;10;Yearly;1;COVID +  Fit for 55
+10;0.042;0.042;1;2021;0.4;10;10;4;40;1;10;1;10;Monthly;1;COVID +  Fit for 55
+11;0.042;0.042;1;2021;0.4;10;10;4;40;1;10;1;10;Daily;1;COVID +  Fit for 55
+12;0.042;0.042;1;2021;0.4;10;10;4;40;1;10;1;10;Hourly;1;COVID +  Fit for 55

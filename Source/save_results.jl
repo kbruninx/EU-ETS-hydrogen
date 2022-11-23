@@ -32,10 +32,6 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         available_cap[mm,:] = [sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy] for jy in mdict[m].ext[:sets][:JY]]
         mm = mm+1
     end
-    # gw_res = Dict()
-    # for m in agents[:rec]
-    #     gw_res[m] = value.(mdict[m].ext[:expressions][:gw])
-    # end
     gw = Dict()
     for m in agents[:eom]
         gw[m] = value.(mdict[m].ext[:expressions][:gw])
@@ -60,8 +56,8 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         h2_prod[mm,:] = value.(mdict[m].ext[:variables][:gH])./data["conv_factor"]
         mm = mm+1
     end
-    h2cn_prod = zeros(length(agents[:h2s]),data["nyears"])
-    h2cn_cap = zeros(length(agents[:h2s]),data["nyears"])
+    h2cn_prod = zeros(length(agents[:h2cn_prod]),data["nyears"])
+    h2cn_cap = zeros(length(agents[:h2cn_prod]),data["nyears"])
     mm = 1
     for m in agents[:h2cn_prod]
         CAP_LT = mdict[m].ext[:parameters][:CAP_LT]
