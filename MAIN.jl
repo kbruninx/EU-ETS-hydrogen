@@ -27,6 +27,7 @@ using ProgressBars, Printf # progress bar
 using TimerOutputs # profiling 
 using JLD2
 using Base.Threads: @spawn 
+using Base: split
 using ArgParse # Parsing arguments from the command line
 using RepresentativePeriodsFinder # representative day finder  - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/
 
@@ -74,7 +75,6 @@ if isfile(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"
 else    
     # select representative days from the "timeseries_May2018.csv" file
     println("Selecting representative days (may take up to 300 seconds)... ")
-    println("        ")
     config_file = joinpath(home_dir,"Input","config_file_repr_days.yaml") # contains general info/specification of representative day finder package
     pf = PeriodsFinder(config_file; populate_entries=true)
     # specific settings to select representative days
@@ -106,7 +106,7 @@ else
     n_days_month = [0 31 28 31 30 31 30 31 31 30 31 30 31 0] # to compute weights of day -> month
     weight_day_month = [repr_days[!,:periods] [sum(pf.v[1+sum(n_days_month[1:m]):sum(n_days_month[1:m+1]),jd]) for jd=1:data["General"]["nReprDays"],m=1:12]]
     CSV.write(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),DataFrame(weight_day_month,:auto),delim=",",header=[:periods, :January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December])
-    rightjoin(repr_days, CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
+    repr_days = rightjoin(repr_days, CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
     println("        ")
     println("Done!")
     println("        ")
@@ -114,15 +114,17 @@ end
 
 # Overview scenarios
 scenario_overview = CSV.read(joinpath(home_dir,"overview_scenarios.csv"),DataFrame,delim=";")
+sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),DataFrame,delim=";") 
 
 # Create file with results 
-if isfile(joinpath(home_dir,"overview_results.csv")) != 1
-    CSV.write(joinpath(home_dir,"overview_results.csv"),DataFrame(),delim=";",header=["scen_number";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
+# add column for sensitivity analsysis
+if isfile(joinpath(home_dir,string("overview_results_",data["General"]["nReprDays"],"_repr_days.csv"))) != 1
+    CSV.write(joinpath(home_dir,string("overview_results_",data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
 end
 
 # Create folder for results
-if isdir(joinpath(home_dir,"Results")) != 1
-    mkdir(joinpath(home_dir,"Results"))
+if isdir(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"))) != 1
+    mkdir(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days")))
 end
 
 # Scenario number 
@@ -147,7 +149,7 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1
+    start_scen = 2
     stop_scen = 15
 end
 
@@ -155,12 +157,33 @@ for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
-println("    ")
-println("Including all required input data: done")
-println("   ")
 
 ## 1. Read associated input for this simulation
 scenario_overview_row = scenario_overview[scen_number,:]
+data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
+
+if scenario_overview_row["Sens_analysis"] == "YES" && scenario_overview_row[:ref_scen_number] != scen_number
+    numb_of_sens = length((sensitivity_overview[!,:Parameter]))+1
+else
+    numb_of_sens = 0 
+end    
+for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+if sens_number >= 2
+    println("    ") 
+    println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
+    parameter = split(sensitivity_overview[sens_number-1,:Parameter])
+    if length(parameter) == 2
+        data[parameter[1]][parameter[2]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter[1]][parameter[2]]
+    elseif length(parameter) == 3
+        data[parameter[1]][parameter[2]][parameter[3]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter[1]][parameter[2]][parameter[3]]
+    else
+        printnl("warning! Sensitivity analysis is not well defined!")
+    end
+end
+
+println("    ")
+println("Including all required input data: done")
+println("   ")
 
 ## 2. Initiate models for representative agents 
 agents = Dict()
@@ -299,12 +322,19 @@ println(string("RD H2CN_cap: ",  ADMM["Residuals"]["Dual"]["H2CN_cap"][end], " -
 println(string("        "))
 
 ## 6. Postprocessing and save results 
-save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row) 
-@save joinpath(home_dir,"Results",string("Scenario_",scenario_overview_row["scen_number"]))
+if sens_number >= 2
+save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row,sensitivity_overview[sens_number-1,:remarks]) 
+@save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
+else
+save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row,"ref") 
+@save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_ref"))
+end
+
 
 println("Postprocessing & save results: done")
 println("   ")
 
+end # end loop over sensititivity
 end # end for loop over scenarios
 
 println(string("##############################################################################################"))
