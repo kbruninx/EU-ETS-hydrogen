@@ -163,7 +163,7 @@ scenario_overview_row = scenario_overview[scen_number,:]
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 
 if scenario_overview_row["Sens_analysis"] == "YES" && scenario_overview_row[:ref_scen_number] != scen_number
-    numb_of_sens = length((sensitivity_overview[!,:Parameter]))+1
+    numb_of_sens = length((sensitivity_overview[!,:Parameter]))
 else
     numb_of_sens = 0 
 end    
