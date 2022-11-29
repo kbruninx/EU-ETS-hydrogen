@@ -1,7 +1,7 @@
 # Save results
 function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,data::Dict,agents::Dict,scenario_overview_row::DataFrameRow,sens) 
     # note that type of "sens" is not defined as a string stored in a dictionary is of type String31, whereas a "regular" string is of type String. Specifying one or the other may trow errors.
-    Years = range(2017,stop=2017+data["nyears"]-1)
+    Years = range(2019,stop=2019+data["nyears"]-1)
     Iterations = range(1,stop=data["CircularBufferSize"])
 
     # Aggregate metrics 

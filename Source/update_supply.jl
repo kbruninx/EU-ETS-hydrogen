@@ -1,12 +1,8 @@
 function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::DataFrameRow)
-    # Note that the 2018 rules should apply until at (least) 2021, which is not enforced below. If the TNAC drops below 1096 MtCO2 in 2017-2019, this may lead to activating the 
-    # linear intake rate. If the TNAC remains above 1096 MtCO2 in this period, the intake rate (24%) is the same in both MSR designs.
-    # Given the set-up of the problem (industry emissions constrained to historical values in 2017-2019, EUA prices at historical levels, historical surplus accounted for), 
-    # this should however never happen. If it does materialize, this is the consequence of an improper parameterization of the problem.
+    # Impact of MSR is only enforced as of 2021. Before 2021, supply is fixed to historical values (see "define_ETS_parameters.jl")
     if scenario_overview_row[:MSR] == 2018 # The MSR according to the 2018 rules
-        for y = 1:data["nyears"]
-            if y >= 3 # MSR only active after 2019
-                for m = 1:12
+        for y = 3:data["nyears"]
+            for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2
                     if ETS["TNAC"][y-2] >= data["TNAC_MAX"] # If exceeds TNAC_MAX - inflow
                         if min(ETS["CAP"][y],ETS["X_MSR_MAX_POS"][y]*ETS["TNAC"][y-2]) > ETS["X_MSR_MAX_POS"][y]*data["TNAC_MAX"] # only put EUAs in MSR if total exceeds 100/200 million
@@ -41,13 +37,12 @@ function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::Dat
                 end
 
                 # Cancellation enforced as of 2023
-                if ETS["MSR"][y,m] > 0.57*ETS["CAP"][y-1] && y >= 7  
+                if ETS["MSR"][y,m] > 0.57*ETS["CAP"][y-1] && y >= 5  
                         ETS["C"][y,m] =  ETS["MSR"][y,m]-0.57*ETS["CAP"][y-1]
                         ETS["MSR"][y,m] = 0.57*ETS["CAP"][y-1]
                 else
                         ETS["C"][y,m] = 0
                 end
-            end
             end
 
             # Corrected supply of EUAS 
@@ -57,9 +52,8 @@ function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::Dat
             ETS["TNAC"][y] = sum(ETS["CAP"][1:y]) + sum(ETS["Δs"][1:y]) + sum(ETS["DELTA"][1:y]) - sum(e[1:y]) - sum(ETS["C"][1:y,:]) - ETS["MSR"][y,12]
         end
     elseif scenario_overview_row[:MSR] == 2021 # The MSR as proposed in the Green Deal
-        for y = 1:data["nyears"]
-            if y >= 3 # MSR only active after 2019
-                for m = 1:12
+        for y = 3:data["nyears"]
+            for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2
                     if ETS["TNAC"][y-2] >= data["TNAC_MAX"] # If exceeds TNAC_MAX - inflow
                         if ETS["TNAC"][y-2] <= data["TNAC_THRESHOLD"]  # between new threshold and maximum 
@@ -100,7 +94,6 @@ function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::Dat
                 else
                         ETS["C"][y,m] = 0
                 end
-            end
             end
 
             # Corrected supply of EUAS 

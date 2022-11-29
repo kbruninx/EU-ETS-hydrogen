@@ -89,10 +89,10 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # For hydrogen, a price floor (0) has been imposed to avoid negative hydrogen prices. This may arise when all hydrogen is provided by "carbon-neutral" hydrogen production routes. In that case, the net incentive is the difference between the carbon-neutral hydrogen premium and the hydrogen price. As no other agent is responding to the hydrogen price, the hydrogen prices can drop below zero if the carbon-neutral hydrogen premium is sufficiently high.
             # Such interactions do not occur in other markets.
             @timeit TO "Update prices" begin
-                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2017-2018 ETS prices fixed to historical values, 2019 to be calibrated
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
-                else # 2017-2019 ETS prices fixed to historical values
-                    push!(results[ "λ"]["EUA"], [ETS["P_2017"]; ETS["P_2018"]; ETS["P_2019"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][4:end]])    
+                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2019-2020 ETS prices fixed to historical values, 2021 to be calibrated
+                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                else # 2019-2021 ETS prices fixed to historical values
+                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; ETS["P_2021"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][4:end]])    
                 end
                 push!(results[ "λ"]["EOM"], results[ "λ"]["EOM"][end] - ADMM["ρ"]["EOM"][end]*ADMM["Imbalances"]["EOM"][end])
                 push!(results[ "λ"]["REC_y"], results[ "λ"]["REC_y"][end] - ADMM["ρ"]["REC_y"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["REC_y"][end])

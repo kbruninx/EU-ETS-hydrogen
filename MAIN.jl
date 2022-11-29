@@ -1,6 +1,6 @@
 ## Topic: EU ETS, MSR and overlapping policies
 # Author: Kenneth Bruninx
-# Last update: September 2022
+# Last update: November 2022
 
 ## 0. Set-up code
 # HPC or not?
@@ -68,12 +68,12 @@ include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
 
 # Data common to all scenarios data 
-data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml"))
-ts = CSV.read(joinpath(home_dir,"Input","timeseries_May2018.csv"),delim=",",DataFrame)
+data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml"))
+ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=",",DataFrame)
 if isfile(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
     repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
 else    
-    # select representative days from the "timeseries_May2018.csv" file
+    # select representative days from the timeseries.csv" file
     println("Selecting representative days (may take up to 300 seconds)... ")
     config_file = joinpath(home_dir,"Input","config_file_repr_days.yaml") # contains general info/specification of representative day finder package
     pf = PeriodsFinder(config_file; populate_entries=true)
@@ -149,9 +149,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
+    start_scen = 1
     stop_scen = 15
 end
+
+# scen_number = 1 
 
 for scen_number in range(start_scen,stop=stop_scen,step=1)
 
@@ -160,13 +162,14 @@ println(string("######################                  Scenario ",scen_number,"
 
 ## 1. Read associated input for this simulation
 scenario_overview_row = scenario_overview[scen_number,:]
-data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
+data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml")) # reload data to avoid previous sensitivity analysis affected data
 
 if scenario_overview_row["Sens_analysis"] == "YES" && scenario_overview_row[:ref_scen_number] != scen_number
     numb_of_sens = length((sensitivity_overview[!,:Parameter]))
 else
     numb_of_sens = 0 
 end    
+# sens_number = 1 
 for sens_number in range(1,stop=numb_of_sens+1,step=1) 
 if sens_number >= 2
     println("    ") 
@@ -284,11 +287,11 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_ov
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
+while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
     # Calibration β - new estimate:
-    println(string("Calibration error 2019 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]," €/tCO2"))
+    println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"])/data["ETS"]["P_2019"])^(1/scenario_overview_row[:gamma]))
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/scenario_overview_row[:gamma]))
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))
@@ -297,7 +300,7 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_2019"]) > data["Industry"
 
     # Calculate equilibrium with new estimate beta
     define_results!(merge(data["General"],data["ADMM"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)      # calculate equilibrium 
+    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                 # calculate equilibrium 
     ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
 end
 
@@ -329,7 +332,6 @@ else
 save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row,"ref") 
 @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_ref"))
 end
-
 
 println("Postprocessing & save results: done")
 println("   ")

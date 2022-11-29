@@ -17,8 +17,8 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     # Parameters
     months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
     mod.ext[:parameters][:W] = [repr_days[!,:weights][jd] for jd in mod.ext[:sets][:JD]]                              # weights of each representative day
-    mod.ext[:parameters][:Wm] = [repr_days[!,months[jm]][jd] for jd in mod.ext[:sets][:JD],jm in mod.ext[:sets][:JM]]    # weights of each representative day => month
-    mod.ext[:parameters][:A] = ones(data["nyears"],1)                                                   # Discount rate, 2019 as base year due to calibration to 2019 data
+    mod.ext[:parameters][:Wm] = [repr_days[!,months[jm]][jd] for jd in mod.ext[:sets][:JD],jm in mod.ext[:sets][:JM]] # weights of each representative day => month
+    mod.ext[:parameters][:A] = ones(data["nyears"],1)                                                                 # Discount rate, 2021 as base year due to calibration to 2019 data
     for y in 4:data["nyears"]
         mod.ext[:parameters][:A][y] = 1/(1+data["discount_rate"])^(y-3)
     end
