@@ -69,7 +69,7 @@ include(joinpath(home_dir,"Source","save_results.jl"))
 
 # Data common to all scenarios data 
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml"))
-ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=",",DataFrame)
+ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=";",DataFrame)
 if isfile(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
     repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
 else    

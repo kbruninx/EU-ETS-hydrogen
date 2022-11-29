@@ -331,6 +331,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.85 # - 
+  AF_ts: "NA" # key to find time series with historical output
   REC: "YES" # eligible for RECs?
   ETS: "NO" # covered by ETS
   EOM: "YES" # participates in EOM?
