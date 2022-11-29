@@ -22,7 +22,7 @@ EOM:
 
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
-  RES_share_other_2017: 0.165 # RES share from biomass, hydro, etc. in 2017
+  RES_share_other_2021: 0.123 # RES share from hydro and other renewables in 2021
 
 ETS: 
   LRF_stat_2021: 43.003515 # MtCO2, only stationary installations
