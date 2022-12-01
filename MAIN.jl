@@ -68,10 +68,10 @@ include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
 
 # Data common to all scenarios data 
-data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml"))
+temp_data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml"))
 ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=";",DataFrame)
-if isfile(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
-    repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
+if isfile(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
+    repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
 else    
     # select representative days from the timeseries.csv" file
     println("Selecting representative days (may take up to 300 seconds)... ")
@@ -79,11 +79,11 @@ else
     pf = PeriodsFinder(config_file; populate_entries=true)
     # specific settings to select representative days
     pf.config["method"]["optimization"]["binary_ordering"] = true
-    pf.config["method"]["options"]["representative_periods"] = data["General"]["nReprDays"]
-    pf.config["results"]["result_dir"] = string("output_",data["General"]["nReprDays"],"_repr_days")
+    pf.config["method"]["options"]["representative_periods"] = temp_data["General"]["nReprDays"]
+    pf.config["results"]["result_dir"] = string("output_",temp_data["General"]["nReprDays"],"_repr_days")
     delete!(pf.config["method"]["optimization"], "time_series_error")
     pf = find_representative_periods(pf, optimizer=optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_ENV)))
-    repr_days = CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame)
+    repr_days = CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame)
     
     println("        ")
     println("Done!")
@@ -94,8 +94,8 @@ else
     pf = PeriodsFinder(config_file; populate_entries=true)
     # specific settings to create syntethic time series
     pf.config["method"]["optimization"]["binary_ordering"] = false
-    pf.config["method"]["options"]["representative_periods"] = data["General"]["nReprDays"]
-    pf.config["results"]["result_dir"] = string("output_",data["General"]["nReprDays"],"_repr_days")
+    pf.config["method"]["options"]["representative_periods"] = temp_data["General"]["nReprDays"]
+    pf.config["results"]["result_dir"] = string("output_",temp_data["General"]["nReprDays"],"_repr_days")
     delete!(pf.config["method"]["optimization"], "duration_curve_error")
     pf.config["method"]["options"]["mandatory_periods"] = repr_days[!,:periods]
     pf.u = zeros(Bool, pf.config["method"]["options"]["total_periods"])
@@ -104,9 +104,9 @@ else
     write_out_synthetic_timeseries(pf)
     # compute mapping day -> month
     n_days_month = [0 31 28 31 30 31 30 31 31 30 31 30 31 0] # to compute weights of day -> month
-    weight_day_month = [repr_days[!,:periods] [sum(pf.v[1+sum(n_days_month[1:m]):sum(n_days_month[1:m+1]),jd]) for jd=1:data["General"]["nReprDays"],m=1:12]]
-    CSV.write(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),DataFrame(weight_day_month,:auto),delim=",",header=[:periods, :January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December])
-    repr_days = rightjoin(repr_days, CSV.read(joinpath(home_dir,"Input",string("output_",data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
+    weight_day_month = [repr_days[!,:periods] [sum(pf.v[1+sum(n_days_month[1:m]):sum(n_days_month[1:m+1]),jd]) for jd=1:temp_data["General"]["nReprDays"],m=1:12]]
+    CSV.write(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),DataFrame(weight_day_month,:auto),delim=",",header=[:periods, :January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December])
+    repr_days = rightjoin(repr_days, CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
     println("        ")
     println("Done!")
     println("        ")
@@ -118,13 +118,13 @@ sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),Da
 
 # Create file with results 
 # add column for sensitivity analsysis
-if isfile(joinpath(home_dir,string("overview_results_",data["General"]["nReprDays"],"_repr_days.csv"))) != 1
-    CSV.write(joinpath(home_dir,string("overview_results_",data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
+if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv"))) != 1
+    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
 end
 
 # Create folder for results
-if isdir(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"))) != 1
-    mkdir(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days")))
+if isdir(joinpath(home_dir,string("Results_",temp_data["General"]["nReprDays"],"_repr_days"))) != 1
+    mkdir(joinpath(home_dir,string("Results_",temp_data["General"]["nReprDays"],"_repr_days")))
 end
 
 # Scenario number 
@@ -149,11 +149,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
+    start_scen = 8
     stop_scen = 15
 end
 
-# scen_number = 1 
+# scen_number = 7
 
 for scen_number in range(start_scen,stop=stop_scen,step=1)
 

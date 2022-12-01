@@ -137,13 +137,25 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     ADMM["ρ"]["EOM"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["EOM"],data["rho_EOM"])
     ADMM["ρ"]["REC_y"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    push!(ADMM["ρ"]["REC_y"],data["rho_REC"])
+    push!(ADMM["ρ"]["REC_y"],data["rho_REC"])    
     ADMM["ρ"]["REC_m"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    push!(ADMM["ρ"]["REC_m"],data["rho_REC"])
+    if scenario_overview_row["Additionality"] == "Monthly" 
+        push!(ADMM["ρ"]["REC_m"],data["rho_REC"])
+    else
+        push!(ADMM["ρ"]["REC_m"],0)
+    end
     ADMM["ρ"]["REC_d"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    push!(ADMM["ρ"]["REC_d"],data["rho_REC"])
+    if scenario_overview_row["Additionality"] == "Daily" 
+        push!(ADMM["ρ"]["REC_d"],data["rho_REC"])
+    else
+        push!(ADMM["ρ"]["REC_d"],0)
+    end
     ADMM["ρ"]["REC_h"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    push!(ADMM["ρ"]["REC_h"],data["rho_REC"])
+    if scenario_overview_row["Additionality"] == "Hourly" 
+        push!(ADMM["ρ"]["REC_h"],data["rho_REC"])
+    else
+        push!(ADMM["ρ"]["REC_h"],0)
+    end
     ADMM["ρ"]["H2"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["H2"],data["rho_H2"])
     ADMM["ρ"]["H2CN_prod"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 

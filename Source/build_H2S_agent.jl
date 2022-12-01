@@ -118,19 +118,21 @@ function build_h2s_agent!(mod::Model)
         gH[jy] <= -sum(W[jd]*η_E_H2*g[jh,jd,jy] for jh in JH, jd in JD) + (η_NG_H2*dNG[jy]) # [TWh]
     )
     
-    if CI <= 0.1 # Mton CO2/TWh, equivalent to 3 kgCO2/kgH2
+    if mod.ext[:parameters][:H2CN_prod] == 1
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
-        gHCN[jy] <= gH[jy] # [TWh]
-        )
-
-        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
-        capHCN[jy] <= capH[jy] # [GW]
+            gHCN[jy] <= gH[jy] # [TWh]
         )
     else
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
             gHCN[jy] == 0 # [TWh]
         )
+    end
 
+    if mod.ext[:parameters][:H2CN_cap] == 1
+        mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
+            capHCN[jy] <= sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy] # [GW] - cap are capacity additions per year, whereas capHCN needs to be the avaiable capacity
+        )
+    else
         mod.ext[:constraints][:cap_limit_carbon_neutral]  = @constraint(mod, [jy=JY], 
             capHCN[jy] == 0 # [GW]
         )
@@ -147,30 +149,71 @@ function build_h2s_agent!(mod::Model)
     end
 
     # recall that g and r are negative numbers (demand for electricity or renewable electricity)
-    if mod.ext[:parameters][:REC] == 1
+    # ρ_m_REC, ρ_d_REC, ρ_h_REC are only non-zero if additionality is enforced on those time scales
+    # in those cases, additionality should not be enforced on an annual basis
+    if mod.ext[:parameters][:REC] == 1 && ρ_m_REC == 0 && ρ_d_REC == 0 && ρ_h_REC == 0 
         mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
             -η_E_H2*r_y[jy] >= ADD_SF[jy]*gHCN[jy] 
         )
         mod.ext[:constraints][:REC_balance_yearly_2] = @constraint(mod, [jy=JY],
             r_y[jy] >= ADD_SF[jy]*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+        )   
+        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
+            r_m[jm,jy] == 0
         )
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] == 0 
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] == 0 
+        )
+    elseif mod.ext[:parameters][:REC] == 1 && ρ_m_REC > 0 
         mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jy=JY],
             -η_E_H2*sum(r_m[jm,jy] for jm in JM) >= gHCN[jy] 
         )
         mod.ext[:constraints][:REC_balance_monthly_2] = @constraint(mod, [jm=JM,jy=JY],
             r_m[jm,jy] >= sum(Wm[jd,jm]*g[jh,jd,jy] for jh in JH,jd in JD)
         )
+        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+            r_y[jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] == 0 
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] == 0 
+        )
+    elseif mod.ext[:parameters][:REC] == 1 && ρ_d_REC > 0
         mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jy=JY],
             -η_E_H2*sum(W[jd]*r_d[jd,jy] for jd in JD)  >= gHCN[jy] 
         )
         mod.ext[:constraints][:REC_balance_daily_2] = @constraint(mod, [jd=JD,jy=JY],
             r_d[jd,jy] >= sum(g[jh,jd,jy] for jh in JH)
         )
+        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+            r_y[jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
+            r_m[jm,jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            r_h[jh,jd,jy] == 0 
+        )
+    elseif mod.ext[:parameters][:REC] == 1 && ρ_h_REC > 0
         mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jy=JY],
             -η_E_H2*sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD) >= gHCN[jy]   
         )
         mod.ext[:constraints][:REC_balance_hourly_2] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
             r_h[jh,jd,jy] >= g[jh,jd,jy] 
+        )
+        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
+            r_y[jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
+            r_m[jm,jy] == 0
+        )
+        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+            r_d[jd,jy] == 0 
         )
     else
         mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],

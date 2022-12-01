@@ -7,7 +7,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # Multi-threaded version
             @sync for m in agents[:all] 
                 # created subroutine to allow multi-treading to solve agents' decision problems
-                @spawn ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
+                @spawn ADMM_subroutine!(m,data,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
             end
 
             # Single-threaded version

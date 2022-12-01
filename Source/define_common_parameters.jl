@@ -36,35 +36,19 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     # Parameters related to the REC
     mod.ext[:parameters][:λ_y_REC] = zeros(data["nyears"],1)       # Price structure
     mod.ext[:parameters][:r_y_bar] = zeros(data["nyears"],1)       # ADMM penalty term
-    if scenario_overview_row["Additionality"] == "Yearly" || scenario_overview_row["Additionality"] == "NA" 
-        mod.ext[:parameters][:ρ_y_REC] = data["rho_REC"]            # ADMM rho value 
-    else
-        mod.ext[:parameters][:ρ_y_REC] = 0                          # ADMM rho value 
-    end
+    mod.ext[:parameters][:ρ_y_REC] = 0                             # ADMM rho value 
 
     mod.ext[:parameters][:λ_m_REC] = zeros(12,data["nyears"])                     # Price structure
     mod.ext[:parameters][:r_m_bar] = zeros(12,data["nyears"])                     # ADMM penalty term
-    if scenario_overview_row["Additionality"] == "Monthly" 
-        mod.ext[:parameters][:ρ_m_REC] = data["rho_REC"]                            # ADMM rho value 
-    else
-        mod.ext[:parameters][:ρ_m_REC] = 0                                          # ADMM rho value 
-    end
-
+    mod.ext[:parameters][:ρ_m_REC] = 0                                            # ADMM rho value 
+   
     mod.ext[:parameters][:λ_d_REC] = zeros(data["nReprDays"],data["nyears"])       # Price structure
     mod.ext[:parameters][:r_d_bar] = zeros(data["nReprDays"],data["nyears"])       # ADMM penalty term
-    if scenario_overview_row["Additionality"] == "Daily" 
-        mod.ext[:parameters][:ρ_d_REC] = data["rho_REC"]                            # ADMM rho value 
-    else
-        mod.ext[:parameters][:ρ_d_REC] = 0                                          # ADMM rho value 
-    end
+    mod.ext[:parameters][:ρ_d_REC] = 0                                             # ADMM rho value 
     
     mod.ext[:parameters][:λ_h_REC] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])         # Price structure
     mod.ext[:parameters][:r_h_bar] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])         # ADMM penalty term
-    if scenario_overview_row["Additionality"] == "Hourly" 
-        mod.ext[:parameters][:ρ_h_REC] = data["rho_REC"]                                                # ADMM rho value 
-    else
-        mod.ext[:parameters][:ρ_h_REC] = 0                                                              # ADMM rho value 
-    end
+    mod.ext[:parameters][:ρ_h_REC] = 0                                                                  # ADMM rho value 
     
     # Parameters related to the H2 market
     mod.ext[:parameters][:λ_H2] = zeros(data["nyears"],1)       # Price structure

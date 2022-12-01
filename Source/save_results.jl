@@ -61,13 +61,10 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     h2cn_cap = zeros(length(agents[:h2cn_prod]),data["nyears"])
     mm = 1
     for m in agents[:h2cn_prod]
-        CAP_LT = mdict[m].ext[:parameters][:CAP_LT]
-        LEG_CAP = mdict[m].ext[:parameters][:LEG_CAP]
-        cap = value.(mdict[m].ext[:variables][:capH])
-        h2cn_cap[mm,:] = [sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy] for jy in mdict[m].ext[:sets][:JY]]    
+        h2cn_cap[mm,:] = value.(mdict[m].ext[:variables][:capHCN])
         h2cn_prod[mm,:] = value.(mdict[m].ext[:variables][:gHCN])./data["conv_factor"]
         mm = mm+1
     end
     mat_output = [Years transpose(h2_cap) transpose(h2_prod) transpose(h2cn_cap) transpose(h2cn_prod) results["λ"]["H2"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_prod"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_cap"][end]]
-    CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_H2_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2s]);string.("PROD_",agents[:h2s]);string.("CAP_",agents[:h2cn_prod]);string.("PROD_",agents[:h2cn_prod]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
+    CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_H2_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2s]);string.("PROD_",agents[:h2s]);string.("CN_CAP_",agents[:h2cn_prod]);string.("CN_PROD_",agents[:h2cn_prod]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
 end

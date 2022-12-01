@@ -113,8 +113,8 @@ HydrogenSector:
    ETS: "YES" # covered by ETS
    EOM: "NO" # participates in EOM?
    H2: "YES" # participate in the carbon neutral H2 market
-   H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
-   H2CN_cap: "YES" # participate in the carbon neutral H2 market (capacity)
+   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
    NG: "YES" # participate in the natural gas market  
 
   electrolysis:

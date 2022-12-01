@@ -57,7 +57,7 @@ function solve_h2s_agent!(mod::Model)
     r_h = mod.ext[:variables][:r_h] 
  
     # Update objective
-    if  mod.ext[:parameters][:H2CN_prod] == 1 && mod.ext[:parameters][:ETS] == 0 &&  mod.ext[:parameters][:EOM] == 1 # e.g. electrolysis 
+    if  mod.ext[:parameters][:H2CN_prod] == 1 && mod.ext[:parameters][:ETS] == 0 && mod.ext[:parameters][:EOM] == 1 # e.g. electrolysis 
 
         mod.ext[:objective] = @objective(mod, Min,
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
@@ -66,7 +66,6 @@ function solve_h2s_agent!(mod::Model)
         - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
         - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
         - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-        + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
         - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
         - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
         - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 

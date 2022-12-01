@@ -1,4 +1,4 @@
-function ADMM_subroutine!(m::String,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mod::Model,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
+function ADMM_subroutine!(m::String,data::Dict,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mod::Model,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
 TO_local = TimerOutput()
 # Calculate penalty terms ADMM and update price to most recent value 
 @timeit TO_local "Compute ADMM penalty terms" begin
@@ -42,7 +42,7 @@ TO_local = TimerOutput()
     end
     if mod.ext[:parameters][:H2CN_cap] == 1
         mod.ext[:parameters][:capHCN_bar] = results["h2cn_cap"][m][end] - 1/(H2CN_cap["nAgents"]+1)*ADMM["Imbalances"]["H2CN_cap"][end]
-        mod.ext[:parameters][:λ_H2CN_cap] = results[ "λ"]["H2CN_cap"][end] 
+        mod.ext[:parameters][:λ_H2CN_cap] = results["λ"]["H2CN_cap"][end] 
         mod.ext[:parameters][:ρ_H2CN_cap] = ADMM["ρ"]["H2CN_cap"][end]
     end
     if mod.ext[:parameters][:NG] == 1 # NG is not yet responsive to changes in demand - could be done at later stage
