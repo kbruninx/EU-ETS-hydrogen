@@ -1,4 +1,4 @@
-function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict) 
+function define_results!(data::Dict,scenario_overview_row::DataFrameRow,results::Dict,ADMM::Dict,agents::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict) 
     results["e"] = Dict()
     results["g"] = Dict()
     results["r_y"] = Dict()

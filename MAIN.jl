@@ -282,9 +282,9 @@ println("   ")
 results = Dict()
 ADMM = Dict()
 TO = TimerOutput()
-define_results!(merge(data["General"],data["ADMM"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                 # calculate equilibrium 
-ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
+define_results!(merge(data["General"],data["ADMM"]),scenario_overview_row,results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
+ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                                       # calculate equilibrium 
+ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
 while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
