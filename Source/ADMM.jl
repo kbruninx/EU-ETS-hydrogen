@@ -18,7 +18,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
 
             # Update supply of allowances 
             @timeit TO "Update EUA supply" begin
-                update_supply!(sum(results["e"][m][end] for m in agents[:ets]),ETS,merge(data["General"],data["ETS"]),scenario_overview_row)
+                # update_supply!(sum(results["e"][m][end] for m in agents[:ets]),ETS,merge(data["General"],data["ETS"]),scenario_overview_row)
                 push!(results["s"],copy(ETS["S"]))
             end
 
@@ -90,7 +90,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # Such interactions do not occur in other markets.
             @timeit TO "Update prices" begin
                 if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2019-2020 ETS prices fixed to historical values, 2021 to be calibrated
-                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(1000*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
                 else # 2019-2021 ETS prices fixed to historical values
                     push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; ETS["P_2021"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/(100*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][4:end]])    
                 end
@@ -101,7 +101,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 push!(results[ "λ"]["REC_h"], results[ "λ"]["REC_h"][end] - ADMM["ρ"]["REC_h"][end]*ADMM["Imbalances"]["REC_h"][end])
                 push!(results[ "λ"]["H2"], [maximum([0,results[ "λ"]["H2"][end][jy] - ADMM["ρ"]["H2"][end]/(1000*data["General"]["nReprDays"])*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2"][end][jy]]) for jy in mdict[agents[:all][end]].ext[:sets][:JY]])
                 push!(results[ "λ"]["H2CN_prod"], results[ "λ"]["H2CN_prod"][end] - ADMM["ρ"]["H2CN_prod"][end]/(1000*data["General"]["nReprDays"])*data["H2"]["conv_factor"]*ADMM["Imbalances"]["H2CN_prod"][end])
-                push!(results[ "λ"]["H2CN_cap"], results[ "λ"]["H2CN_cap"][end] - ADMM["ρ"]["H2CN_cap"][end]*ADMM["Imbalances"]["H2CN_cap"][end])
+                push!(results[ "λ"]["H2CN_cap"], results[ "λ"]["H2CN_cap"][end] - ADMM["ρ"]["H2CN_cap"][end]/1000*ADMM["Imbalances"]["H2CN_cap"][end])
                 push!(results[ "λ"]["NG"], NG["λ"])
             end
 
