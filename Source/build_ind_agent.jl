@@ -11,7 +11,7 @@ b_bar = mod.ext[:parameters][:b_bar]
 ρ_EUA = mod.ext[:parameters][:ρ_EUA]
 
 # Define variables
-b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
+b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound = 0, base_name="EUA") 
 
 # Expressions
 mod.ext[:expressions][:tot_cost] = @expression(mod, 

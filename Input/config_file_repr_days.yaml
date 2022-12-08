@@ -1,9 +1,9 @@
 # Specify csv files for time series and other options
 time_series:
   default: # These values will be used unless specified in the entries below
-    source: "timeseries_May2018.csv"
+    source: "timeseries.csv"
     csv_options: # These options are passed to CSV.read
-        delim: ","
+        delim: ";"
     timestamp: "Datetime" # optional
     weight: 1 # weight of time series in objective / clustering
     interpolation_type: "linear" # or "constant" or don't specify

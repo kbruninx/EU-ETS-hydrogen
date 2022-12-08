@@ -1,7 +1,7 @@
 General: 
   nyears: 45
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 1 # days
+  nReprDays: 2 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
@@ -15,7 +15,7 @@ ADMM:
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
  max_iter: 10000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
- CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
+ CircularBufferSize: 20 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
   SF_load: 1.061801876 # based on Sandbag data, rescaling factor
@@ -318,7 +318,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
- Biomass:
+ Biomass: 
   fuelCosts: 15 # MEUR/TWh
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
@@ -327,7 +327,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 1000 # GW  
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.85 # - 
