@@ -104,8 +104,11 @@ function build_h2s_agent!(mod::Model)
     )
 
     # Investment limits: YoY investment is limited
-    mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=JY],
-        capH[jy] <= DELTA_CAP_MAX # [GW]
+    mod.ext[:constraints][:cap_limit] = @constraint(mod,
+        capH[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
+    )
+    mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=2:JY[end]],
+        capH[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1] # [GW]
     )
         
     # Electricity consumption

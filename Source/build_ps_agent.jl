@@ -91,8 +91,11 @@ function build_ps_agent!(mod::Model)
         )
 
         # Investment limits: YoY investment is limited
-        mod.ext[:constraints][:invest_limit] = @constraint(mod, [jy=JY],
-            cap[jy] <= DELTA_CAP_MAX
+        mod.ext[:constraints][:cap_limit] = @constraint(mod, 
+            cap[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
+        )
+        mod.ext[:constraints][:invest_limit] = @constraint(mod, [jy=2:JY[end]],
+            cap[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy-1) + LEG_CAP[jy-1]
         ) 
 
         # Generation of RES from new capacity that participates in REC auction

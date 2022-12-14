@@ -21,7 +21,7 @@ EOM:
   SF_load: 1 # no scaling applied 
 
 REC: 
-  RES_target_2020: 0.32 # RES target in 2020
+  RES_target_2020: 0.34 # RES target in 2020
   RES_share_other_2021: 0.174119315 # RES share from hydro and other renewables in 2021 ("other renewables","geothermal","hydro run-of-river","hydro reservoir"), own calculation 
 
 ETS: 
@@ -97,7 +97,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
    emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh] - own calculation based on carbon intensity gas
-   max_YoY_new_cap: 1000 # [GW]
+   max_YoY_new_cap: 50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -117,7 +117,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 1000 # [GW] 
+   max_YoY_new_cap:  1000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -137,7 +137,7 @@ HydrogenSector:
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 1000 # [GW]
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "YES" # eligible for RECs
@@ -162,7 +162,7 @@ PowerSector:
   Legcap: 104.64 # GW
   Legcap_out: 20 # years
   AF: 0.8 # - own calculation
-  max_YoY_new_cap: 0 # GW
+  max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -182,9 +182,9 @@ PowerSector:
   Lifetime: 40 # years
   Leadtime: 8 # years
   Legcap: 48.7 # GW
-  Legcap_out: 15 # years
+  Legcap_out: 50 # % of current capacity
   AF: 0.5 # -  own calculation
-  max_YoY_new_cap: 0 # GW
+  max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -206,7 +206,7 @@ PowerSector:
   Legcap: 74.9 # GW
   Legcap_out: 15 # years
   AF: 0.5 # - own calculation
-  max_YoY_new_cap: 0 # GW
+  max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
   AF_ts: "NA" # key to find time series with historical output
@@ -224,11 +224,11 @@ PowerSector:
   emissions: 0.456 # Mton/TWh (emission factor: 57 kgCO2/GJ (EERA))
   OC: 880 # MEUR/GW
   Lifetime: 25 # years
-  Leadtime: 4 # years
+  Leadtime: 5 # years
   Legcap: 70 # GW
   Legcap_out: 15 # years
   AF: 0.85 # - assumption 
-  max_YoY_new_cap: 0 # GW
+  max_YoY_new_cap: 0  # % of current capacity
   YoY_OC: -0.3 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -246,11 +246,11 @@ PowerSector:
   emissions: 0.342 # Mton/TWh (emissions factor: 57 kgCO2/GJ - EERA)
   OC: 880 # MEUR/GW
   Lifetime: 25 # years
-  Leadtime: 4 # years
+  Leadtime: 5 # years
   Legcap: 100 # GW
   Legcap_out: 20 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 1000 # GW
+  max_YoY_new_cap:  50 # % of current capacity
   YoY_OC: -0.3 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -268,11 +268,11 @@ PowerSector:
   emissions: 0.513 # Mton/TWh (emission factor: 57 kgCO2/GJ - EERA)
   OC: 453 # MEUR/GW
   Lifetime: 25 # years
-  Leadtime: 2 # years
+  Leadtime: 3 # years
   Legcap: 13.4 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 1000 # GW
+  max_YoY_new_cap:  50 # % of current capacity
   YoY_OC: -0.3 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -290,11 +290,11 @@ PowerSector:
   efficiency: 0 # not used
   OC: 453 # MEUR/GW 
   Lifetime: 15 # years
-  Leadtime: 1 # years
+  Leadtime: 3 # years
   Legcap: 16.95 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 1000 # GW
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -315,7 +315,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 0 # GW  
+  max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.85 # - 
@@ -336,8 +336,8 @@ PowerSector:
   Legcap: 110.84 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
-  Leadtime: 1 # years
-  max_YoY_new_cap: 10000 # GW
+  Leadtime: 3 # years
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -1.4 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -358,8 +358,8 @@ PowerSector:
   Legcap: 164.87 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years
-  Leadtime: 1 # years
-  max_YoY_new_cap: 10000 # GW
+  Leadtime: 3 # years
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -381,7 +381,7 @@ PowerSector:
   Legcap_out: 18 # years
   Lifetime: 25 # years
   Leadtime: 3 # years
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 

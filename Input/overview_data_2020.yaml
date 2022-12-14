@@ -389,7 +389,7 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   Legcap_out: 17 # years
   Lifetime: 20 # years
   Leadtime: 1 # years
-  max_YoY_new_cap: 10000 # GW
+  max_YoY_new_cap: 100 # GW
   YoY_OC: -3 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 

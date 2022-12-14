@@ -4,9 +4,11 @@ function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::D
     mod.ext[:parameters][:η] = data["efficiency"] # - 
     mod.ext[:parameters][:CI] = data["emissions"] # tCO2/MWh or MtCO2/TWh
     mod.ext[:parameters][:IC] = data["OC"].*[(1+data["YoY_OC"]/100)^(jy-1) for jy in 1:data["nyears"]] # EUR/MW or MEUR/TW    
-    mod.ext[:parameters][:DELTA_CAP_MAX] = data["max_YoY_new_cap"] # GW
+    mod.ext[:parameters][:DELTA_CAP_MAX] = data["max_YoY_new_cap"]/100 # fraction
     mod.ext[:parameters][:CAP_SV] =  [maximum([0,1-(data["nyears"]-jy+1)/data["Lifetime"]]) for jy=1:data["nyears"]] 
-    mod.ext[:parameters][:LEG_CAP] = data["AF"]*[data["Legcap"]*maximum([0,(data["Legcap_out"]-jy+1)/data["Legcap_out"]]) for jy=1:data["nyears"]]  
+    mod.ext[:parameters][:LEG_CAP] = zeros(data["nyears"],1)
+    mod.ext[:parameters][:LEG_CAP][1:3] .= data["AF"]*data["Legcap"]  
+    mod.ext[:parameters][:LEG_CAP][4:data["nyears"]] = data["AF"]*[data["Legcap"]*maximum([0,(data["Legcap_out"]-jy+1)/data["Legcap_out"]]) for jy=1:data["nyears"]-3]  
     mod.ext[:parameters][:CAP_LT] = zeros(data["nyears"],data["nyears"]) 
     for y=1:data["nyears"]
         if y+data["Leadtime"] < data["nyears"]
