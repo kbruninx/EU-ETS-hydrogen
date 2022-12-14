@@ -29,7 +29,6 @@ using JLD2
 using Base.Threads: @spawn 
 using Base: split
 using ArgParse # Parsing arguments from the command line
-using RepresentativePeriodsFinder # representative day finder  - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/
 
 # Gurobi environment to suppress output
 println("Define Gurobi environment...")
@@ -73,6 +72,7 @@ ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=";",DataFrame)
 if isfile(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
     repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
 else    
+    using RepresentativePeriodsFinder # representative day finder  - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/
     # select representative days from the timeseries.csv" file
     println("Selecting representative days (may take up to 300 seconds)... ")
     config_file = joinpath(home_dir,"Input","config_file_repr_days.yaml") # contains general info/specification of representative day finder package
