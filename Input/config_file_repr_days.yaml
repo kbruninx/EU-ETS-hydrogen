@@ -19,7 +19,7 @@ time_series:
   WindOnshore: 
     value_column: "WIND_ONSHORE"
 
-  WindOnshore: 
+  WindOffshore: 
     value_column: "WIND_OFFSHORE"
 
   Other: 

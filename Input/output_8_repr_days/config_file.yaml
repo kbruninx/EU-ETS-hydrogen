@@ -1,14 +1,14 @@
 method:
   options:
     mandatory_periods:
-      - 13
-      - 50
-      - 176
-      - 178
-      - 271
-      - 298
-      - 334
-      - 359
+      - 5
+      - 20
+      - 81
+      - 93
+      - 118
+      - 207
+      - 304
+      - 306
     total_periods: 365
     sampling_time: "Hour(1)"
     representative_periods: 8
@@ -26,6 +26,8 @@ results:
   create_plots: true
 base_dir: "c:\\Users\\kbruninx\\Code\\eu-ets-power-sector-hydrogen-industry\\Input"
 time_series:
+  WindOffshore:
+    value_column: "WIND_OFFSHORE"
   default:
     weight: 1
     source: "timeseries.csv"
@@ -40,6 +42,6 @@ time_series:
   Load:
     value_column: "LOAD"
   WindOnshore:
-    value_column: "WIND_OFFSHORE"
+    value_column: "WIND_ONSHORE"
   Solar:
     value_column: "SOLAR"
