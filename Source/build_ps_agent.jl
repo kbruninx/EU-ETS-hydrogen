@@ -138,7 +138,7 @@ function build_ps_agent!(mod::Model)
         # Generation of RES from existing capacity that participates in REC auction - only for annual REC
         if mod.ext[:parameters][:REC] == 1
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-                r_y[jy] == sum(W[jd]*AF[jh,jd]*LEG_CAP[jy] for jh in JH, jd in JD)/1000 
+                r_y[jy] <= sum(W[jd]*AF[jh,jd]*LEG_CAP[jy] for jh in JH, jd in JD)/1000 
             )
         else
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],

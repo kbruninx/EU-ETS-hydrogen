@@ -1,6 +1,6 @@
 function define_EOM_parameters!(EOM::Dict,data::Dict,ts::DataFrame,repr_days::DataFrame,scenario_overview_row::DataFrameRow)
     # Growth factor of demand based on 2016 reference scenario
-    EOM["GF_YoY"] = [0.0045*ones(11); 0.0071*ones(data["nyears"]-11)]
+    EOM["GF_YoY"] = [1; 0.014*ones(10); 0.007*ones(data["nyears"]-11)]  # growth rate according to EU reference scenario 2020
     EOM["GF"] = [sum(EOM["GF_YoY"][1:jy]) for jy=1:data["nyears"]]
 
     # timeseries

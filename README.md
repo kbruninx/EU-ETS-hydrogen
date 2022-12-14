@@ -65,7 +65,7 @@ If the scenario at hand can use a calibrated marginal abatement cost curve from 
 2. cd /home/kbruninx/EU-ETS
 3. module load 2022r2
 4. module load julia 
-5. julia--threads=16 MAIN.jl --start_scen 1 --stop_scen 15 > run.log
+5. julia --threads=16 MAIN.jl --start_scen 1 --stop_scen 15 > run.log
 
 Tips: 
 - The decision problems of the agents are solved in parallel in each iteration. Gurobi uses 4 threads to solve each problem.

@@ -1,14 +1,14 @@
 method:
   options:
     mandatory_periods:
-      - 3
-      - 82
-      - 134
-      - 192
-      - 229
-      - 291
-      - 301
-      - 356
+      - 13
+      - 50
+      - 176
+      - 178
+      - 271
+      - 298
+      - 334
+      - 359
     total_periods: 365
     sampling_time: "Hour(1)"
     representative_periods: 8
@@ -28,12 +28,12 @@ base_dir: "c:\\Users\\kbruninx\\Code\\eu-ets-power-sector-hydrogen-industry\\Inp
 time_series:
   default:
     weight: 1
-    source: "timeseries_May2018.csv"
+    source: "timeseries.csv"
     start: 1
     interpolation_type: "linear"
     sampling_time: "Hour(1)"
     csv_options:
-      delim: ","
+      delim: ";"
     timestamp: "Datetime"
   Other:
     value_column: "OTHER"

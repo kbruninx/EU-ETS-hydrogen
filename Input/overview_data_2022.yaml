@@ -1,7 +1,7 @@
 General: 
-  nyears: 45
+  nyears: 42
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 2 # days
+  nReprDays: 8 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
@@ -15,31 +15,31 @@ ADMM:
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
  max_iter: 10000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
- CircularBufferSize: 20 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
+ CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
-  SF_load: 1.061801876 # based on Sandbag data, rescaling factor
+  SF_load: 1 # no scaling applied 
 
 REC: 
   RES_target_2020: 0.32 # RES target in 2020
-  RES_share_other_2021: 0.123 # RES share from hydro and other renewables in 2021
+  RES_share_other_2021: 0.174119315 # RES share from hydro and other renewables in 2021 ("other renewables","geothermal","hydro run-of-river","hydro reservoir"), own calculation 
 
 ETS: 
-  LRF_stat_2021: 43.003515 # MtCO2, only stationary installations
+  LRF_stat_2021: 43.003515 # MtCO2, only stationary installations, @ 2.2% of cap 2010
   CAP_stat_2021: 1571.583007 # Stationary installations, after brexit - https://ec.europa.eu/clima/policies/ets/cap_en
-  CAP_aviation_2021: 24.5 # Stationary installations, after brexit - https://ec.europa.eu/clima/policies/ets/cap_en
-  CAP_maritime_2021: 0 # Maritime sector, green deal - inlcude maritime sector or not
-  TNAC_THRESHOLD: 1096
-  TNAC_MAX: 833
-  TNAC_MIN: 400
-  X_MSR_MAX_POS_2019: 0.24
-  X_MSR_MAX_POS_2023: 0.12
-  X_MSR_MAX_NEG_2019: 100
-  X_MSR_MAX_NEG_2023: 100
-  P_2019: 24.72 # €/ton or M€/MtCO2   
-  P_2020: 24.76 # €/ton or M€/MtCO2   
-  P_2021: 55.22831224 # €/ton or M€/MtCO2  - this does include anticipation on ETS reform
-  P_calibration: 30 # €/ton or M€/MtCO2   
+  CAP_aviation_2021: 24.5 # aviation - https://ec.europa.eu/clima/policies/ets/cap_en
+  CAP_maritime_2021: 40 # Maritime sector, green deal - https://www.nature.com/articles/s41467-022-28398-2 
+  TNAC_THRESHOLD: 1096 # MtCO2 
+  TNAC_MAX: 833 # MtCO2 
+  TNAC_MIN: 400 # MtCO2 
+  X_MSR_MAX_POS_2019: 0.24 # -
+  X_MSR_MAX_POS_2023: 0.12 # -
+  X_MSR_MAX_NEG_2019: 100 # MtCO2 
+  X_MSR_MAX_NEG_2023: 100 # MtCO2 
+  P_2019: 24.72 # €/ton or M€/MtCO2  (historical average)
+  P_2020: 24.76 # €/ton or M€/MtCO2  (historical average)
+  P_2021: 55.22831224 # €/ton or M€/MtCO2 (historical average)
+  P_calibration: 80 # €/ton or M€/MtCO2   
   E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
   E_2020: 1352.492616 #  MtCO2 - emissions in 2020, according to difference between communications to the commission
   E_2021: 1290.418987 #  MtCO2 - emissions in 2021, according to difference between communications to the commission - Note this accounts for impact brexit
@@ -54,11 +54,19 @@ ETS:
   S_2021: 1868.991336 #  MtCO2 - 2019
 
 NG:
-  P_2017: 25 # €/MWh - values to be confirmed
-  P_2018: 25 # €/MWh - values to be confirmed
-  P_2019: 25 # €/MWh - values to be confirmed
-  P_2020: 25 # €/MWh - values to be confirmed
-  YoY: 2 # percentage change in NG prices
+  P_2019: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2020: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2021: 80 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2022: 150 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2023: 100.7 # €/MWh - linear interpolation between 2022 and 2024 (first number in EERA 2022)
+  P_2024: 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2025: 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2026: 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2027: 45.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2028: 45 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2029: 44.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2030: 43.9 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  YoY: 0 # YoY change in NG prices in addition to profile specified above (constant after 2030), specified as percentage of 2020 price
 
 H2:
   demand: 10 # baseline demand for hydrogen, mtH2
@@ -66,8 +74,11 @@ H2:
 
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC
-  tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
-  SF_ind: 0.41970387243 # relative share of emissions in 2017
+  tolerance_calibration: 0.5 # €/tCO2  - tolerance in calibration MACC
+  SF_ind: 0.38410844005092487 # relative share of emissions from industry in 2021
+  E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
+  E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
+  E_ind_2021: 512.9 # Emissions in 2021 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
   EOM: "NO" # participates in EOM?
@@ -77,128 +88,127 @@ Industry:
   NG: "NO" # participate in the natural gas market
 
 HydrogenSector: 
-  SMR:
-   OC: 740 # M€/GW. See https://energy.nl/wp-content/uploads/2019/07/Steam-methane-reforming-SMR-for-hydrogen-production-1.pdf
+  SMR: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 540 # M€/GW. 
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
-   Lifetime: 25 # years. See https://energy.nl/wp-content/uploads/2019/07/Steam-methane-reforming-SMR-for-hydrogen-production-1.pdf
-   Leadtime: 3  # years NOTE: TO CHECK THIS VALUE
-   Legcap: 70 # GW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED
+   Lifetime: 25 # years
+   Leadtime: 3  # years - own assumption
+   Legcap: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
-   emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh]
+   emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh] - own calculation based on carbon intensity gas
    max_YoY_new_cap: 1000 # [GW]
    YoY_OC: 0 # % change in overnight investment cost YoY
-   Legcap_out: 15 # years # MW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED. THIS VALUE CANNOT BE ZERO
-   REC: "NO" # eligible for RECs?
+   Legcap_out: 15 # years 
+   REC: "NO" # eligible for RECs
    ETS: "YES" # covered by ETS
-   EOM: "NO" # participates in EOM?
+   EOM: "NO" # participates in EOM
    H2: "YES" # participate in the carbon neutral H2 market
    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
    NG: "YES" # participate in the natural gas market 
 
-  SMRCCS:
-   OC: 1000 # M€/GW.  
+  SMRCCS: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 1032 # M€/GW.  
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
-   Lifetime: 25 # years.  
-   Leadtime: 3  # years  
-   Legcap: 0 # GW  
+   Lifetime: 25 # years  
+   Leadtime: 3  # years - own assumption  
+   Legcap: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
-   efficiency_NG_H2: 0.62 # efficiency conversion natural gas to hydrogen 
-   emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh] % assumed capture rate of 90%
-   max_YoY_new_cap: 1000 # [GW]
+   efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
+   max_YoY_new_cap: 1000 # [GW] 
    YoY_OC: 0 # % change in overnight investment cost YoY
-   Legcap_out: 15 # years # MW  
-   REC: "NO" # eligible for RECs?
+   Legcap_out: 15 # years 
+   REC: "NO" # eligible for RECs
    ETS: "YES" # covered by ETS
-   EOM: "NO" # participates in EOM?
+   EOM: "NO" # participates in EOM
    H2: "YES" # participate in the carbon neutral H2 market
    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
    NG: "YES" # participate in the natural gas market  
 
-  electrolysis:
-   OC: 1000 # M€/GW. See https://irena.org/-/media/Files/IRENA/Agency/Publication/2020/Dec/IRENA_Green_hydrogen_cost_2020.pdf
+  electrolysis: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 650 # M€/GW
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
    Lifetime: 15 # Years 
    Leadtime: 3 # years NOTE: TO CHECK THIS VALUE
-   Legcap: 1 # GW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED
-   efficiency_E_H2: 0.75 # efficiency conversion electricity to hydrogen 
+   Legcap: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
    max_YoY_new_cap: 1000 # [GW]
-   YoY_OC: -2 # % change in overnight investment cost YoY
-   Legcap_out: 25 # years # MW  NOTE: THIS VALUE AND UNITS NEEDS TO BE VERIFIED. THIS VALUE CANNOT BE ZERO
-   REC: "YES" # eligible for RECs?
+   YoY_OC: -2.1 # % change in overnight investment cost YoY
+   Legcap_out: 15 # years 
+   REC: "YES" # eligible for RECs
    ETS: "NO" # covered by ETS
-   EOM: "YES" # participates in EOM?
+   EOM: "YES" # participates in EOM
    H2: "YES" # participate in the H2 market
    H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
    H2CN_cap: "YES" # participate in the carbon neutral H2 market (capacity)
    NG: "NO" # participate in the natural gas market
 
-# Data updated to 2021 data on installed capacity, will be overestimation for 2019-2021
-# Legacy capacities based on ENTSO-E https://transparency.entsoe.eu/dashboard
-# Cost/tech data from EUR-PyPSA https://technology-data.readthedocs.io/en/latest/# 
-# Avaialbility factors hydro and renewables from CALLIOPE-EUR https://zenodo.org/record/5803058#.Y4Xtk_fMKUk 
-PowerSector: # Note all capacity values (power) are expressed in GW, whereas energy related values (energy) are expressed in TWh. All monetary values in M€, all emissions in MtCO2
+# Legacy capacities (2021), load and renewable availability factors based on ENTSO-E https://transparency.entsoe.eu
+# Unless stated otherwise, cost/tech data from EUR-PyPSA https://technology-data.readthedocs.io/en/latest/# 
+# Note all capacity values (power) are expressed in GW, whereas energy related values (energy) are expressed in TWh. All monetary values in M€, all emissions in MtCO2
+PowerSector: 
  Nuclear:
-  fuelCosts: 10 # MEUR/TWh
+  fuelCosts: 10 # MEUR/TWh - assumption 
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
-  OC: 3672 # MEUR/GW
+  OC: 7940 # MEUR/GW
   Lifetime: 50 # years
   Leadtime: 10 # years
   Legcap: 104.64 # GW
   Legcap_out: 20 # years
-  AF: 0.8 # - 
+  AF: 0.8 # - own calculation
   max_YoY_new_cap: 0 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
-  ETS: "NO" # covered by ETS?
-  EOM: "YES" # participates in EOM?
+  REC: "NO" # eligible for RECs
+  ETS: "NO" # covered by ETS
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
  SPP_lignite:
-  fuelCosts: 13.2 # MEUR/TWh
-  emissions: 1.1 # Mton/TWh
+  fuelCosts: 22.5 # MEUR/TWh (assumes 2.5 €/GJ (EERA), efficiency at 40%)
+  emissions: 0.909 # Mton/TWh - EERA (emission factor 101 kgCO2/GJ)
   efficiency: 0 # not used
-  OC: 1540 # MEUR/GW
+  OC: 3845 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
-  Legcap: 47.2 # GW
+  Legcap: 48.7 # GW
   Legcap_out: 15 # years
-  AF: 0.7 # -
+  AF: 0.5 # -  own calculation
   max_YoY_new_cap: 0 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
+  REC: "NO" # eligible for RECs
   ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
  SPP_coal:
-  fuelCosts: 15.9 # MEUR/TWh
-  emissions: 1.18 # Mton/TWh
+  fuelCosts: 26.91 # MEUR/TWh - EERA (assumes 2.99 €/GJ, efficiency at 40%)
+  emissions: 0.846 # Mton/TWh - EERA (emission factor 94 kgCO2/GJ)
   efficiency: 0 # not used
-  OC: 1232 # MEUR/GW
+  OC: 3845 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
-  Legcap: 74.89 # GW
+  Legcap: 74.9 # GW
   Legcap_out: 15 # years
-  AF: 0.5 # -
+  AF: 0.5 # - own calculation
   max_YoY_new_cap: 0 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
+  YoY_VC: 2 # % change in variable cost YoY - based on EERA
   AF_ts: "NA" # key to find time series with historical output
   REC: "NO" # eligible for RECs?
   ETS: "YES" # covered by ETS
@@ -208,45 +218,23 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
- SPP_gas:
-  fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
-  efficiency: 0.4 # NG -> electricity
-  emissions: 0.6 # Mton/TWh
-  OC: 1698 # MEUR/TW
-  Lifetime: 40 # years
-  Leadtime: 4 # years
-  Legcap: 7.569 # GW
-  Legcap_out: 20 # years
-  AF: 0.85 # -
-  max_YoY_new_cap: 0 # GW
-  YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
-  AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
-  ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
-  H2: "NO" # participate in the carbon neutral H2 market
-  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-  NG: "YES" # participate in the natural gas market
-
  CCGT_old:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
   efficiency: 0.5 # NG -> electricity  
-  emissions: 0.45 # Mton/TWh
-  OC: 760 # MEUR/GW
+  emissions: 0.456 # Mton/TWh (emission factor: 57 kgCO2/GJ (EERA))
+  OC: 880 # MEUR/GW
   Lifetime: 25 # years
   Leadtime: 4 # years
-  Legcap: 40 # GW
+  Legcap: 70 # GW
   Legcap_out: 15 # years
-  AF: 0.85 # -
+  AF: 0.85 # - assumption 
   max_YoY_new_cap: 0 # GW
-  YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
+  YoY_OC: -0.3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
+  REC: "NO" # eligible for RECs
   ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
@@ -255,20 +243,20 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
  CCGT_new:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
   efficiency: 0.6 # NG -> electricity  
-  emissions: 0.31 # Mton/TWh
-  OC: 760 # MEUR/GW
+  emissions: 0.342 # Mton/TWh (emissions factor: 57 kgCO2/GJ - EERA)
+  OC: 880 # MEUR/GW
   Lifetime: 25 # years
   Leadtime: 4 # years
-  Legcap: 141 # GW
+  Legcap: 100 # GW
   Legcap_out: 20 # years
   AF: 0.85 # -
   max_YoY_new_cap: 1000 # GW
-  YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
+  YoY_OC: -0.3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
+  REC: "NO" # eligible for RECs
   ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
@@ -276,31 +264,31 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
 
  OCGT:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
-  efficiency: 0.45 # NG -> electricity  
-  emissions: 0.52 # Mton/TWh
-  OC: 524 # MEUR/GW
-  Lifetime: 15 # years
-  Leadtime: 1 # years
-  Legcap: 7 # GW
-  Legcap_out: 8 # years
+  efficiency: 0.4 # NG -> electricity  
+  emissions: 0.513 # Mton/TWh (emission factor: 57 kgCO2/GJ - EERA)
+  OC: 453 # MEUR/GW
+  Lifetime: 25 # years
+  Leadtime: 2 # years
+  Legcap: 13.4 # GW
+  Legcap_out: 10 # years
   AF: 0.85 # -
   max_YoY_new_cap: 1000 # GW
-  YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
+  YoY_OC: -0.3 # % change in overnight investment cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
+  REC: "NO" # eligible for RECs
   ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "YES" # participate in the natural gas market
 
  ICE:
-  fuelCosts: 85.8 # MEUR/TWh
-  emissions: 0.83 # Mton/TWh
+  fuelCosts: 198 # MEUR/TWh - (assumes 19.25 €/GJ (EERA), efficiency at 35%)
+  emissions: 1.028 # Mton/TWh - EERA (emission factor 100 kgCO2/GJ)
   efficiency: 0 # not used
-  OC: 524 # MEUR/GW
+  OC: 453 # MEUR/GW 
   Lifetime: 15 # years
   Leadtime: 1 # years
   Legcap: 16.95 # GW
@@ -308,33 +296,33 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   AF: 0.85 # -
   max_YoY_new_cap: 1000 # GW
   YoY_OC: 0 # % change in overnight investment cost YoY
-  YoY_VC: 2 # % change in variable cost YoY
+  YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
-  REC: "NO" # eligible for RECs?
+  REC: "NO" # eligible for RECs
   ETS: "YES" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
   NG: "NO" # participate in the natural gas market
 
  Biomass: 
-  fuelCosts: 15 # MEUR/TWh
+  fuelCosts: 20 # MEUR/TWh - own assumption due to lack of data 
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
-  OC: 1250 # MEUR/GW
-  Legcap: 21.05 # GW
+  OC: 3381  # MEUR/GW
+  Legcap: 21.0 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 1000 # GW  
-  YoY_OC: 0 # % change in overnight investment cost YoY
+  max_YoY_new_cap: 0 # GW  
+  YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.85 # - 
   AF_ts: "NA" # key to find time series with historical output
-  REC: "YES" # eligible for RECs?
+  REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
@@ -344,19 +332,19 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
-  OC: 1077 # MEUR/GW
+  OC: 529 # MEUR/GW
   Legcap: 110.84 # GW
-  Legcap_out: 17 # years
-  Lifetime: 20 # years
+  Legcap_out: 15 # years
+  Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
   Leadtime: 1 # years
   max_YoY_new_cap: 10000 # GW
-  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_OC: -1.4 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
   AF_ts: "SOLAR" # key to find time series with historical output
-  REC: "YES" # eligible for RECs?
+  REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
@@ -366,19 +354,19 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
-  OC: 1353 # MEUR/GW
+  OC: 1118 # MEUR/GW
   Legcap: 164.87 # GW
-  Legcap_out: 17 # years
-  Lifetime: 20 # years
+  Legcap_out: 15 # years
+  Lifetime: 25 # years
   Leadtime: 1 # years
   max_YoY_new_cap: 10000 # GW
-  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
   AF_ts: "WIND_ONSHORE" # key to find time series with historical output
-  REC: "YES" # eligible for RECs?
+  REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
@@ -388,19 +376,19 @@ PowerSector: # Note all capacity values (power) are expressed in GW, whereas ene
   fuelCosts: 0 # MEUR/TWh
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
-  OC: 3748 # MEUR/GW
+  OC: 1748 # MEUR/GW
   Legcap: 14.12 # GW
   Legcap_out: 18 # years
-  Lifetime: 20 # years
-  Leadtime: 1 # years
+  Lifetime: 25 # years
+  Leadtime: 3 # years
   max_YoY_new_cap: 10000 # GW
-  YoY_OC: -3 # % change in overnight investment cost YoY
+  YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
   AF_ts: "WIND_OFFSHORE" # key to find time series with historical output
-  REC: "YES" # eligible for RECs?
+  REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS
-  EOM: "YES" # participates in EOM?
+  EOM: "YES" # participates in EOM
   H2: "NO" # participate in the carbon neutral H2 market
   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)

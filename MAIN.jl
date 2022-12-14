@@ -150,11 +150,10 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
 else
     # Range of scenarios to be simulated
     start_scen = 1
-    stop_scen = 2
+    stop_scen = 1
 end
 
-# scen_number = 7
-
+# scen_number = 1
 for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
