@@ -1,5 +1,5 @@
 # ADMM 
-function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,scenario_overview_row::DataFrameRow,data::Dict,TO::TimerOutput)
+function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mdict::Dict,agents::Dict,data::Dict,TO::TimerOutput)
     convergence = 0
     iterations = ProgressBar(1:data["ADMM"]["max_iter"])
     for iter in iterations
@@ -7,18 +7,18 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # Multi-threaded version
             @sync for m in agents[:all] 
                 # created subroutine to allow multi-treading to solve agents' decision problems
-                @spawn ADMM_subroutine!(m,data,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
+                @spawn ADMM_subroutine!(m,data,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,TO)
             end
 
             # Single-threaded version
             # for m in agents[:all] 
             #     # created subroutine to allow multi-treading to solve agents' decision problems
-            #     ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,scenario_overview_row,TO)
+            #     ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,TO)
             # end
 
             # Update supply of allowances 
             @timeit TO "Update EUA supply" begin
-                update_supply!(sum(results["e"][m][end] for m in agents[:ets]),ETS,merge(data["General"],data["ETS"]),scenario_overview_row)
+                update_supply!(sum(results["e"][m][end] for m in agents[:ets]),ETS,merge(data["General"],data["ETS"],data["scenario"]))
                 push!(results["s"],copy(ETS["S"]))
             end
 
@@ -26,15 +26,15 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             @timeit TO "Compute imbalances" begin
                 push!(ADMM["Imbalances"]["ETS"], results["s"][end]-sum(results["b"][m][end] for m in agents[:ets]))
                 push!(ADMM["Imbalances"]["EOM"], sum(results["g"][m][end] for m in agents[:eom]) - EOM["D"][:,:,:])
-                if scenario_overview_row["Additionality"] == "Yearly" || scenario_overview_row["Additionality"] == "NA"
+                if data["scenario"]["Additionality"] == "Yearly" || data["scenario"]["Additionality"] == "NA"
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2021"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
-                elseif scenario_overview_row["Additionality"] == "Monthly"
+                elseif data["scenario"]["Additionality"] == "Monthly"
                     push!(ADMM["Imbalances"]["REC_m"], sum(results["r_m"][m][end] for m in agents[:rec]))
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2021"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
-                elseif scenario_overview_row["Additionality"] == "Daily"
+                elseif data["scenario"]["Additionality"] == "Daily"
                     push!(ADMM["Imbalances"]["REC_d"], sum(results["r_d"][m][end] for m in agents[:rec]))
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2021"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
-                elseif scenario_overview_row["Additionality"] == "Hourly"
+                elseif data["scenario"]["Additionality"] == "Hourly"
                     push!(ADMM["Imbalances"]["REC_h"], sum(results["r_h"][m][end] for m in agents[:rec]))
                     push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2021"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
                 end
@@ -66,15 +66,15 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             if iter > 1
                 push!(ADMM["Residuals"]["Dual"]["ETS"], sqrt(sum(sum((ADMM["ρ"]["EUA"][end]*((results["b"][m][end]-sum(results["b"][mstar][end] for mstar in agents[:ets])./(ETS["nAgents"]+1)) - (results["b"][m][end-1]-sum(results["b"][mstar][end-1] for mstar in agents[:ets])./(ETS["nAgents"]+1)))).^2 for m in agents[:ets])))) 
                 push!(ADMM["Residuals"]["Dual"]["EOM"], sqrt(sum(sum((ADMM["ρ"]["EOM"][end]*((results["g"][m][end]-sum(results["g"][mstar][end] for mstar in agents[:eom])./(EOM["nAgents"]+1)) - (results["g"][m][end-1]-sum(results["g"][mstar][end-1] for mstar in agents[:eom])./(EOM["nAgents"]+1)))).^2 for m in agents[:eom]))))               
-                if scenario_overview_row["Additionality"] == "NA" || scenario_overview_row["Additionality"] == "Yearly"
+                if data["scenario"]["Additionality"] == "NA" || data["scenario"]["Additionality"] == "Yearly"
                     push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))    
-                elseif scenario_overview_row["Additionality"] == "Monthly"
+                elseif data["scenario"]["Additionality"] == "Monthly"
                     push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_m"][end]*((results["r_m"][m][end]-sum(results["r_m"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_m"][m][end-1]-sum(results["r_m"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) 
                     + sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))          
-                elseif scenario_overview_row["Additionality"] == "Daily"
+                elseif data["scenario"]["Additionality"] == "Daily"
                     push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_d"][end]*((results["r_d"][m][end]-sum(results["r_d"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_d"][m][end-1]-sum(results["r_d"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) 
                     + sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))              
-                elseif scenario_overview_row["Additionality"] == "Hourly"
+                elseif data["scenario"]["Additionality"] == "Hourly"
                     push!(ADMM["Residuals"]["Dual"]["REC"], sqrt(sum(sum((ADMM["ρ"]["REC_h"][end]*((results["r_h"][m][end]-sum(results["r_h"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_h"][m][end-1]-sum(results["r_h"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))) 
                     + sqrt(sum(sum((ADMM["ρ"]["REC_y"][end]*((results["r_y"][m][end]-sum(results["r_y"][mstar][end] for mstar in agents[:rec])./(REC["nAgents"]+1)) - (results["r_y"][m][end-1]-sum(results["r_y"][mstar][end-1] for mstar in agents[:rec])./(REC["nAgents"]+1)))).^2 for m in agents[:rec]))))             
                 end                               
@@ -89,7 +89,7 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # For hydrogen, a price floor (0) has been imposed to avoid negative hydrogen prices. This may arise when all hydrogen is provided by "carbon-neutral" hydrogen production routes. In that case, the net incentive is the difference between the carbon-neutral hydrogen premium and the hydrogen price. As no other agent is responding to the hydrogen price, the hydrogen prices can drop below zero if the carbon-neutral hydrogen premium is sufficiently high.
             # Such interactions do not occur in other markets.
             @timeit TO "Update prices" begin
-                if scenario_overview_row[:ref_scen_number] == scenario_overview_row[:scen_number] # calibration run, 2019-2020 ETS prices fixed to historical values, 2021 to be calibrated
+                if data["scenario"]["ref_scen_number"] == data["scenario"]["scen_number"] # calibration run, 2019-2020 ETS prices fixed to historical values, 2021 to be calibrated
                     push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
                 else # 2019-2021 ETS prices fixed to historical values
                     push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; ETS["P_2021"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][4:end]])    

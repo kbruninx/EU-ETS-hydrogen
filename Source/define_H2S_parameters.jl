@@ -1,4 +1,4 @@
-function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame,scenario_overview_row::DataFrameRow,REC::Dict)
+function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame,REC::Dict)
     # Parameters 
     mod.ext[:parameters][:η_E_H2] = data["efficiency_E_H2"] # - 
     mod.ext[:parameters][:η_NG_H2] = data["efficiency_NG_H2"] # -
@@ -18,7 +18,7 @@ function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::
         end
     end
     
-    if scenario_overview_row["Additionality"] == "Yearly"
+    if data["Additionality"] == "Yearly"
         mod.ext[:parameters][:ADD_SF] = ones(data["nyears"],1) 
     else
         mod.ext[:parameters][:ADD_SF] = REC["RT"] # Scaling factor for RECs when additionality is not applied = RES target

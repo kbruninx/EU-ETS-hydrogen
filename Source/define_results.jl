@@ -1,4 +1,4 @@
-function define_results!(data::Dict,scenario_overview_row::DataFrameRow,results::Dict,ADMM::Dict,agents::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict) 
+function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict) 
     results["e"] = Dict()
     results["g"] = Dict()
     results["r_y"] = Dict()
@@ -139,19 +139,19 @@ function define_results!(data::Dict,scenario_overview_row::DataFrameRow,results:
     ADMM["ρ"]["REC_y"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["REC_y"],data["rho_REC"])    
     ADMM["ρ"]["REC_m"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if scenario_overview_row["Additionality"] == "Monthly" 
+    if data["Additionality"] == "Monthly" 
         push!(ADMM["ρ"]["REC_m"],data["rho_REC"])
     else
         push!(ADMM["ρ"]["REC_m"],0)
     end
     ADMM["ρ"]["REC_d"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if scenario_overview_row["Additionality"] == "Daily" 
+    if data["Additionality"] == "Daily" 
         push!(ADMM["ρ"]["REC_d"],data["rho_REC"])
     else
         push!(ADMM["ρ"]["REC_d"],0)
     end
     ADMM["ρ"]["REC_h"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if scenario_overview_row["Additionality"] == "Hourly" 
+    if data["Additionality"] == "Hourly" 
         push!(ADMM["ρ"]["REC_h"],data["rho_REC"])
     else
         push!(ADMM["ρ"]["REC_h"],0)

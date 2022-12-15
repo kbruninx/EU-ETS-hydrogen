@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -67,7 +67,7 @@ include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
 
 # Data common to all scenarios data 
-temp_data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml"))
+temp_data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml"))
 ts = CSV.read(joinpath(home_dir,"Input","timeseries.csv"),delim=";",DataFrame)
 if isfile(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"))
     repr_days = rightjoin(CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"decision_variables_short.csv"),delim=",",DataFrame), CSV.read(joinpath(home_dir,"Input",string("output_",temp_data["General"]["nReprDays"],"_repr_days"),"weight_day_month.csv"),delim=",",DataFrame),on= :periods)
@@ -160,13 +160,15 @@ println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
 
 ## 1. Read associated input for this simulation
-scenario_overview_row = scenario_overview[scen_number,:]
-data = YAML.load_file(joinpath(home_dir,"Input","overview_data_2022.yaml")) # reload data to avoid previous sensitivity analysis affected data
+scenario_overview_row = Dict(pairs(scenario_overview[scen_number,:])) # create dict from dataframe
+scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_overview_row))[x]) => collect(values(scenario_overview_row))[x] for x = 1:length(collect(values(scenario_overview_row)))]))  # Keys from Symbol to String
+data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
+data = merge(data,scenario_definition)
 
-if scenario_overview_row["Sens_analysis"] == "YES" && scenario_overview_row[:ref_scen_number] != scen_number
+if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_number] != scen_number
     numb_of_sens = length((sensitivity_overview[!,:Parameter]))
 else
-    numb_of_sens = 0 
+    numb_of_sens = 1 
 end    
 # sens_number = 1 
 for sens_number in range(1,stop=numb_of_sens+1,step=1) 
@@ -181,6 +183,13 @@ if sens_number >= 2
     else
         printnl("warning! Sensitivity analysis is not well defined!")
     end
+end
+
+# write final set-up to yaml 
+if sens_number == 1
+    YAML.write_file(string("Scenario_",data["scenario"]["scen_number"],"_ref.yaml"),data)
+else    
+    YAML.write_file(string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks],".yaml"),data)
 end
 
 println("    ")
@@ -206,44 +215,44 @@ mdict = Dict(i => Model(optimizer_with_attributes(() -> Gurobi.Optimizer(GUROBI_
 ## 3. Define parameters for markets and representative agents
 # Parameters/variables ETS 
 ETS = Dict()
-define_ETS_parameters!(ETS,merge(data["General"],data["ETS"]),scenario_overview_row)
+define_ETS_parameters!(ETS,merge(data["General"],data["ETS"],data["scenario"]))
 
 # Parameters/variables EOM
 EOM = Dict()
-define_EOM_parameters!(EOM,merge(data["General"],data["EOM"]),ts,repr_days,scenario_overview_row)
+define_EOM_parameters!(EOM,merge(data["General"],data["EOM"]),ts,repr_days)
 
 # Parameters/variables REC 
 REC = Dict()
-define_REC_parameters!(REC,merge(data["General"],data["REC"]),ts,repr_days,scenario_overview_row)
+define_REC_parameters!(REC,merge(data["General"],data["REC"],data["scenario"]),ts,repr_days)
 
 # Parameters/variables incentive scheme carbon neutral hydrogen 
 H2CN_prod = Dict()
-define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2"]),ts,repr_days,scenario_overview_row)
+define_H2CN_prod_parameters!(H2CN_prod,merge(data["General"],data["H2"],data["scenario"]),ts,repr_days)
 
 # Parameters/variables incentive scheme carbon neutral hydrogen production capacity
 H2CN_cap = Dict()
-define_H2CN_cap_parameters!(H2CN_cap,data["General"],ts,repr_days,scenario_overview_row)
+define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["scenario"]),ts,repr_days)
 
 # Parameters/variables Hydrogen Market
 H2 = Dict()
-define_H2_parameters!(H2,merge(data["General"],data["H2"]),ts,repr_days,scenario_overview_row,H2CN_prod)
+define_H2_parameters!(H2,merge(data["General"],data["H2"],data["scenario"]),ts,repr_days,H2CN_prod)
 
 # Parameters/variables natural gas market
 NG = Dict()
-define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days,scenario_overview_row)
+define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days)
 
 # Parameters/variables natural gas market
 for m in agents[:ind]
-    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents,scenario_overview_row)           # Parameters common to all agents
-    define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"]),scenario_overview_row)                                     # Industry
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents)           # Parameters common to all agents
+    define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"],data["scenario"]))                    # Industry
 end
 for m in agents[:ps]
-    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,agents,scenario_overview_row)     # Parameters common to all agents
-    define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days,scenario_overview_row)                               # Power sector
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,agents)     # Parameters common to all agents
+    define_ps_parameters!(mdict[m],merge(data["General"],data["PowerSector"][m]),ts,repr_days)                               # Power sector
 end
 for m in agents[:h2s]
-    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents,scenario_overview_row)  # Parameters common to all agents
-    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m]),ts,repr_days,scenario_overview_row,REC)                       # Hydrogen sector
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents)  # Parameters common to all agents
+    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m],data["scenario"]),ts,repr_days,REC)      # Hydrogen sector
 end
 
 # Calculate number of agents in each market
@@ -281,16 +290,16 @@ println("   ")
 results = Dict()
 ADMM = Dict()
 TO = TimerOutput()
-define_results!(merge(data["General"],data["ADMM"]),scenario_overview_row,results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                                       # calculate equilibrium 
+define_results!(merge(data["General"],data["ADMM"],data["scenario"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)            # initialize structure of results, only those that will be stored in each iteration
+ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                             # calculate equilibrium 
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && scenario_overview_row[:ref_scen_number] == scen_number
+while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/scenario_overview_row[:gamma]))
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))
@@ -298,9 +307,9 @@ while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["In
     println(string("        "))
 
     # Calculate equilibrium with new estimate beta
-    define_results!(merge(data["General"],data["ADMM"]),scenario_overview_row,results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)       # initialize structure of results, only those that will be stored in each iteration
-    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,scenario_overview_row,data,TO)                 # calculate equilibrium 
-    ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                               # wall time 
+    define_results!(merge(data["General"],data["ADMM"],data["scenario"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)      # initialize structure of results, only those that will be stored in each iteration
+    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                       # calculate equilibrium 
+    ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                               # wall time 
 end
 
 println(string("Done!"))
@@ -325,11 +334,11 @@ println(string("        "))
 
 ## 6. Postprocessing and save results 
 if sens_number >= 2
-save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row,sensitivity_overview[sens_number-1,:remarks]) 
-@save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
+    save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,sensitivity_overview[sens_number-1,:remarks]) 
+    @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
 else
-save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"]),agents,scenario_overview_row,"ref") 
-@save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",scenario_overview_row["scen_number"],"_ref"))
+    save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,"ref") 
+    @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref"))
 end
 
 println("Postprocessing & save results: done")

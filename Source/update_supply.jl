@@ -1,6 +1,6 @@
-function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::DataFrameRow)
+function update_supply!(e::Array,ETS::Dict,data::Dict)
     # Impact of MSR is only enforced as of 2021. Before 2021, supply is fixed to historical values (see "define_ETS_parameters.jl")
-    if scenario_overview_row[:MSR] == 2018 # The MSR according to the 2018 rules
+    if data["MSR"] == 2018 # The MSR according to the 2018 rules
         for y = 3:data["nyears"]
             for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2
@@ -51,7 +51,7 @@ function update_supply!(e::Array,ETS::Dict,data::Dict,scenario_overview_row::Dat
             # TNAC
             ETS["TNAC"][y] = sum(ETS["CAP"][1:y]) + sum(ETS["Δs"][1:y]) + sum(ETS["DELTA"][1:y]) - sum(e[1:y]) - sum(ETS["C"][1:y,:]) - ETS["MSR"][y,12]
         end
-    elseif scenario_overview_row[:MSR] == 2021 # The MSR as proposed in the Green Deal
+    elseif data["MSR"] == 2021 # The MSR as proposed in the Green Deal
         for y = 3:data["nyears"]
             for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2

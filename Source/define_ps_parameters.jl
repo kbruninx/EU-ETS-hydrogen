@@ -1,4 +1,4 @@
-function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame,scenario_overview_row::DataFrameRow)
+function define_ps_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::DataFrame)
     # Parameters 
     mod.ext[:parameters][:VC] = data["fuelCosts"].*[(1+data["YoY_VC"]/100)^(jy-1) for jy in 1:data["nyears"]] # EUR/MWh or MEUR/TWh
     mod.ext[:parameters][:η] = data["efficiency"] # - 

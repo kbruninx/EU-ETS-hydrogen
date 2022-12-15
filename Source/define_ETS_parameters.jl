@@ -1,9 +1,9 @@
-function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::DataFrameRow)
+function define_ETS_parameters!(ETS::Dict,data::Dict)
     # LRF 
     LRF_tot = data["LRF_stat_2021"]/data["CAP_stat_2021"]*(data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"])
     ETS["LRF"] = zeros(data["nyears"])                                                                                 
-    ETS["LRF"][3:12] = LRF_tot*scenario_overview_row[:LRF_2021]/0.022*ones(10,1)                            # 2021-2030
-    ETS["LRF"][13:end] = LRF_tot*scenario_overview_row[:LRF_2031]/0.022*ones(data["nyears"]-12,1)           # 2030 - end ETS
+    ETS["LRF"][3:12] = LRF_tot*data["LRF_2021"]/0.022*ones(10,1)                            # 2021-2030
+    ETS["LRF"][13:end] = LRF_tot*data["LRF_2031"]/0.022*ones(data["nyears"]-12,1)           # 2030 - end ETS
        
     # CAP
     ETS["CAP"] = zeros(data["nyears"])
@@ -30,10 +30,10 @@ function define_ETS_parameters!(ETS::Dict,data::Dict,scenario_overview_row::Data
     ETS["C"] = zeros(data["nyears"],12);
     ETS["X_MSR_MAX_POS"] = zeros(data["nyears"])
     ETS["X_MSR_MAX_POS"][1:2] = zeros(2,1);
-    if scenario_overview_row[:MSR] == 2018
+    if data["MSR"] == 2018
         ETS["X_MSR_MAX_POS"][1:5] = data["X_MSR_MAX_POS_2019"]*ones(5);  # 24% until 2023
         ETS["X_MSR_MAX_POS"][6:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-5); 
-    elseif scenario_overview_row[:MSR] == 2021
+    elseif data["MSR"] == 2021
         ETS["X_MSR_MAX_POS"][1:12] = data["X_MSR_MAX_POS_2019"]*ones(12);  # 24% until 2030
         ETS["X_MSR_MAX_POS"][13:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-12); 
     end

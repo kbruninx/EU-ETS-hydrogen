@@ -1,4 +1,4 @@
-function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFrame, repr_days::DataFrame, agents::Dict, scenario_overview_row::DataFrameRow)
+function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFrame, repr_days::DataFrame, agents::Dict)
     # Solver settings
     # Define dictonaries for sets, parameters, timeseries, variables, constraints & expressions
     mod.ext[:sets] = Dict()

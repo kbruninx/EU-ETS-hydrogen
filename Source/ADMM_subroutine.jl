@@ -1,4 +1,4 @@
-function ADMM_subroutine!(m::String,data::Dict,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mod::Model,agents::Dict,scenario_overview_row::DataFrameRow,TO::TimerOutput)
+function ADMM_subroutine!(m::String,data::Dict,results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H2CN_prod::Dict,H2CN_cap::Dict,NG::Dict,mod::Model,agents::Dict,TO::TimerOutput)
 TO_local = TimerOutput()
 # Calculate penalty terms ADMM and update price to most recent value 
 @timeit TO_local "Compute ADMM penalty terms" begin
@@ -53,7 +53,7 @@ end
 # Solve agents decision problems:
 if m in agents[:ind]
     @timeit TO_local "Solve industry" begin
-        update_ind_emissions!(mod,merge(data["General"],data["Industry"]),ETS,scenario_overview_row) 
+        update_ind_emissions!(mod,merge(data["General"],data["Industry"],data["scenario"]),ETS) 
         solve_ind_agent!(mod)  
     end
 elseif m in agents[:ps]

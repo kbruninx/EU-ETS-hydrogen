@@ -57,11 +57,11 @@ NG:
   P_2019: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2020: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2021: 80 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2022: 150 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2023: 100.7 # €/MWh - linear interpolation between 2022 and 2024 (first number in EERA 2022)
-  P_2024: 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2025: 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2026: 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2022: 200 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2023: 150 # markets seem to consider that prices remain high for longer
+  P_2024: 125 # markets seem to consider that prices remain high for longer - 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2025: 100 # markets seem to consider that prices remain high for longer - 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2026: 75  # markets seem to consider that prices remain high for longer - 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2027: 45.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2028: 45 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2029: 44.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
@@ -132,7 +132,7 @@ HydrogenSector:
    OC: 650 # M€/GW
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
    Lifetime: 15 # Years 
-   Leadtime: 3 # years NOTE: TO CHECK THIS VALUE
+   Leadtime: 3 # years 
    Legcap: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
@@ -161,7 +161,7 @@ PowerSector:
   Leadtime: 10 # years
   Legcap: 104.64 # GW
   Legcap_out: 20 # years
-  AF: 0.8 # - own calculation
+  AF: 0.75 # - own calculation
   max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
@@ -205,7 +205,7 @@ PowerSector:
   Leadtime: 8 # years
   Legcap: 74.9 # GW
   Legcap_out: 15 # years
-  AF: 0.5 # - own calculation
+  AF: 0.35 # - own calculation
   max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
@@ -249,7 +249,7 @@ PowerSector:
   Leadtime: 5 # years
   Legcap: 100 # GW
   Legcap_out: 20 # years
-  AF: 0.85 # -
+  AF: 0.9 # -
   max_YoY_new_cap:  50 # % of current capacity
   YoY_OC: -0.3 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
@@ -318,7 +318,7 @@ PowerSector:
   max_YoY_new_cap: 0 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
-  AF: 0.85 # - 
+  AF: 0.65 # - 
   AF_ts: "NA" # key to find time series with historical output
   REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS
