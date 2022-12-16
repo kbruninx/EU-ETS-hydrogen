@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "DelftBlue" # NA, DelftBlue or ThinKing
+HPC = "NA" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__

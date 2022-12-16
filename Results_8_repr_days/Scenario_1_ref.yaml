@@ -2,7 +2,7 @@ REC:
   RES_share_other_2021: 0.174119315
   RES_target_2020: 0.34
 EOM:
-  SF_load: 1
+  SF: 1
 scenario:
   remarks: "Used to calibrate MACC"
   H2_demand_2030: 20
@@ -278,7 +278,7 @@ ADMM:
   rho_H2CN_cap: 1
   max_iter: 10000
   rho_EOM: 1
-  epsilon: 0.1
+  epsilon: 0.01
   rho_REC: 1
   rho_H2CN_prod: 1
   rho_H2: 1
@@ -294,7 +294,7 @@ Industry:
   ETS: "YES"
   NG: "NO"
   E_ind_2019: 598
-  tolerance_calibration: 0.5
+  tolerance_calibration: 1
   H2: "NO"
 ETS:
   CAP_maritime_2021: 40
@@ -328,6 +328,7 @@ NG:
   P_2023: 150
   P_2030: 43.9
   P_2025: 100
+  SF: 1
   P_2019: 20
   P_2028: 45
   P_2026: 75
@@ -377,7 +378,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0.0
-    max_YoY_new_cap: 1000
+    max_YoY_new_cap: 50
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -397,7 +398,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0328
-    max_YoY_new_cap: 1000
+    max_YoY_new_cap: 50
     H2: "YES"
 H2:
   demand: 10
