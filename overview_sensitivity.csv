@@ -1,3 +1,5 @@
 Parameter;Scaling;remarks
 NG YoY;0.5;low natural gas price
 NG YoY;1.5;high natural gas price
+scenario RES_target_2030;1.25;2030 res target 50
+scenario RES_target_2030;1.5;2030 res target 60

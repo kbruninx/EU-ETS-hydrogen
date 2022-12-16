@@ -168,7 +168,7 @@ data = merge(data,scenario_definition)
 if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_number] != scen_number
     numb_of_sens = length((sensitivity_overview[!,:Parameter]))
 else
-    numb_of_sens = 1 
+    numb_of_sens = 0 
 end    
 # sens_number = 1 
 for sens_number in range(1,stop=numb_of_sens+1,step=1) 
@@ -187,9 +187,9 @@ end
 
 # write final set-up to yaml 
 if sens_number == 1
-    YAML.write_file(string("Scenario_",data["scenario"]["scen_number"],"_ref.yaml"),data)
+    YAML.write_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref.yaml")),data)
 else    
-    YAML.write_file(string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks],".yaml"),data)
+    YAML.write_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks],".yaml")),data)
 end
 
 println("    ")
