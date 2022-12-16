@@ -7,8 +7,18 @@ function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::
     mod.ext[:parameters][:DELTA_CAP_MAX] = data["max_YoY_new_cap"]/100 # fraction
     mod.ext[:parameters][:CAP_SV] =  [maximum([0,1-(data["nyears"]-jy+1)/data["Lifetime"]]) for jy=1:data["nyears"]]
     mod.ext[:parameters][:LEG_CAP] = zeros(data["nyears"],1)
-    mod.ext[:parameters][:LEG_CAP][1:3] .= data["Legcap"]  
-    mod.ext[:parameters][:LEG_CAP][4:data["nyears"]] = [data["Legcap"]*maximum([0,(data["Legcap_out"]-jy+1)/data["Legcap_out"]]) for jy=1:data["nyears"]-3] 
+    if haskey(data,"Legcap_2019")
+        mod.ext[:parameters][:LEG_CAP][1] = data["AF"]*data["Legcap_2019"]  
+    else
+        mod.ext[:parameters][:LEG_CAP][1] = data["AF"]*data["Legcap_2021"]  
+    end
+    if haskey(data,"Legcap_2020")
+        mod.ext[:parameters][:LEG_CAP][2] = data["AF"]*data["Legcap_2020"]  
+    else
+        mod.ext[:parameters][:LEG_CAP][2] = data["AF"]*data["Legcap_2021"]  
+    end
+    mod.ext[:parameters][:LEG_CAP][3] = data["AF"]*data["Legcap_2021"]  
+    mod.ext[:parameters][:LEG_CAP][4:data["nyears"]] = [data["AF"]*data["Legcap_2021"]*maximum([0,(data["Legcap_out"]-jy+1)/data["Legcap_out"]]) for jy=1:data["nyears"]-3] 
     mod.ext[:parameters][:CAP_LT] = zeros(data["nyears"],data["nyears"]) 
     for y=1:data["nyears"]
         if y+data["Leadtime"] < data["nyears"]

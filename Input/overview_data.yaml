@@ -18,7 +18,7 @@ ADMM:
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
-  SF_load: 1 # no scaling applied 
+  SF: 1 # scale factor for sensitivity analysis
 
 REC: 
   RES_target_2020: 0.34 # RES target in 2020
@@ -67,6 +67,7 @@ NG:
   P_2029: 44.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2030: 43.9 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   YoY: 0 # YoY change in NG prices in addition to profile specified above (constant after 2030), specified as percentage of 2020 price
+  SF: 1 # scale factor for senisitivity analysis
 
 H2:
   demand: 10 # baseline demand for hydrogen, mtH2
@@ -74,7 +75,7 @@ H2:
 
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC
-  tolerance_calibration: 0.5 # €/tCO2  - tolerance in calibration MACC
+  tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
   SF_ind: 0.38410844005092487 # relative share of emissions from industry in 2021
   E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
@@ -93,7 +94,8 @@ HydrogenSector:
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years
    Leadtime: 3  # years - own assumption
-   Legcap: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
+   AF: 1 # - own calculation
+   Legcap_2021: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
    emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh] - own calculation based on carbon intensity gas
@@ -113,11 +115,12 @@ HydrogenSector:
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years  
    Leadtime: 3  # years - own assumption  
-   Legcap: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   AF: 1 # - own calculation
+   Legcap_2021: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap:  1000 # % of current capacity
+   max_YoY_new_cap:  50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -133,11 +136,12 @@ HydrogenSector:
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
    Lifetime: 15 # Years 
    Leadtime: 3 # years 
-   Legcap: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   AF: 1 # - own calculation
+   Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 1000 # % of current capacity
+   max_YoY_new_cap: 50 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "YES" # eligible for RECs
@@ -159,7 +163,9 @@ PowerSector:
   OC: 7940 # MEUR/GW
   Lifetime: 50 # years
   Leadtime: 10 # years
-  Legcap: 104.64 # GW
+  Legcap_2019: 109.44 # GW
+  Legcap_2020: 107.17 # GW
+  Legcap_2021: 104.64 # GW
   Legcap_out: 20 # years
   AF: 0.75 # - own calculation
   max_YoY_new_cap: 50 # % of current capacity
@@ -181,7 +187,9 @@ PowerSector:
   OC: 3845 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
-  Legcap: 48.7 # GW
+  Legcap_2019: 52.6  # GW
+  Legcap_2020: 51.2 # GW
+  Legcap_2021: 48.7 # GW
   Legcap_out: 50 # % of current capacity
   AF: 0.5 # -  own calculation
   max_YoY_new_cap: 0 # % of current capacity
@@ -203,7 +211,9 @@ PowerSector:
   OC: 3845 # MEUR/GW
   Lifetime: 40 # years
   Leadtime: 8 # years
-  Legcap: 74.9 # GW
+  Legcap_2019: 82.8 # GW
+  Legcap_2020: 80.8 # GW
+  Legcap_2021: 74.9 # GW
   Legcap_out: 15 # years
   AF: 0.4 # - own calculation
   max_YoY_new_cap: 50 # % of current capacity
@@ -225,7 +235,7 @@ PowerSector:
   OC: 880 # MEUR/GW
   Lifetime: 25 # years
   Leadtime: 5 # years
-  Legcap: 70 # GW
+  Legcap_2021: 70 # GW
   Legcap_out: 15 # years
   AF: 0.85 # - assumption 
   max_YoY_new_cap: 0  # % of current capacity
@@ -247,7 +257,7 @@ PowerSector:
   OC: 880 # MEUR/GW
   Lifetime: 25 # years
   Leadtime: 5 # years
-  Legcap: 100 # GW
+  Legcap_2021: 100 # GW
   Legcap_out: 20 # years
   AF: 0.9 # -
   max_YoY_new_cap:  50 # % of current capacity
@@ -269,7 +279,7 @@ PowerSector:
   OC: 453 # MEUR/GW
   Lifetime: 25 # years
   Leadtime: 3 # years
-  Legcap: 13.4 # GW
+  Legcap_2021: 13.4 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
   max_YoY_new_cap:  50 # % of current capacity
@@ -291,7 +301,7 @@ PowerSector:
   OC: 453 # MEUR/GW 
   Lifetime: 15 # years
   Leadtime: 3 # years
-  Legcap: 16.95 # GW
+  Legcap_2021: 16.95 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
   max_YoY_new_cap: 50 # % of current capacity
@@ -311,7 +321,7 @@ PowerSector:
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 3381  # MEUR/GW
-  Legcap: 21.0 # GW
+  Legcap_2021: 21.0 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
@@ -333,7 +343,9 @@ PowerSector:
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 529 # MEUR/GW
-  Legcap: 110.84 # GW
+  Legcap_2019: 84.12 # GW
+  Legcap_2020: 94.45 # GW
+  Legcap_2021: 110.84 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
   Leadtime: 3 # years
@@ -355,7 +367,9 @@ PowerSector:
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 1118 # MEUR/GW
-  Legcap: 164.87 # GW
+  Legcap_2019: 144.6 # GW
+  Legcap_2020: 155.75 # GW
+  Legcap_2021: 164.87 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 3 # years
@@ -377,7 +391,9 @@ PowerSector:
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 1748 # MEUR/GW
-  Legcap: 14.12 # GW
+  Legcap_2019: 10.6 # GW
+  Legcap_2020: 13.2 # GW
+  Legcap_2021: 14.12 # GW
   Legcap_out: 18 # years
   Lifetime: 25 # years
   Leadtime: 3 # years

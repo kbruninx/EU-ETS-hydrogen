@@ -176,12 +176,23 @@ if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
     parameter = split(sensitivity_overview[sens_number-1,:Parameter])
-    if length(parameter) == 2
-        data[parameter[1]][parameter[2]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter[1]][parameter[2]]
-    elseif length(parameter) == 3
-        data[parameter[1]][parameter[2]][parameter[3]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter[1]][parameter[2]][parameter[3]]
-    else
-        printnl("warning! Sensitivity analysis is not well defined!")
+    parameter_sector = split(parameter[1],"-") # affect multiple sectors or tech
+    parameter_tech = split(parameter[2],"-") # affect multiple sectors or tech
+    if length(parameter) == 3
+        parameter_attribute = split(parameter[3],"-") # affect multiple sectors or tech
+    end
+    for x in eachindex(parameter_sector)
+        for y in eachindex(parameter_tech)
+            if length(parameter) == 2
+                data[parameter_sector[x]][parameter_tech[y]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter_sector[x]][parameter_tech[y]]
+            elseif length(parameter) == 3
+                for z in eachindex(parameter_attribute)
+                    data[parameter_sector[x]][parameter_tech[y]][parameter_attribute[z]] = sensitivity_overview[sens_number-1,:Scaling]*data[parameter_sector[x]][parameter_tech[y]][parameter_attribute[z]]
+                end
+            else
+                printnl("Warning! Sensitivity analysis is not well defined!")
+            end
+        end
     end
 end
 
