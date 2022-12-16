@@ -14,7 +14,7 @@ ADMM:
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
  max_iter: 10000 # maximum number of iterations
- epsilon: 0.01 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
+ epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
@@ -54,8 +54,8 @@ ETS:
   S_2021: 1868.991336 #  MtCO2 - 2019
 
 NG:
-  P_2019: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2020: 20 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2019: 25 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2020: 25 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2021: 80 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2022: 200 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2023: 150 # markets seem to consider that prices remain high for longer
@@ -98,7 +98,7 @@ HydrogenSector:
    Legcap_2021: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
-   emissions: 0.328 # [ton CO2/MWh] = [Mton CO2/TWh] - own calculation based on carbon intensity gas
+   emissions: 0.205 # [ton CO2/MWh gas] = [Mton CO2/TWh gas] 
    max_YoY_new_cap: 50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
@@ -119,7 +119,7 @@ HydrogenSector:
    Legcap_2021: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
-   emissions: 0.0328 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
+   emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
    max_YoY_new_cap:  50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
@@ -215,7 +215,7 @@ PowerSector:
   Legcap_2020: 80.8 # GW
   Legcap_2021: 74.9 # GW
   Legcap_out: 15 # years
-  AF: 0.4 # - own calculation
+  AF: 0.3 # - own calculation
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
@@ -400,7 +400,7 @@ PowerSector:
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
-  AF: 1 # - 
+  AF: 0.9 # - 
   AF_ts: "WIND_OFFSHORE" # key to find time series with historical output
   REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS

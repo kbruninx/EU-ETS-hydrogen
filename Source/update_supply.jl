@@ -49,7 +49,8 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
             ETS["S"][y]  = maximum([0,ETS["CAP"][y] - sum(ETS["X_MSR"][y,1:12]) + ETS["Δs"][y]]) 
           
             # TNAC
-            ETS["TNAC"][y] = sum(ETS["CAP"][1:y]) + sum(ETS["Δs"][1:y]) + sum(ETS["DELTA"][1:y]) - sum(e[1:y]) - sum(ETS["C"][1:y,:]) - ETS["MSR"][y,12]
+            # ETS["TNAC"][y] = sum(ETS["CAP"][1:y]) + sum(ETS["Δs"][1:y]) + sum(ETS["DELTA"][1:y]) - sum(e[1:y]) - sum(ETS["C"][1:y,:]) - ETS["MSR"][y,12]
+            ETS["TNAC"][y] = ETS["TNAC"][y-1] + ETS["CAP"][y] + ETS["Δs"][y] + ETS["DELTA"][y] - e[y] - sum(ETS["C"][y,:]) - ETS["MSR"][y,12] # recursive to account for "initial" state of TNAC (TNAC is added to supply in preceding year to make EUAs avaialble to actors, otherwise double counting)
         end
     elseif data["MSR"] == 2021 # The MSR as proposed in the Green Deal
         for y = 3:data["nyears"]
@@ -100,7 +101,8 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
             ETS["S"][y]  = maximum([0,ETS["CAP"][y] - sum(ETS["X_MSR"][y,1:12]) + ETS["Δs"][y]]) 
             
             # TNAC
-            ETS["TNAC"][y] = sum(ETS["S"][1:y]) - sum(e[1:y]) 
+            # ETS["TNAC"][y] = sum(ETS["S"][1:y]) - sum(e[1:y]) 
+            ETS["TNAC"][y] =  ETS["TNAC"][y-1] + ETS["S"][y] - e[y] # recursive to account for "initial" state of TNAC (TNAC is added to supply in preceding year to make EUAs avaialble to actors, otherwise double counting)
         end
     end
 
