@@ -162,7 +162,7 @@ PowerSector:
   Legcap: 104.64 # GW
   Legcap_out: 20 # years
   AF: 0.75 # - own calculation
-  max_YoY_new_cap: 0 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -205,8 +205,8 @@ PowerSector:
   Leadtime: 8 # years
   Legcap: 74.9 # GW
   Legcap_out: 15 # years
-  AF: 0.35 # - own calculation
-  max_YoY_new_cap: 0 # % of current capacity
+  AF: 0.4 # - own calculation
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
   AF_ts: "NA" # key to find time series with historical output
@@ -307,7 +307,7 @@ PowerSector:
   NG: "NO" # participate in the natural gas market
 
  Biomass: 
-  fuelCosts: 20 # MEUR/TWh - own assumption due to lack of data 
+  fuelCosts: 50 # MEUR/TWh - own assumption due to lack of data 
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 3381  # MEUR/GW
@@ -315,10 +315,10 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 0 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
-  AF: 0.65 # - 
+  AF: 0.6 # - 
   AF_ts: "NA" # key to find time series with historical output
   REC: "YES" # eligible for RECs
   ETS: "NO" # covered by ETS

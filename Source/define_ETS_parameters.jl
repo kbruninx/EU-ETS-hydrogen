@@ -25,8 +25,8 @@ function define_ETS_parameters!(ETS::Dict,data::Dict)
     # MSR 
     ETS["X_MSR"] = zeros(data["nyears"],12);
     ETS["MSR"] = zeros(data["nyears"],12);
-    ETS["MSR"][1] = data["MSR_2019"]
-    ETS["MSR"][2] = data["MSR_2020"]
+    ETS["MSR"][1,12] = data["MSR_2019"]
+    ETS["MSR"][2,12] = data["MSR_2020"]
     ETS["C"] = zeros(data["nyears"],12);
     ETS["X_MSR_MAX_POS"] = zeros(data["nyears"])
     ETS["X_MSR_MAX_POS"][1:2] = zeros(2,1);
