@@ -306,11 +306,11 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number
+while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number
     # Calibration β - new estimate:
-    println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"]," €/tCO2"))
+    println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][3]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))

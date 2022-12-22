@@ -1,5 +1,5 @@
 General: 
-  nyears: 42
+  nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
   nReprDays: 8 # days
   nMonths: 12 # number of months
@@ -13,7 +13,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 10000 # maximum number of iterations
+ max_iter: 100000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -76,7 +76,7 @@ H2:
 Industry: 
   E_ref: 1900 #  MtCO2 - baseline emissions MACC
   tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
-  SF_ind: 0.38410844005092487 # relative share of emissions from industry in 2021
+  SF_ind: 0.38410844005092487 # relative share of emissions from industry in 2021, excluding emissions from hydrogen
   E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   E_ind_2021: 512.9 # Emissions in 2021 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
@@ -135,7 +135,7 @@ HydrogenSector:
    OC: 650 # M€/GW
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
    Lifetime: 15 # Years 
-   Leadtime: 3 # years 
+   Leadtime: 2 # years 
    AF: 1 # - own calculation
    Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
@@ -256,7 +256,7 @@ PowerSector:
   emissions: 0.342 # Mton/TWh (emissions factor: 57 kgCO2/GJ - EERA)
   OC: 880 # MEUR/GW
   Lifetime: 25 # years
-  Leadtime: 5 # years
+  Leadtime: 3 # years
   Legcap_2021: 100 # GW
   Legcap_out: 20 # years
   AF: 0.9 # -
@@ -278,7 +278,7 @@ PowerSector:
   emissions: 0.513 # Mton/TWh (emission factor: 57 kgCO2/GJ - EERA)
   OC: 453 # MEUR/GW
   Lifetime: 25 # years
-  Leadtime: 3 # years
+  Leadtime: 1 # years
   Legcap_2021: 13.4 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
@@ -300,7 +300,7 @@ PowerSector:
   efficiency: 0 # not used
   OC: 453 # MEUR/GW 
   Lifetime: 15 # years
-  Leadtime: 3 # years
+  Leadtime: 1 # years
   Legcap_2021: 16.95 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
@@ -348,7 +348,7 @@ PowerSector:
   Legcap_2021: 110.84 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
-  Leadtime: 3 # years
+  Leadtime: 1 # years
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -1.4 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
@@ -372,7 +372,7 @@ PowerSector:
   Legcap_2021: 164.87 # GW
   Legcap_out: 15 # years
   Lifetime: 25 # years
-  Leadtime: 3 # years
+  Leadtime: 1 # years
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
@@ -396,7 +396,7 @@ PowerSector:
   Legcap_2021: 14.12 # GW
   Legcap_out: 18 # years
   Lifetime: 25 # years
-  Leadtime: 3 # years
+  Leadtime: 2 # years
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY

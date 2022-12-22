@@ -2,15 +2,13 @@ function define_ETS_parameters!(ETS::Dict,data::Dict)
     # LRF 
     LRF_tot = data["LRF_stat_2021"]/data["CAP_stat_2021"]*(data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"])
     ETS["LRF"] = zeros(data["nyears"])                                                                                 
-    ETS["LRF"][3:12] = LRF_tot*data["LRF_2021"]/0.022*ones(10,1)                            # 2021-2030
-    ETS["LRF"][13:end] = LRF_tot*data["LRF_2031"]/0.022*ones(data["nyears"]-12,1)           # 2030 - end ETS
+    ETS["LRF"][1:10] = LRF_tot*data["LRF_2021"]/0.022*ones(10,1)                            # 2021-2030
+    ETS["LRF"][11:end] = LRF_tot*data["LRF_2031"]/0.022*ones(data["nyears"]-10,1)           # 2031-end ETS
        
     # CAP
     ETS["CAP"] = zeros(data["nyears"])
-    ETS["CAP"][1] = data["S_2019"]                                                                          # effective supply in 2019
-    ETS["CAP"][2] = data["S_2020"] + data["TNAC_2020"]                                                      # effective supply in 2020 + TNAC at the end of 2020 
-    ETS["CAP"][3] = data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"]               # 2021
-    for y =4:data["nyears"]                                                                                 # 2022-end
+    ETS["CAP"][1] = data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"]               # 2021
+    for y =2:data["nyears"]                                                                                 # 2022-end
         ETS["CAP"][y]= maximum([ETS["CAP"][y-1]-ETS["LRF"][y-1] 0])
     end
 
@@ -18,28 +16,26 @@ function define_ETS_parameters!(ETS::Dict,data::Dict)
     ETS["S"] = copy(ETS["CAP"])
 
     # TNAC 
-    ETS["TNAC"] = zeros(data["nyears"]);
+    ETS["TNAC"] = zeros(data["nyears"]+2);  # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
     ETS["TNAC"][1] = data["TNAC_2019"]
     ETS["TNAC"][2] = data["TNAC_2020"]
 
     # MSR 
-    ETS["X_MSR"] = zeros(data["nyears"],12);
-    ETS["MSR"] = zeros(data["nyears"],12);
-    ETS["MSR"][1,12] = data["MSR_2019"]
-    ETS["MSR"][2,12] = data["MSR_2020"]
+    ETS["X_MSR"] = zeros(data["nyears"],12); 
+    ETS["MSR"] = zeros(data["nyears"]+1,12); # MSR will be shifted by 1 yeare (i.e., MSR[y,12] is the MSR at the end of year y-1)
+    ETS["MSR"][1,12] = data["MSR_2020"]
     ETS["C"] = zeros(data["nyears"],12);
     ETS["X_MSR_MAX_POS"] = zeros(data["nyears"])
-    ETS["X_MSR_MAX_POS"][1:2] = zeros(2,1);
     if data["MSR"] == 2018
-        ETS["X_MSR_MAX_POS"][1:5] = data["X_MSR_MAX_POS_2019"]*ones(5);  # 24% until 2023
-        ETS["X_MSR_MAX_POS"][6:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-5); 
+        ETS["X_MSR_MAX_POS"][1:3] = data["X_MSR_MAX_POS_2019"]*ones(3);  # 24% until 2023
+        ETS["X_MSR_MAX_POS"][4:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-3); 
     elseif data["MSR"] == 2021
-        ETS["X_MSR_MAX_POS"][1:12] = data["X_MSR_MAX_POS_2019"]*ones(12);  # 24% until 2030
-        ETS["X_MSR_MAX_POS"][13:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-12); 
+        ETS["X_MSR_MAX_POS"][1:10] = data["X_MSR_MAX_POS_2019"]*ones(10);  # 24% until 2030
+        ETS["X_MSR_MAX_POS"][11:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-10); 
     end
     ETS["X_MSR_MAX_NEG"] = zeros(data["nyears"])
-    ETS["X_MSR_MAX_NEG"][1:5] = data["X_MSR_MAX_NEG_2019"]*ones(5);  
-    ETS["X_MSR_MAX_NEG"][6:end] = data["X_MSR_MAX_NEG_2023"]*ones(data["nyears"]-5); 
+    ETS["X_MSR_MAX_NEG"][1:3] = data["X_MSR_MAX_NEG_2019"]*ones(3);  
+    ETS["X_MSR_MAX_NEG"][4:end] = data["X_MSR_MAX_NEG_2023"]*ones(data["nyears"]-3); 
     ETS["TNAC_MAX"] = data["TNAC_MAX"]
     ETS["TNAC_MIN"] = data["TNAC_MIN"]
     ETS["TNAC_THRESHOLD"] = data["TNAC_THRESHOLD"]

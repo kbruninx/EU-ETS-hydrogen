@@ -1,9 +1,7 @@
 function define_ind_parameters!(mod::Model, data::Dict)
     # Emissions bound to historical values in 2019-2021
     mod.ext[:parameters][:e] = zeros(data["nyears"],1)  
-    mod.ext[:parameters][:e][1] = data["E_ind_2019"] 
-    mod.ext[:parameters][:e][2] = data["E_ind_2020"]
-    mod.ext[:parameters][:e][3] = data["E_ind_2021"]
+    mod.ext[:parameters][:e][1] = data["E_ind_2021"]
 
     # β-value
     if data["scen_number"] - data["ref_scen_number"] == 0 # this is a calibration run - provide an initial estimate

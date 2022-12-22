@@ -1,7 +1,7 @@
 # Save results
 function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,data::Dict,agents::Dict,sens) 
     # note that type of "sens" is not defined as a string stored in a dictionary is of type String31, whereas a "regular" string is of type String. Specifying one or the other may trow errors.
-    Years = range(2019,stop=2019+data["nyears"]-1)
+    Years = range(2021,stop=2021+data["nyears"]-1)
     Iterations = range(1,stop=data["CircularBufferSize"])
 
     # Aggregate metrics 
@@ -17,7 +17,10 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_convergence_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Iterations";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap";"DualResidual_ETS";"DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap"])
    
     # ETS
-    mat_output = [Years ETS["CAP"] ETS["S"] sum(ETS["C"][:,:],dims=2) ETS["MSR"][:,12] ETS["TNAC"] sum(results["e"][m][end] for m in agents[:ind]) sum(results["e"][m][end] for m in setdiff(agents[:ets],union(agents[:ind],agents[:ps]))) sum(results["e"][m][end] for m in setdiff(agents[:ets],union(agents[:ind],agents[:h2s]))) results[ "λ"]["EUA"][end] sum(results["b"][m][end] for m in agents[:ind]) sum(results["b"][m][end] for m in setdiff(agents[:ets],agents[:ind]))]
+    # Note: 
+    # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
+    # MSR will be shifted by 1 yeare (i.e., MSR[y,12] is the MSR at the end of year y-1)
+    mat_output = [Years ETS["CAP"] ETS["S"] sum(ETS["C"][:,:],dims=2) ETS["MSR"][2:end,12] ETS["TNAC"][3:end] sum(results["e"][m][end] for m in agents[:ind]) sum(results["e"][m][end] for m in setdiff(agents[:ets],union(agents[:ind],agents[:ps]))) sum(results["e"][m][end] for m in setdiff(agents[:ets],union(agents[:ind],agents[:h2s]))) results[ "λ"]["EUA"][end] sum(results["b"][m][end] for m in agents[:ind]) sum(results["b"][m][end] for m in setdiff(agents[:ets],agents[:ind]))]
     CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_ETS_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";"CAP";"Supply";"Cancellation";"MSR";"TNAC";"Emissions_Ind";"Emissions_H2S"; "Emissions_PS"; "EUAprice"; "EUAs_Ind"; "EUAs_PS"]);
      
     # Power sector

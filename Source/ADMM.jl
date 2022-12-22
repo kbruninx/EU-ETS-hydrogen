@@ -90,9 +90,9 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
             # Such interactions do not occur in other markets.
             @timeit TO "Update prices" begin
                 if data["scenario"]["ref_scen_number"] == data["scenario"]["scen_number"] # calibration run, 2019-2020 ETS prices fixed to historical values, 2021 to be calibrated
-                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; results[ "λ"]["EUA"][end][3:end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][3:end]])    
+                    push!(results[ "λ"]["EUA"], results[ "λ"]["EUA"][end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end])    
                 else # 2019-2021 ETS prices fixed to historical values
-                    push!(results[ "λ"]["EUA"], [ETS["P_2019"]; ETS["P_2020"]; ETS["P_2021"]; results[ "λ"]["EUA"][end][4:end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][4:end]])    
+                    push!(results[ "λ"]["EUA"], [ETS["P_2021"]; results[ "λ"]["EUA"][end][2:end] - ADMM["ρ"]["EUA"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["ETS"][end][2:end]])    
                 end
                 push!(results[ "λ"]["EOM"], results[ "λ"]["EOM"][end] - ADMM["ρ"]["EOM"][end]*ADMM["Imbalances"]["EOM"][end])
                 push!(results[ "λ"]["REC_y"], results[ "λ"]["REC_y"][end] - ADMM["ρ"]["REC_y"][end]/(10*data["General"]["nReprDays"])*ADMM["Imbalances"]["REC_y"][end])
