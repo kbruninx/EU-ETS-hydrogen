@@ -115,9 +115,10 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
         
         # Correct supply in 2021 with TNAC at end of 2020 (needs to be made avaialble to market parties)
         ETS["S"][1] = ETS["S"][1]+ETS["TNAC"][2]
+        
     else # No MSR, supply equals cap except in 2021
         ETS["S"] = copy(ETS["CAP"])
-        ETS["S"][1] = ETS["S"][1]+ETS["TNAC"][2]
+        ETS["S"][1] = ETS["S"][1]+ETS["TNAC"][2] # Correct supply in 2021 with TNAC at end of 2020 (needs to be made avaialble to market parties)
     end
 
     return ETS
