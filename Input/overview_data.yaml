@@ -13,7 +13,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 100000 # maximum number of iterations
+ max_iter: 100 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -38,8 +38,8 @@ ETS:
   X_MSR_MAX_NEG_2023: 100 # MtCO2 
   P_2019: 24.72 # €/ton or M€/MtCO2  (historical average)
   P_2020: 24.76 # €/ton or M€/MtCO2  (historical average)
-  P_2021: 55.22831224 # €/ton or M€/MtCO2 (historical average)
-  P_calibration: 80 # €/ton or M€/MtCO2   
+  P_2021: 80 # 55.22831224 # €/ton or M€/MtCO2 (historical average)
+  P_calibration:  80 # 55.22831224 # €/ton or M€/MtCO2   
   E_2019: 1562.33 #  MtCO2 - emissions in 2019, according to difference between communications to the commission
   E_2020: 1352.492616 #  MtCO2 - emissions in 2020, according to difference between communications to the commission
   E_2021: 1290.418987 #  MtCO2 - emissions in 2021, according to difference between communications to the commission - Note this accounts for impact brexit
@@ -120,7 +120,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap:  50 # % of current capacity
+   max_YoY_new_cap: 50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs

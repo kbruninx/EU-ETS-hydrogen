@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "DelftBlue" # NA, DelftBlue or ThinKing
+HPC = "NA" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -153,8 +153,8 @@ else
     stop_scen = 16
 end
 
-# scen_number = 1
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 2
+# for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -170,8 +170,8 @@ if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_numb
 else
     numb_of_sens = 0 
 end    
-# sens_number = 1 
-for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+sens_number = 1 
+# for sens_number in range(1,stop=numb_of_sens+1,step=1) 
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
@@ -346,16 +346,16 @@ println(string("        "))
 ## 6. Postprocessing and save results 
 if sens_number >= 2
     save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,sensitivity_overview[sens_number-1,:remarks]) 
-    @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
+    # @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
 else
     save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,"ref") 
-    @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref"))
+    # @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref"))
 end
 
 println("Postprocessing & save results: done")
 println("   ")
 
-end # end loop over sensititivity
-end # end for loop over scenarios
+# end # end loop over sensititivity
+# end # end for loop over scenarios
 
 println(string("##############################################################################################"))
