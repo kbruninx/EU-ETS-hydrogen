@@ -3,8 +3,13 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
     # Note: 
     # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
     # MSR will be shifted by 1 yeare (i.e., MSR[y,12] is the MSR at the end of year y-1)
-    
-    if data["MSR"] == 2018 # The MSR according to the 2018 rules
+    if data["MSR"] == "NA"
+        for y = 1:data["nyears"]
+            ETS["TNAC"][y+2] = ETS["TNAC"][y+1] + ETS["CAP"][y] + ETS["Δs"][y] + ETS["DELTA"][y] - e[y] - sum(ETS["C"][y,:]) - ETS["MSR"][y+1,12] # recursive to account for "initial" state of TNAC (TNAC is added to supply in preceding year to make EUAs avaialble to actors, otherwise double counting)
+        end
+        return ETS
+        
+    elseif data["MSR"] == 2018 # The MSR according to the 2018 rules
         for y = 1:data["nyears"]
             for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2
@@ -55,7 +60,6 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
             # TNAC
             # ETS["TNAC"][y] = sum(ETS["CAP"][1:y]) + sum(ETS["Δs"][1:y]) + sum(ETS["DELTA"][1:y]) - sum(e[1:y]) - sum(ETS["C"][1:y,:]) - ETS["MSR"][y,12]
             ETS["TNAC"][y+2] = ETS["TNAC"][y+1] + ETS["CAP"][y] + ETS["Δs"][y] + ETS["DELTA"][y] - e[y] - sum(ETS["C"][y,:]) - ETS["MSR"][y+1,12] # recursive to account for "initial" state of TNAC (TNAC is added to supply in preceding year to make EUAs avaialble to actors, otherwise double counting)
-    
         end
     elseif data["MSR"] == 2021 # The MSR as proposed in the Green Deal
         for y = 1:data["nyears"]
