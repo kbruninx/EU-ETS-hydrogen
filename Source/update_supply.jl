@@ -3,13 +3,7 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
     # Note: 
     # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
     # MSR will be shifted by 1 yeare (i.e., MSR[y,12] is the MSR at the end of year y-1)
-    if data["MSR"] == "NA"
-        for y = 1:data["nyears"]
-            ETS["TNAC"][y+2] = ETS["TNAC"][y+1] + ETS["CAP"][y] + ETS["Δs"][y] + ETS["DELTA"][y] - e[y] - sum(ETS["C"][y,:]) - ETS["MSR"][y+1,12] # recursive to account for "initial" state of TNAC (TNAC is added to supply in preceding year to make EUAs avaialble to actors, otherwise double counting)
-        end
-        return ETS
-        
-    elseif data["MSR"] == 2018 # The MSR according to the 2018 rules
+    if data["MSR"] == 2018 # The MSR according to the 2018 rules
         for y = 1:data["nyears"]
             for m = 1:12
                 if m <= 8 # For the first 8 months, intake/outflow MSR depends on the TNAC in y-2
@@ -121,8 +115,11 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
         # Correct supply in 2021 with TNAC at end of 2020 (needs to be made avaialble to market parties)
         ETS["S"][1] = ETS["S"][1]+ETS["TNAC"][2]
         
-    else # No MSR, supply equals cap except in 2021
+    elseif data["MSR"] == "NA" #   # No MSR, supply equals cap except in 2021
         ETS["S"] = copy(ETS["CAP"])
+        for y = 1:data["nyears"]
+            ETS["TNAC"][y+2] =  ETS["TNAC"][y+1] + ETS["S"][y] - e[y]
+        end
         ETS["S"][1] = ETS["S"][1]+ETS["TNAC"][2] # Correct supply in 2021 with TNAC at end of 2020 (needs to be made avaialble to market parties)
     end
 
