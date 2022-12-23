@@ -9,7 +9,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     tot_em = sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]) 
     
     vector_output = [data["scen_number"]; sens; ADMM["n_iter"]; ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
-                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][5]; tot_em; tot_cost]
+                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][1]; tot_em; tot_cost]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
     # ADMM Convergence 
