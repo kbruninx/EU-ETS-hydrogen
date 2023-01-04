@@ -7,21 +7,22 @@ scenario:
   remarks: missing
   H2_demand_2030: 20
   Additionality: "NA"
-  CNH2_cap_target_2030: 0
+  CNH2_cap_target_2030: 0.0
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
   Sens_analysis: "NO"
   scen_number: 2
-  MSR: 2021
+  MSR: "NA"
   ref_scen_number: 1
   RES_target_2030: 0.4
   H2_demand_2050: 50
-  CNH2_demand_2024: 1
+  CNH2_demand_2024: 0
   gamma: 1
-  CNH2_demand_2030: 10
-  max_em_change: 10
+  CNH2_demand_2030: 1.0
+  max_em_change: 100
 General:
+  operationalYear: 2030
   discount_rate: 0.1
   nMonths: 12
   inflation: 0.02
@@ -92,7 +93,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "SOLAR"
     H2: "NO"
@@ -136,7 +137,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 18
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_OFFSHORE"
     H2: "NO"
@@ -159,7 +160,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_ONSHORE"
     H2: "NO"
@@ -276,10 +277,10 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 100000
+  max_iter: 1000
   rho_EOM: 1
   epsilon: 0.1
-  rho_REC: 1
+  rho_REC: 0.1
   rho_H2CN_prod: 1
   rho_H2: 1
 Industry:
@@ -320,7 +321,7 @@ ETS:
   MSR_2021: 2632.682071
   X_MSR_MAX_NEG_2019: 100
   CAP_aviation_2021: 24.5
-  P_2021: 55.22831224
+  P_2021: 80
   TNAC_2021: 1449.214182
   S_2020: 2173.195623
   X_MSR_MAX_NEG_2023: 100
@@ -360,26 +361,6 @@ HydrogenSector:
     emissions: 0.205
     max_YoY_new_cap: 50
     H2: "YES"
-  electrolysis:
-    efficiency_NG_H2: 0
-    REC: "YES"
-    fuelCosts: 0
-    OC: 650
-    EOM: "YES"
-    AF: 1
-    Leadtime: 2
-    Lifetime: 15
-    YoY_OC: -2.1
-    H2CN_cap: "YES"
-    efficiency_E_H2: 0.66
-    H2CN_prod: "YES"
-    ETS: "NO"
-    Legcap_2021: 0.1
-    NG: "NO"
-    Legcap_out: 15
-    emissions: 0.0
-    max_YoY_new_cap: 1000
-    H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
     REC: "NO"
@@ -398,7 +379,47 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 1000
+    max_YoY_new_cap: 100
+    H2: "YES"
+  electrolysis_base:
+    efficiency_NG_H2: 0
+    REC: "YES"
+    fuelCosts: 0
+    OC: 750
+    EOM: "YES"
+    AF: 1
+    Leadtime: 2
+    Lifetime: 20
+    YoY_OC: -2.1
+    H2CN_cap: "YES"
+    efficiency_E_H2: 0.65
+    H2CN_prod: "YES"
+    ETS: "NO"
+    Legcap_2021: 0.1
+    NG: "NO"
+    Legcap_out: 20
+    emissions: 0.0
+    max_YoY_new_cap: 100
+    H2: "YES"
+  electrolysis_peak:
+    efficiency_NG_H2: 0
+    REC: "YES"
+    fuelCosts: 0
+    OC: 1000
+    EOM: "YES"
+    AF: 1
+    Leadtime: 2
+    Lifetime: 20
+    YoY_OC: -2.1
+    H2CN_cap: "YES"
+    efficiency_E_H2: 0.7
+    H2CN_prod: "YES"
+    ETS: "NO"
+    Legcap_2021: 0.1
+    NG: "NO"
+    Legcap_out: 20
+    emissions: 0.0
+    max_YoY_new_cap: 100
     H2: "YES"
 H2:
   demand: 10

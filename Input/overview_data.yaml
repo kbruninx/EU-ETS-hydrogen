@@ -5,15 +5,16 @@ General:
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
+  operationalYear: 2030
 
 ADMM:
  rho_EUA: 1 # rho ADMM penalty term, EUA market
  rho_EOM: 1 # rho ADMM penalty term, EOM 
- rho_REC: 1 # rho ADMM penalty term, REC electricity
+ rho_REC: 0.1 # rho ADMM penalty term, REC electricity
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 100 # maximum number of iterations
+ max_iter: 1000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -120,7 +121,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 100 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -131,19 +132,40 @@ HydrogenSector:
    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
    NG: "YES" # participate in the natural gas market  
 
-  electrolysis: # unless stated otherwise, based on EUR-pypsa_data
-   OC: 650 # M€/GW
+  electrolysis_base: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 750 # M€/GW
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
-   Lifetime: 15 # Years 
+   Lifetime: 20 # Years 
    Leadtime: 2 # years 
    AF: 1 # - own calculation
    Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
-   efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
+   efficiency_E_H2: 0.65 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 100 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
-   Legcap_out: 15 # years 
+   Legcap_out: 20 # years 
+   REC: "YES" # eligible for RECs
+   ETS: "NO" # covered by ETS
+   EOM: "YES" # participates in EOM
+   H2: "YES" # participate in the H2 market
+   H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "YES" # participate in the carbon neutral H2 market (capacity)
+   NG: "NO" # participate in the natural gas market
+
+  electrolysis_peak: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 1000 # M€/GW
+   fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
+   Lifetime: 20 # Years 
+   Leadtime: 2 # years 
+   AF: 1 # - own calculation
+   Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   efficiency_E_H2: 0.70 # efficiency conversion electricity to hydrogen 
+   efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
+   max_YoY_new_cap: 100 # % of current capacity
+   YoY_OC: -2.1 # % change in overnight investment cost YoY
+   Legcap_out: 20 # years 
    REC: "YES" # eligible for RECs
    ETS: "NO" # covered by ETS
    EOM: "YES" # participates in EOM

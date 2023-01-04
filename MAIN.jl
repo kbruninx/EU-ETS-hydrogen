@@ -119,7 +119,7 @@ sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),Da
 # Create file with results 
 # add column for sensitivity analsysis
 if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv"))) != 1
-    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
+    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost";"PolicyCost"])
 end
 
 # Create folder for results
@@ -150,11 +150,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
 else
     # Range of scenarios to be simulated
     start_scen = 1
-    stop_scen = 16
+    stop_scen = 1
 end
 
-scen_number = 2
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+#scen_number = 2
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -165,13 +165,13 @@ scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_over
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 data = merge(data,scenario_definition)
 
-if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_number] != scen_number
+if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"]["ref_scen_number"] != scen_number
     numb_of_sens = length((sensitivity_overview[!,:Parameter]))
 else
     numb_of_sens = 0 
 end    
 sens_number = 1 
-# for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+for sens_number in range(1,stop=numb_of_sens+1,step=1) 
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
@@ -355,7 +355,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end loop over sensititivity
-# end # end for loop over scenarios
+end 
+end # for loop over scenarios
 
 println(string("##############################################################################################"))
