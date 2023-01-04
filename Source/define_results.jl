@@ -139,9 +139,9 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     ADMM["Tolerance"]["ETS"] = data["epsilon"]/100*maximum(ETS["CAP"])*sqrt(data["nyears"])
     ADMM["Tolerance"]["EOM"] = data["epsilon"]/100*maximum(EOM["D"])*sqrt(data["nyears"]*data["nTimesteps"]*data["nReprDays"])
     ADMM["Tolerance"]["REC_y"] = data["epsilon"]/100*maximum(REC["RT"].*EOM["D_cum"])*sqrt(data["nyears"])  
-    ADMM["Tolerance"]["REC_m"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/12*sqrt(data["nyears"]*12)  
-    ADMM["Tolerance"]["REC_d"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/365*sqrt(data["nyears"]*data["nReprDays"])  
-    ADMM["Tolerance"]["REC_h"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/8760*sqrt(data["nyears"]*data["nTimesteps"]*data["nReprDays"])  
+    ADMM["Tolerance"]["REC_m"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/12*sqrt(data["nyears"]*12)  # unknown what maximum monthly REC requirement will be, assume equal distribtuion over year
+    ADMM["Tolerance"]["REC_d"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/365*sqrt(data["nyears"]*data["nReprDays"])   # unknown what maximum daily REC requirement will be, assume equal distribtuion over year
+    ADMM["Tolerance"]["REC_h"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/8760*sqrt(data["nyears"]*data["nTimesteps"]*data["nReprDays"])   # unknown what maximum hourly REC requirement will be, assume equal distribtuion over year
     ADMM["Tolerance"]["H2"] = data["epsilon"]/100*maximum(H2["D"])*sqrt(data["nyears"])
     ADMM["Tolerance"]["H2CN_prod"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])*sqrt(data["nyears"])
     ADMM["Tolerance"]["H2CN_cap"] = data["epsilon"]/100*maximum(H2CN_cap["H2CN_CAPT"])*sqrt(data["nyears"])
