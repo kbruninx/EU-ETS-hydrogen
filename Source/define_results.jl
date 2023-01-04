@@ -125,8 +125,8 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
 
     ADMM["Tolerance"] = Dict()
     ADMM["Tolerance"]["ETS"] = data["epsilon"]/100*sum(ETS["CAP"])
-    ADMM["Tolerance"]["EOM"] = data["epsilon"]/100*sum(EOM["D"])
-    ADMM["Tolerance"]["REC"] = data["epsilon"]/100*sum(REC["RT"].*EOM["D_cum"])
+    ADMM["Tolerance"]["EOM"] = data["epsilon"]/100*sum(EOM["D_cum"])/(maximum(values(EOM["W"]))^2) # correction to account for worst-case scaling (representative days not accounted for in calculation residuals, avoids large annual mismatch due to small mismatches on daily basis)
+    ADMM["Tolerance"]["REC"] = data["epsilon"]/100*sum(REC["RT"].*EOM["D_cum"])/(maximum(values(EOM["W"]))^2) # correction to account for worst-case scaling (representative days not accounted for in calculation residuals, avoids large annual mismatch due to small mismatches on daily basis)
     ADMM["Tolerance"]["H2"] = data["epsilon"]/100*sum(H2["D"])
     ADMM["Tolerance"]["H2CN_prod"] = data["epsilon"]/100*sum(H2CN_prod["H2CN_PRODT"])
     ADMM["Tolerance"]["H2CN_cap"] = data["epsilon"]/100*sum(H2CN_cap["H2CN_CAPT"])

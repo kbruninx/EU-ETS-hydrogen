@@ -7,8 +7,6 @@ function update_rho!(ADMM::Dict, iter::Int64)
             push!(ADMM["ρ"]["EUA"], 1/1.1*ADMM["ρ"]["EUA"][end])
         end
 
-        # if sum(ADMM["Residuals"]["Primal"]["ETS"][:]+ADMM["Residuals"]["Primal"]["MSR"][:])/length(ADMM["Residuals"]["Primal"]["ETS"][:])> 2*sum(ADMM["Residuals"]["Dual"]["ETS"][:])/length(ADMM["Residuals"]["Dual"]["ETS"][:])
-
         if ADMM["Residuals"]["Primal"]["EOM"][end] > 2*ADMM["Residuals"]["Dual"]["EOM"][end]
             push!(ADMM["ρ"]["EOM"], minimum([1000,1.1*ADMM["ρ"]["EOM"][end]]))
         elseif ADMM["Residuals"]["Dual"]["EOM"][end] > 2*ADMM["Residuals"]["Primal"]["EOM"][end]

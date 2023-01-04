@@ -13,8 +13,8 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 100 # maximum number of iterations
- epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
+ max_iter: 10000 # maximum number of iterations
+ epsilon: 0.01 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial, cumulative imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
 EOM: 
@@ -99,7 +99,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
    emissions: 0.205 # [ton CO2/MWh gas] = [Mton CO2/TWh gas] 
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 20 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -120,7 +120,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 100000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -141,7 +141,7 @@ HydrogenSector:
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 10000 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "YES" # eligible for RECs
@@ -168,7 +168,7 @@ PowerSector:
   Legcap_2021: 104.64 # GW
   Legcap_out: 20 # years
   AF: 0.75 # - own calculation
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -216,7 +216,7 @@ PowerSector:
   Legcap_2021: 74.9 # GW
   Legcap_out: 15 # years
   AF: 0.3 # - own calculation
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
   AF_ts: "NA" # key to find time series with historical output
@@ -304,7 +304,7 @@ PowerSector:
   Legcap_2021: 16.95 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -325,7 +325,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.6 # - 
@@ -347,9 +347,9 @@ PowerSector:
   Legcap_2020: 94.45 # GW
   Legcap_2021: 110.84 # GW
   Legcap_out: 15 # years
-  Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
+  Lifetime: 30 # years - assumed 35 in EUR-PyPSA, seems too high
   Leadtime: 1 # years
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: -1.4 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -373,7 +373,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 1 # years
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -397,7 +397,7 @@ PowerSector:
   Legcap_out: 18 # years
   Lifetime: 25 # years
   Leadtime: 2 # years
-  max_YoY_new_cap: 50 # % of current capacity
+  max_YoY_new_cap: 20 # % of current capacity
   YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.9 # - 
