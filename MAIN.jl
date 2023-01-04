@@ -153,8 +153,8 @@ else
     stop_scen = 16
 end
 
-scen_number = 2
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+# scen_number = 2
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -170,8 +170,8 @@ if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_numb
 else
     numb_of_sens = 0 
 end    
-sens_number = 1 
-# for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+# sens_number = 1 
+for sens_number in range(1,stop=numb_of_sens+1,step=1) 
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
@@ -341,7 +341,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end loop over sensititivity
-# end # end for loop over scenarios
+end # end loop over sensititivity
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))
