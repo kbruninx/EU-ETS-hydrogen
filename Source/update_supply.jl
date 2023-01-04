@@ -3,6 +3,7 @@ function update_supply!(e::Array,ETS::Dict,data::Dict)
     # Note: 
     # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
     # MSR will be shifted by 1 yeare (i.e., MSR[y,12] is the MSR at the end of year y-1)
+
     if data["MSR"] == 2018 # The MSR according to the 2018 rules
         for y = 1:data["nyears"]
             for m = 1:12

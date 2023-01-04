@@ -4,15 +4,15 @@ REC:
 EOM:
   SF: 1
 scenario:
-  remarks: missing
+  remarks: "Used to calibrate MACC"
   H2_demand_2030: 20
   Additionality: "NA"
-  CNH2_cap_target_2030: 40
+  CNH2_cap_target_2030: 0
   LRF_2031: 0.042
   LRF_2021: 0.042
-  CNH2_cap_target_2024: 4
+  CNH2_cap_target_2024: 0
   Sens_analysis: "NO"
-  scen_number: 7
+  scen_number: 1
   MSR: 2021
   ref_scen_number: 1
   RES_target_2030: 0.4
@@ -276,9 +276,9 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 10000
+  max_iter: 100
   rho_EOM: 1
-  epsilon: 1
+  epsilon: 0.1
   rho_REC: 1
   rho_H2CN_prod: 1
   rho_H2: 1

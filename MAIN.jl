@@ -135,11 +135,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
            "--start_scen"
                help = "Enter the number of the first scenario here"
                arg_type = Int
-               default = 1
+               default = 2
             "--stop_scen"
                help = "Enter the number of the last scenario here"
                arg_type = Int
-               default = 1
+               default = 16
        end
        return parse_args(s)
    end
@@ -149,11 +149,11 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
-    stop_scen = 3
+    start_scen = 1
+    stop_scen = 16
 end
 
-scen_number = 7
+scen_number = 2
 # for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
@@ -310,10 +310,10 @@ while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["In
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
-    println(string("Required iterations: ",ADMM["n_iter"]))
-    println(string("Required walltime: ",ADMM["walltime"], " minutes"))
+    println(string("Required iterations: ", ADMM["n_iter"]))
+    println(string("Required walltime: ", ADMM["walltime"], " minutes"))
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 
@@ -327,20 +327,6 @@ println(string("Done!"))
 println(string("        "))
 println(string("Required iterations: ",ADMM["n_iter"]))
 println(string("Required walltime: ",ADMM["walltime"], " minutes"))
-println(string("        "))
-println(string("RP MSR: ",  ADMM["Residuals"]["Primal"]["MSR"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RP ETS: ",  ADMM["Residuals"]["Primal"]["ETS"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RD ETS: ",  ADMM["Residuals"]["Dual"]["ETS"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RP EOM: ",  ADMM["Residuals"]["Primal"]["EOM"][end], " -- Tolerance: ",ADMM["Tolerance"]["EOM"]))
-println(string("RD EOM: ",  ADMM["Residuals"]["Dual"]["EOM"][end], " -- Tolerance: ",ADMM["Tolerance"]["EOM"]))
-println(string("RP REC: ",  ADMM["Residuals"]["Primal"]["REC"][end], " -- Tolerance: ",ADMM["Tolerance"]["REC"]))
-println(string("RD REC: ",  ADMM["Residuals"]["Dual"]["REC"][end], " -- Tolerance: ",ADMM["Tolerance"]["REC"]))
-println(string("RP H2: ",  ADMM["Residuals"]["Primal"]["H2"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2"]))
-println(string("RD H2: ",  ADMM["Residuals"]["Dual"]["H2"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2"]))
-println(string("RP H2CN_prod: ",  ADMM["Residuals"]["Primal"]["H2CN_prod"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_prod"]))
-println(string("RD H2CN_prod: ",  ADMM["Residuals"]["Dual"]["H2CN_prod"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_prod"]))
-println(string("RP H2CN_cap: ",  ADMM["Residuals"]["Primal"]["H2CN_cap"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_cap"]))
-println(string("RD H2CN_cap: ",  ADMM["Residuals"]["Dual"]["H2CN_cap"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_cap"]))
 println(string("        "))
 
 ## 6. Postprocessing and save results 
