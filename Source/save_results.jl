@@ -7,9 +7,10 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     # Aggregate metrics 
     tot_cost = sum(value(mdict[m].ext[:expressions][:tot_cost]) for m in agents[:all])
     tot_em = sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]) 
+    policy_cost = sum(sum(results["h2cn_prod"][m][end].*results["λ"]["H2CN_prod"][end]) + sum(results["h2cn_cap"][m][end].*results["λ"]["H2CN_cap"][end]) for m in agents[:h2cn_prod])
     
     vector_output = [data["scen_number"]; sens; ADMM["n_iter"]; ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
-                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][5]; tot_em; tot_cost]
+                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][5]; tot_em; tot_cost; policy_cost]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
     # ADMM Convergence 
@@ -70,4 +71,18 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     end
     mat_output = [Years transpose(h2_cap) transpose(h2_prod) transpose(h2cn_cap) transpose(h2cn_prod) results["λ"]["H2"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_prod"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_cap"][end]]
     CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_H2_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2s]);string.("PROD_",agents[:h2s]);string.("CN_CAP_",agents[:h2cn_prod]);string.("CN_PROD_",agents[:h2cn_prod]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
+
+    # Operational data
+    Hours = collect(1:data["nTimesteps"]*data["nReprDays"])
+    year = data["operationalYear"]-2022
+    h2_oper = zeros(length(agents[:h2cn_prod]),data["nReprDays"]*data["nTimesteps"])
+    mm = 1
+    for m in agents[:h2cn_prod]
+        h2_oper[mm,:] = -vec(value.(mdict[m].ext[:variables][:g][:,:,year]))
+        mm = mm+1
+    end
+    eom_price = vec(values.(results["λ"]["EOM"][1][:,:,year]))
+    mat_output = [Hours eom_price transpose(h2_oper) ]
+    CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_operation_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Hour";"EOM_price";string.("PROD_",agents[:h2cn_prod])]);
+
 end
