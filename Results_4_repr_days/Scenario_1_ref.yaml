@@ -7,7 +7,7 @@ scenario:
   remarks: "Used to calibrate MACC"
   H2_demand_2030: 20
   Additionality: "NA"
-  CNH2_cap_target_2030: 0.0
+  CNH2_cap_target_2030: 0
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
@@ -278,11 +278,11 @@ ADMM:
   rho_EUA: 1
   rho_H2CN_cap: 1
   max_iter: 1000
-  rho_EOM: 10
-  epsilon: 0.05
+  rho_EOM: 1
+  epsilon: 0.1
   rho_REC: 0.1
   rho_H2CN_prod: 1
-  rho_H2: 10
+  rho_H2: 1
 Industry:
   E_ref: 1900
   SF_ind: 0.38410844005092487
@@ -379,7 +379,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 50
+    max_YoY_new_cap: 200
     H2: "YES"
   electrolysis_base:
     efficiency_NG_H2: 0
@@ -399,7 +399,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 50
+    max_YoY_new_cap: 200
     H2: "YES"
   electrolysis_peak:
     efficiency_NG_H2: 0
@@ -419,7 +419,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 50
+    max_YoY_new_cap: 200
     H2: "YES"
 H2:
   demand: 10

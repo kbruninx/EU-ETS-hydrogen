@@ -7,7 +7,7 @@ scenario:
   remarks: missing
   H2_demand_2030: 20
   Additionality: "NA"
-  CNH2_cap_target_2030: 0.0
+  CNH2_cap_target_2030: 0
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
@@ -379,7 +379,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 100
+    max_YoY_new_cap: 300
     H2: "YES"
   electrolysis_base:
     efficiency_NG_H2: 0
@@ -399,7 +399,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 100
+    max_YoY_new_cap: 300
     H2: "YES"
   electrolysis_peak:
     efficiency_NG_H2: 0
@@ -419,7 +419,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 100
+    max_YoY_new_cap: 300
     H2: "YES"
 H2:
   demand: 10

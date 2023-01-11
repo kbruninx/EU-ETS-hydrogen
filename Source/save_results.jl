@@ -84,5 +84,4 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     eom_price = vec(values.(results["λ"]["EOM"][1][:,:,year]))
     mat_output = [Hours eom_price transpose(h2_oper) ]
     CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_operation_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Hour";"EOM_price";string.("PROD_",agents[:h2cn_prod])]);
-
 end

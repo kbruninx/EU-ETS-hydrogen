@@ -1,4 +1,5 @@
 Parameter;Scaling;remarks
+HydrogenSector electrolysis_peak-electrolysis_base-SMRCCS  max_YoY_new_cap;100;No technical limits
 NG SF;0.5;low natural gas price
 NG SF;2;high natural gas price
 scenario RES_target_2030;1.25;2030 res target 50
@@ -12,7 +13,6 @@ EOM SF;0.5;low demand growth
 EOM SF;2;high demand growth
 HydrogenSector electrolysis_peak-electrolysis_base YoY_OC;0.5;expensive electrolysis
 HydrogenSector electrolysis_peak-electrolysis_base YoY_OC;2;cheap electrolysis
-scenario CNH2_cap_target_2030;2;double CNHydrogen target 2030
 General discount_rate;0.8;Low discount rate
 General discount_rate;1.2;High discount rate
 PowerSector Nuclear-Biomass max_YoY_new_cap;0;No new nuclear-biomass

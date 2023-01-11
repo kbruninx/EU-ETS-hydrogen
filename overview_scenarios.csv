@@ -1,6 +1,6 @@
 scen_number;LRF_2021;LRF_2031;MSR;RES_target_2030;H2_demand_2030;H2_demand_2050;CNH2_cap_target_2024;CNH2_cap_target_2030;CNH2_demand_2024;CNH2_demand_2030;gamma;max_em_change;Additionality;ref_scen_number;Sens_analysis;remarks
 1;0.042;0.042;NA;0.4;20;50;0;0;0;0;1;100;NA;1;NO;Used to calibrate MACC
-2;0.042;0.042;NA;0.4;20;50;0;0;0;1.0;1;100;NA;1;NO;
+2;0.042;0.042;NA;0.4;20;50;0;0;0;0.0;1;100;NA;1;YES;
 3;0.042;0.042;NA;0.4;20;50;0;0;0;1.2;1;100;NA;1;NO;
 4;0.042;0.042;NA;0.4;20;50;0;0;0;1.4;1;100;NA;1;NO;
 5;0.042;0.042;NA;0.4;20;50;0;0;0;1.6;1;100;NA;1;NO;

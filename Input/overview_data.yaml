@@ -121,7 +121,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 100 # % of current capacity
+   max_YoY_new_cap: 300 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -142,7 +142,7 @@ HydrogenSector:
    efficiency_E_H2: 0.65 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 100 # % of current capacity
+   max_YoY_new_cap: 300 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 20 # years 
    REC: "YES" # eligible for RECs
@@ -163,7 +163,7 @@ HydrogenSector:
    efficiency_E_H2: 0.70 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 100 # % of current capacity
+   max_YoY_new_cap: 300 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 20 # years 
    REC: "YES" # eligible for RECs
