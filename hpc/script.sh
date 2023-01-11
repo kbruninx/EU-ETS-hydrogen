@@ -1,14 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name="H2MSR"
-#SBATCH --time=00:10:00
+#SBATCH --job-name="EU-ETS-H2"
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=17
 #SBATCH --partition=compute
 #SBATCH --mem-per-cpu=8GB
-#SBATCH --account=innovation
+#SBATCH --account=research-tpm-ess
+#SBATCH --array=2-6
 
 module load 2022r2
 module load julia
 
-srun julia --threads=4 MAIN_v2.jl > run.log
+srun julia --threads=17 MAIN.jl --start_scen $SLURM_ARRAY_TASK_ID --stop_scen $SLURM_ARRAY_TASK_ID --start_sens 17 --stop_sens 100 > run_$SLURM_ARRAY_TASK_ID.log

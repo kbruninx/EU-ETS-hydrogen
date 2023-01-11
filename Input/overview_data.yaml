@@ -93,13 +93,13 @@ HydrogenSector:
    OC: 540 # M€/GW. 
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years
-   Leadtime: 3  # years - own assumption
+   Leadtime: 2  # years - own assumption
    AF: 1 # - own calculation
    Legcap_2021: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
    emissions: 0.205 # [ton CO2/MWh gas] = [Mton CO2/TWh gas] 
-   max_YoY_new_cap: 20 # % of current capacity
+   max_YoY_new_cap: 50 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -114,13 +114,13 @@ HydrogenSector:
    OC: 1032 # M€/GW.  
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years  
-   Leadtime: 3  # years - own assumption  
+   Leadtime: 2  # years - own assumption  
    AF: 1 # - own calculation
    Legcap_2021: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 100000 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -135,13 +135,13 @@ HydrogenSector:
    OC: 650 # M€/GW
    fuelCosts: 0 # MEUR/MtH2 - will be linked to price of electricity
    Lifetime: 15 # Years 
-   Leadtime: 2 # years 
+   Leadtime: 1 # years 
    AF: 1 # - own calculation
-   Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   Legcap_2021: 0.135 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683, https://www.swp-berlin.org/en/publication/electrolysers-for-the-hydrogen-revolution#:~:text=However%2C%20the%20EU%2Dwide%20electrolysis,still%20pending%20in%20most%20cases. 
    efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 10000 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "YES" # eligible for RECs
@@ -168,7 +168,7 @@ PowerSector:
   Legcap_2021: 104.64 # GW
   Legcap_out: 20 # years
   AF: 0.75 # - own calculation
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -216,7 +216,7 @@ PowerSector:
   Legcap_2021: 74.9 # GW
   Legcap_out: 15 # years
   AF: 0.3 # - own calculation
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 2 # % change in variable cost YoY - based on EERA
   AF_ts: "NA" # key to find time series with historical output
@@ -304,7 +304,7 @@ PowerSector:
   Legcap_2021: 16.95 # GW
   Legcap_out: 10 # years
   AF: 0.85 # -
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: 0 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF_ts: "NA" # key to find time series with historical output
@@ -325,7 +325,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 5 # years
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.6 # - 
@@ -349,7 +349,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 30 # years - assumed 35 in EUR-PyPSA, seems too high
   Leadtime: 1 # years
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -1.4 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -373,7 +373,7 @@ PowerSector:
   Legcap_out: 15 # years
   Lifetime: 25 # years
   Leadtime: 1 # years
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.5 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 1 # - 
@@ -397,7 +397,7 @@ PowerSector:
   Legcap_out: 18 # years
   Lifetime: 25 # years
   Leadtime: 2 # years
-  max_YoY_new_cap: 20 # % of current capacity
+  max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -0.64 # % change in overnight investment cost YoY
   YoY_VC: 0 # % change in variable cost YoY
   AF: 0.9 # - 

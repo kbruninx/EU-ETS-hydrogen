@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -119,7 +119,7 @@ sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),Da
 # Create file with results 
 # add column for sensitivity analsysis
 if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv"))) != 1
-    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost"])
+    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2022";"CumulativeEmissions";"TotalCost"])
 end
 
 # Create folder for results
@@ -135,11 +135,19 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
            "--start_scen"
                help = "Enter the number of the first scenario here"
                arg_type = Int
-               default = 2
+               default = 1
             "--stop_scen"
                help = "Enter the number of the last scenario here"
                arg_type = Int
-               default = 16
+               default = 100
+            "--start_sens"
+               help = "Enter the number of the first sensitivity run here"
+               arg_type = Int
+               default = 1
+            "--stop_sens"
+               help = "Enter the number of the last sensitivity run here"
+               arg_type = Int
+               default = 100
        end
        return parse_args(s)
    end
@@ -147,13 +155,17 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    dict_sim_number =  parse_commandline()
    start_scen = dict_sim_number["start_scen"]
    stop_scen = dict_sim_number["stop_scen"]
+   start_sens = dict_sim_number["start_sens"]
+   stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
     start_scen = 1
-    stop_scen = 16
+    stop_scen = 100
+    start_sens = 1 
+    stop_sens = 100 # will be overwritten 
 end
 
-# scen_number = 2
+# scen_number = 1
 for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
@@ -165,13 +177,10 @@ scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_over
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 data = merge(data,scenario_definition)
 
-if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"][:ref_scen_number] != scen_number
-    numb_of_sens = length((sensitivity_overview[!,:Parameter]))
-else
-    numb_of_sens = 0 
-end    
 # sens_number = 1 
-for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter]),stop_sens])+1,step=1) 
+data["scenario"]["sens_number"] = sens_number 
+
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
@@ -306,14 +315,14 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number
+while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
     mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
-    println(string("Required iterations: ", ADMM["n_iter"]))
-    println(string("Required walltime: ", ADMM["walltime"], " minutes"))
+    println(string("Required iterations: ",ADMM["n_iter"]))
+    println(string("Required walltime: ",ADMM["walltime"], " minutes"))
     println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 

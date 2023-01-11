@@ -1,1 +1,8 @@
 *.jld
+*.aux
+*.fls
+*.log
+*.out
+*.spl
+*.syntex.gz
+*.fdb_latexmk

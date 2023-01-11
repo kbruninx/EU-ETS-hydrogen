@@ -11,15 +11,15 @@ scenario:
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
-  Sens_analysis: "NO"
-  scen_number: 1
   MSR: 2021
+  scen_number: 1
   ref_scen_number: 1
   RES_target_2030: 0.4
   H2_demand_2050: 50
   CNH2_demand_2024: 0
   gamma: 1
   CNH2_demand_2030: 0
+  sens_number: 1
   max_em_change: 10
 General:
   discount_rate: 0.1
@@ -46,7 +46,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "NA"
     H2: "NO"
@@ -92,7 +92,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "SOLAR"
     H2: "NO"
@@ -113,7 +113,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 10
     emissions: 1.028
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "NA"
     H2: "NO"
@@ -136,7 +136,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 18
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_OFFSHORE"
     H2: "NO"
@@ -159,7 +159,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_ONSHORE"
     H2: "NO"
@@ -182,7 +182,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "NA"
     H2: "NO"
@@ -247,7 +247,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0.846
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "NA"
     H2: "NO"
@@ -276,7 +276,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 100
+  max_iter: 10000
   rho_EOM: 1
   epsilon: 0.1
   rho_REC: 1
@@ -347,7 +347,7 @@ HydrogenSector:
     OC: 540
     EOM: "NO"
     AF: 1
-    Leadtime: 3
+    Leadtime: 2
     Lifetime: 25
     YoY_OC: 0
     H2CN_cap: "NO"
@@ -358,7 +358,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.205
-    max_YoY_new_cap: 20
+    max_YoY_new_cap: 50
     H2: "YES"
   electrolysis:
     efficiency_NG_H2: 0
@@ -367,18 +367,18 @@ HydrogenSector:
     OC: 650
     EOM: "YES"
     AF: 1
-    Leadtime: 2
+    Leadtime: 1
     Lifetime: 15
     YoY_OC: -2.1
     H2CN_cap: "YES"
     efficiency_E_H2: 0.66
     H2CN_prod: "YES"
     ETS: "NO"
-    Legcap_2021: 0.1
+    Legcap_2021: 0.135
     NG: "NO"
     Legcap_out: 15
     emissions: 0.0
-    max_YoY_new_cap: 10000
+    max_YoY_new_cap: 1000
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -387,7 +387,7 @@ HydrogenSector:
     OC: 1032
     EOM: "NO"
     AF: 1
-    Leadtime: 3
+    Leadtime: 2
     Lifetime: 25
     YoY_OC: 0
     H2CN_cap: "NO"
@@ -398,7 +398,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 100000
+    max_YoY_new_cap: 1000
     H2: "YES"
 H2:
   demand: 10

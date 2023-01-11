@@ -1,13 +1,12 @@
 Parameter;Scaling;remarks
 NG SF;0.5;low natural gas price
 NG SF;2;high natural gas price
-scenario RES_target_2030;1.25;2030 res target 50
+HydrogenSector electrolysis-SMRCCS max_YoY_new_cap;0.8;High electrolysis buildout
+HydrogenSector electrolysis-SMRCCS max_YoY_new_cap;1.2;Extreme electrolysis buildout
 scenario RES_target_2030;1.5;2030 res target 60
+scenario RES_target_2030;2;2030 res target 80
 PowerSector Solar-WindOnshore-WindOffshore YoY_OC;0.5;Expensive RES
 PowerSector Solar-WindOnshore-WindOffshore YoY_OC;2;Cheap RES
-scenario gamma;2;Quadratic MACC
-scenario gamma;3;Third order MACC
-scenario gamma;4;Fourth order MACC
 EOM SF;0.5;low demand growth
 EOM SF;2;high demand growth
 HydrogenSector electrolysis YoY_OC;0.5;expensive electrolysis
@@ -18,7 +17,5 @@ General discount_rate;1.2;High discount rate
 PowerSector Nuclear-Biomass max_YoY_new_cap;0;No new nuclear-biomass
 PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;0.5;Low RES buildout
 PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;2;High RES buildout
-HydrogenSector electrolysis-SMRCCS  max_YoY_new_cap;0.5;Low CNH buildout
-HydrogenSector electrolysis-SMRCCS  max_YoY_new_cap;1.5;High CNH buildout
 HydrogenSector SMRCCS YoY_OC;0.5;expensive SMR+CCS
 HydrogenSector SMRCCS YoY_OC;2;expensive SMR+CCS
