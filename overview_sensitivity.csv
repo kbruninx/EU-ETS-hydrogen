@@ -1,24 +1,11 @@
 Parameter;Scaling;remarks
-HydrogenSector electrolysis_peak-electrolysis_base-SMRCCS  max_YoY_new_cap;100;No technical limits
-NG SF;0.5;low natural gas price
-NG SF;2;high natural gas price
-scenario RES_target_2030;1.25;2030 res target 50
-scenario RES_target_2030;1.5;2030 res target 60
-PowerSector Solar-WindOnshore-WindOffshore YoY_OC;0.5;Expensive RES
-PowerSector Solar-WindOnshore-WindOffshore YoY_OC;2;Cheap RES
-scenario gamma;2;Quadratic MACC
-scenario gamma;3;Third order MACC
-scenario gamma;4;Fourth order MACC
-EOM SF;0.5;low demand growth
-EOM SF;2;high demand growth
-HydrogenSector electrolysis_peak-electrolysis_base YoY_OC;0.5;expensive electrolysis
-HydrogenSector electrolysis_peak-electrolysis_base YoY_OC;2;cheap electrolysis
-General discount_rate;0.8;Low discount rate
-General discount_rate;1.2;High discount rate
-PowerSector Nuclear-Biomass max_YoY_new_cap;0;No new nuclear-biomass
-PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;0.5;Low RES buildout
-PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;2;High RES buildout
-HydrogenSector electrolysis_peak-electrolysis_base-SMRCCS  max_YoY_new_cap;0.5;Low CNH buildout
-HydrogenSector electrolysis_peak-electrolysis_base-SMRCCS  max_YoY_new_cap;1.5;High CNH buildout
-HydrogenSector SMRCCS YoY_OC;0.5;expensive SMR+CCS
-HydrogenSector SMRCCS YoY_OC;2;expensive SMR+CCS
+HydrogenSector electrolysis_base; 0.8; cheap_PtH_base
+HydrogenSector electrolysis_base; 1.2; Expensive_PtH_base
+HydrogenSector electrolysis_peak; 0.8; cheap_PtH_peak
+HydrogenSector electrolysis_peak; 1.2; expensive_PtH_peak
+NG SF;0.8;low_natural_gas_price
+NG SF;2;high_natural_gas_price
+scenario RES_target_2030;1.25;2030_res_target_50
+scenario RES_target_2030;1.5;2030_res_target_60
+PowerSector Solar-WindOnshore-WindOffshore YoY_OC;0.5;Expensive_RES
+PowerSector Solar-WindOnshore-WindOffshore YoY_OC;2;Cheap_RES

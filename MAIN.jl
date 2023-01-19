@@ -149,8 +149,8 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
-    stop_scen = 2
+    start_scen = 22
+    stop_scen = 28
 end
 
 #scen_number = 2

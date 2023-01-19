@@ -16,13 +16,15 @@ scenario:
   MSR: "NA"
   ref_scen_number: 1
   RES_target_2030: 0.4
+  CNH2_demand_2040: 990
   H2_demand_2050: 50
   CNH2_demand_2024: 0
   gamma: 1
-  CNH2_demand_2030: 2.0
+  CNH2_demand_2030: 0
+  CNH2_cap_target_2040: 0
   max_em_change: 100
 General:
-  operationalYear: 2030
+  operationalYear: 2040
   discount_rate: 0.1
   nMonths: 12
   inflation: 0.02
@@ -399,7 +401,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 300
+    max_YoY_new_cap: 100
     H2: "YES"
   electrolysis_peak:
     efficiency_NG_H2: 0
@@ -419,7 +421,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 20
     emissions: 0.0
-    max_YoY_new_cap: 300
+    max_YoY_new_cap: 100
     H2: "YES"
 H2:
   demand: 10
