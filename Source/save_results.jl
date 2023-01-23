@@ -75,7 +75,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
 
     # Operational data
     Hours = collect(1:data["nTimesteps"]*data["nReprDays"])
-    year = data["operationalYear"]-2022
+    year = data["operationalYear"]-2021
     h2_oper = zeros(length(agents[:h2cn_prod]),data["nReprDays"]*data["nTimesteps"])
     mm = 1
     for m in agents[:h2cn_prod]
