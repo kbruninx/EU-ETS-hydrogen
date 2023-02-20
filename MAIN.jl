@@ -149,12 +149,12 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_scen = dict_sim_number["stop_scen"]
 else
     # Range of scenarios to be simulated
-    start_scen = 193
-    stop_scen = 220
+    start_scen = 221
+    stop_scen = 231
 end
 
-#scen_number = 2
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 2
+#for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -356,6 +356,6 @@ println("Postprocessing & save results: done")
 println("   ")
 
 end 
-end # for loop over scenarios
+#end # for loop over scenarios
 
 println(string("##############################################################################################"))

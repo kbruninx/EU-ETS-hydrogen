@@ -11,7 +11,7 @@ scenario:
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
-  Sens_analysis: "YES"
+  Sens_analysis: "NO"
   scen_number: 24
   MSR: "NA"
   ref_scen_number: 1
