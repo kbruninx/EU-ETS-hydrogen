@@ -14,10 +14,6 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
                      ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][5]; tot_em; tot_cost; H2_policy_cost]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
-    # ADMM Convergence 
-    mat_output = [Iterations ADMM["Residuals"]["Primal"]["ETS"][1:end] ADMM["Residuals"]["Primal"]["MSR"][1:end] ADMM["Residuals"]["Primal"]["EOM"][1:end] ADMM["Residuals"]["Primal"]["REC"][1:end] ADMM["Residuals"]["Primal"]["H2"][1:end] ADMM["Residuals"]["Primal"]["H2CN_prod"][1:end] ADMM["Residuals"]["Primal"]["H2CN_cap"][1:end] ADMM["Residuals"]["Dual"]["ETS"][1:end] ADMM["Residuals"]["Dual"]["EOM"][1:end]  ADMM["Residuals"]["Dual"]["REC"][1:end] ADMM["Residuals"]["Dual"]["H2"][1:end] ADMM["Residuals"]["Dual"]["H2CN_prod"][1:end] ADMM["Residuals"]["Dual"]["H2CN_cap"][1:end]]
-    CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_convergence_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Iterations";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap";"DualResidual_ETS";"DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap"])
-   
     # ETS
     # Note: 
     # TNAC will be shifted by 2 years (i.e., TNAC[y] is the TNAC at the end of year y-2)
@@ -39,7 +35,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         mm = mm+1
     end
     gw = Dict()
-    for m in agents[:eom]
+    for m in agents[:eom] # including electrolysis demand
         gw[m] = value.(mdict[m].ext[:expressions][:gw])
     end
     gw_tot = sum(gw[m] for m in agents[:eom]) # total electricity generation

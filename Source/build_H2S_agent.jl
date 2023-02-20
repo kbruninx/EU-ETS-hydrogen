@@ -58,7 +58,7 @@ function build_h2s_agent!(mod::Model)
     dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_natural_gas_hydrogen")
     b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound=0, base_name="EUA") 
     r_y = mod.ext[:variables][:r_y] = @variable(mod, [jy=JY], upper_bound=0, base_name="REC_y") 
-    r_m = mod.ext[:variables][:r_m] = @variable(mod, [jd=JM,jy=JY], lower_bound=0, base_name="REC_m") 
+    r_m = mod.ext[:variables][:r_m] = @variable(mod, [jd=JM,jy=JY], upper_bound=0, base_name="REC_m") 
     r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], upper_bound=0, base_name="REC_d") 
     r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="REC_h") 
 
@@ -104,18 +104,13 @@ function build_h2s_agent!(mod::Model)
     )
 
     # Investment limits: YoY investment is limited
-    # if LEG_CAP[1] > 1 # More than 1 GW legacy capacity
-        mod.ext[:constraints][:cap_limit] = @constraint(mod,
-            capH[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
-        )
-        mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=2:JY[end]],
-            capH[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1] # [GW]
-        )
-    # else # less than 1 GW of legacy capacity, only enforce after 2024 (otherwise target in 2024 may be infeasible)
-    #     mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=4:JY[end]],
-    #         capH[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1] # [GW]
-    #     )
-    # end
+    mod.ext[:constraints][:cap_limit] = @constraint(mod,
+        capH[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
+    )
+    mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=2:JY[end]],
+        capH[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1] # [GW]
+    )
+
     # Electricity consumption
     mod.ext[:constraints][:elec_consumption] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
         -η_E_H2*g[jh,jd,jy] <= (sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000  # [TWh]

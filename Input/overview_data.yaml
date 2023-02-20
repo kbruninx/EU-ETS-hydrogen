@@ -94,7 +94,7 @@ HydrogenSector:
    OC: 540 # M€/GW. 
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years
-   Leadtime: 3  # years - own assumption
+   Leadtime: 2  # years - own assumption
    AF: 1 # - own calculation
    Legcap_2021: 70 # GW - own calculation - ability to satisfy 10 MtH2/year (current demand)
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
@@ -115,13 +115,13 @@ HydrogenSector:
    OC: 1032 # M€/GW.  
    fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
    Lifetime: 25 # years  
-   Leadtime: 3  # years - own assumption  
+   Leadtime: 2  # years - own assumption  
    AF: 1 # - own calculation
    Legcap_2021: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
-   max_YoY_new_cap: 300 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -138,11 +138,11 @@ HydrogenSector:
    Lifetime: 20 # Years 
    Leadtime: 2 # years 
    AF: 1 # - own calculation
-   Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   Legcap_2021: 0.135 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0.65 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 100 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 20 # years 
    REC: "YES" # eligible for RECs
@@ -161,9 +161,11 @@ HydrogenSector:
    AF: 1 # - own calculation
    Legcap_2021: 0.1 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
    efficiency_E_H2: 0.70 # efficiency conversion electricity to hydrogen 
+   Legcap_2021: 0.135 # GW - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683, https://www.swp-berlin.org/en/publication/electrolysers-for-the-hydrogen-revolution#:~:text=However%2C%20the%20EU%2Dwide%20electrolysis,still%20pending%20in%20most%20cases. 
+   efficiency_E_H2: 0.66 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0 # [ton CO2/MWh] = [Mton CO2/TWh]
-   max_YoY_new_cap: 100 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: -2.1 # % change in overnight investment cost YoY
    Legcap_out: 20 # years 
    REC: "YES" # eligible for RECs
@@ -369,7 +371,7 @@ PowerSector:
   Legcap_2020: 94.45 # GW
   Legcap_2021: 110.84 # GW
   Legcap_out: 15 # years
-  Lifetime: 25 # years - assumed 35 in EUR-PyPSA, seems too high
+  Lifetime: 30 # years - assumed 35 in EUR-PyPSA, seems too high
   Leadtime: 1 # years
   max_YoY_new_cap: 50 # % of current capacity
   YoY_OC: -1.4 # % change in overnight investment cost YoY

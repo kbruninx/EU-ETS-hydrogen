@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -139,7 +139,15 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
             "--stop_scen"
                help = "Enter the number of the last scenario here"
                arg_type = Int
+               default = 100
+            "--start_sens"
+               help = "Enter the number of the first sensitivity run here"
+               arg_type = Int
                default = 1
+            "--stop_sens"
+               help = "Enter the number of the last sensitivity run here"
+               arg_type = Int
+               default = 100
        end
        return parse_args(s)
    end
@@ -147,14 +155,18 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    dict_sim_number =  parse_commandline()
    start_scen = dict_sim_number["start_scen"]
    stop_scen = dict_sim_number["stop_scen"]
+   start_sens = dict_sim_number["start_sens"]
+   stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 221
-    stop_scen = 231
+    start_scen = 1
+    stop_scen = 100
+    start_sens = 1 
+    stop_sens = 100 # will be overwritten 
 end
 
-scen_number = 2
-#for scen_number in range(start_scen,stop=stop_scen,step=1)
+# scen_number = 1
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -165,13 +177,10 @@ scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_over
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 data = merge(data,scenario_definition)
 
-if data["scenario"]["Sens_analysis"] == "YES" && data["scenario"]["ref_scen_number"] != scen_number
-    numb_of_sens = length((sensitivity_overview[!,:Parameter]))
-else
-    numb_of_sens = 0 
-end    
-sens_number = 1 
-for sens_number in range(1,stop=numb_of_sens+1,step=1) 
+# sens_number = 1 
+for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter]),stop_sens])+1,step=1) 
+data["scenario"]["sens_number"] = sens_number 
+
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
@@ -306,11 +315,11 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number
+while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]*1/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))
@@ -328,20 +337,6 @@ println(string("        "))
 println(string("Required iterations: ",ADMM["n_iter"]))
 println(string("Required walltime: ",ADMM["walltime"], " minutes"))
 println(string("        "))
-println(string("RP MSR: ",  ADMM["Residuals"]["Primal"]["MSR"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RP ETS: ",  ADMM["Residuals"]["Primal"]["ETS"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RD ETS: ",  ADMM["Residuals"]["Dual"]["ETS"][end], " -- Tolerance: ",ADMM["Tolerance"]["ETS"]))
-println(string("RP EOM: ",  ADMM["Residuals"]["Primal"]["EOM"][end], " -- Tolerance: ",ADMM["Tolerance"]["EOM"]))
-println(string("RD EOM: ",  ADMM["Residuals"]["Dual"]["EOM"][end], " -- Tolerance: ",ADMM["Tolerance"]["EOM"]))
-println(string("RP REC: ",  ADMM["Residuals"]["Primal"]["REC"][end], " -- Tolerance: ",ADMM["Tolerance"]["REC"]))
-println(string("RD REC: ",  ADMM["Residuals"]["Dual"]["REC"][end], " -- Tolerance: ",ADMM["Tolerance"]["REC"]))
-println(string("RP H2: ",  ADMM["Residuals"]["Primal"]["H2"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2"]))
-println(string("RD H2: ",  ADMM["Residuals"]["Dual"]["H2"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2"]))
-println(string("RP H2CN_prod: ",  ADMM["Residuals"]["Primal"]["H2CN_prod"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_prod"]))
-println(string("RD H2CN_prod: ",  ADMM["Residuals"]["Dual"]["H2CN_prod"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_prod"]))
-println(string("RP H2CN_cap: ",  ADMM["Residuals"]["Primal"]["H2CN_cap"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_cap"]))
-println(string("RD H2CN_cap: ",  ADMM["Residuals"]["Dual"]["H2CN_cap"][end], " -- Tolerance: ",ADMM["Tolerance"]["H2CN_cap"]))
-println(string("        "))
 
 ## 6. Postprocessing and save results 
 if sens_number >= 2
@@ -355,7 +350,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-end 
-#end # for loop over scenarios
+end # end loop over sensititivity
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

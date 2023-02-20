@@ -109,7 +109,7 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     end
 
      # Covered by incentive scheme for carbon neutral hydrogen?
-     if data["H2CN_cap"] == "YES" 
+    if data["H2CN_cap"] == "YES" 
         mod.ext[:parameters][:H2CN_cap] = 1
         push!(agents[:h2cn_cap],m)
     else
