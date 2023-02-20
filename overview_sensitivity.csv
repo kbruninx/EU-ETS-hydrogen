@@ -17,5 +17,5 @@ General discount_rate;1.2;High discount rate
 PowerSector Nuclear-Biomass max_YoY_new_cap;0;No new nuclear-biomass
 PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;0.5;Low RES buildout
 PowerSector Solar-WindOnshore-WindOffshore max_YoY_new_cap;2;High RES buildout
-HydrogenSector SMRCCS YoY_OC;0.5;expensive SMR+CCS
+HydrogenSector SMRCCS YoY_OC;0.5;cheap SMR+CCS
 HydrogenSector SMRCCS YoY_OC;2;expensive SMR+CCS

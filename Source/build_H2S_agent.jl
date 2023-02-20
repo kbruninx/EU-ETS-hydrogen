@@ -26,9 +26,18 @@ function build_h2s_agent!(mod::Model)
     λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
     g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
     ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EUA auctions
-    λ_H2 = mod.ext[:parameters][:λ_H2] # H2 prices
-    gH_bar = mod.ext[:parameters][:gH_bar] # element in ADMM penalty term related to hydrogen market
-    ρ_H2 = mod.ext[:parameters][:ρ_H2] # rho-value in ADMM related to H2 market
+    λ_h_H2 = mod.ext[:parameters][:λ_h_H2] # H2 prices
+    gH_h_bar = mod.ext[:parameters][:gH_h_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_h_H2 = mod.ext[:parameters][:ρ_h_H2] # rho-value in ADMM related to H2 market
+    λ_d_H2 = mod.ext[:parameters][:λ_d_H2] # H2 prices
+    gH_d_bar = mod.ext[:parameters][:gH_d_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_d_H2 = mod.ext[:parameters][:ρ_d_H2] # rho-value in ADMM related to H2 market
+    λ_m_H2 = mod.ext[:parameters][:λ_m_H2] # H2 prices
+    gH_m_bar = mod.ext[:parameters][:gH_m_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_m_H2 = mod.ext[:parameters][:ρ_m_H2] # rho-value in ADMM related to H2 market
+    λ_y_H2 = mod.ext[:parameters][:λ_y_H2] # H2 prices
+    gH_y_bar = mod.ext[:parameters][:gH_y_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_y_H2 = mod.ext[:parameters][:ρ_y_H2] # rho-value in ADMM related to H2 market
     λ_H2CN_prod = mod.ext[:parameters][:λ_H2CN_prod] # Carbon neutral H2 generation subsidy
     gHCN_bar = mod.ext[:parameters][:gHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen generation subsidy
     ρ_H2CN_prod = mod.ext[:parameters][:ρ_H2CN_prod] # rho-value in ADMM related to carbon neutral H2 generation subsidy 
@@ -52,7 +61,7 @@ function build_h2s_agent!(mod::Model)
     # Decision variables
     capH = mod.ext[:variables][:capH] = @variable(mod, [jy=JY], lower_bound=0, base_name="capacity")
     capHCN = mod.ext[:variables][:capHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="green_capacity")
-    gH = mod.ext[:variables][:gH] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_hydrogen")
+    gH = mod.ext[:variables][:gH] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="generation_hydrogen")
     gHCN = mod.ext[:variables][:gHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_carbon_neutral_hydrogen")
     g = mod.ext[:variables][:g] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="demand_electricity_hydrogen") # note this is defined as a negative number, consumption
     dNG = mod.ext[:variables][:dNG] = @variable(mod, [jy=JY], lower_bound=0, base_name="demand_natural_gas_hydrogen")
@@ -61,13 +70,27 @@ function build_h2s_agent!(mod::Model)
     r_m = mod.ext[:variables][:r_m] = @variable(mod, [jd=JM,jy=JY], upper_bound=0, base_name="REC_m") 
     r_d = mod.ext[:variables][:r_d] = @variable(mod, [jd=JD,jy=JY], upper_bound=0, base_name="REC_d") 
     r_h = mod.ext[:variables][:r_h] = @variable(mod, [jh=JH,jd=JD,jy=JY], upper_bound=0, base_name="REC_h") 
+    gH_m = mod.ext[:variables][:gH_m] = @variable(mod, [jm=JM,jy=JY],lower_bound=0, base_name="generation_hydrogen_monthly") # needs to be variable to get feasible solution with representative days (combination of days may not allow exact match of montly demand, may be infeasible)
 
-    # Create affine expressions - used in postprocessing
+    # Create affine expressions  
     mod.ext[:expressions][:e] = @expression(mod, [jy=JY],
         CI*dNG[jy]
     )
     mod.ext[:expressions][:gw] = @expression(mod, [jh=JH,jd=JD,jy=JY],
         W[jd]*g[jh,jd,jy]
+    )
+    gH_y = mod.ext[:expressions][:gH_y] = @expression(mod, [jy=JY],
+        sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD)
+    )
+
+    gH_d = mod.ext[:expressions][:gH_d] = @expression(mod, [jd=JD,jy=JY],
+        sum(gH[jh,jd,jy] for jh in JH)
+    )
+    mod.ext[:expressions][:gH_h_w] = @expression(mod, [jh=JH,jd=JD,jy=JY],
+        W[jd]*gH[jh,jd,jy] 
+    )
+    mod.ext[:expressions][:gH_d_w] = @expression(mod, [jd=JD,jy=JY],
+        W[jd]*sum(gH[jh,jd,jy] for jh in JH)
     )
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)  
@@ -83,13 +106,19 @@ function build_h2s_agent!(mod::Model)
     - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
     - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
-    - sum(A[jy]*λ_H2[jy]*gH[jy] for jy in JY)
+    - sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+    - sum(A[jy]*W[jd]*λ_d_H2[jd,jy]*gH_d[jd,jy] for jd in JD, jy in JY)
+    - sum(A[jy]*λ_m_H2[jm,jy]*gH_m[jm,jy] for jm in JM, jy in JY)
+    - sum(A[jy]*λ_y_H2[jy]*gH_y[jy] for jy in JY)
     - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
     - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
     + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
     + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
     + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
-    + sum(ρ_H2/2*(gH[jy] - gH_bar[jy])^2 for jy in JY) 
+    + sum(ρ_h_H2/2*W[jd]*(gH[jh,jd,jy] - gH_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) 
+    + sum(ρ_d_H2/2*W[jd]*(gH_d[jd,jy] - gH_d_bar[jd,jy])^2 for jd in JD, jy in JY) 
+    + sum(ρ_m_H2/2*(gH_m[jm,jy] - gH_m_bar[jm,jy])^2 for jm in JM, jy in JY) 
+    + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY) 
     + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
     + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
     + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
@@ -99,16 +128,21 @@ function build_h2s_agent!(mod::Model)
     )
     
     # Constraints
-    mod.ext[:constraints][:gen_limit_capacity] = @constraint(mod, [jy=JY],
-        gH[jy] <=  8760*((sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000) # [TWh]        
+    mod.ext[:constraints][:gen_limit_capacity] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+        gH[jh,jd,jy] <=  (sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000 # [TWh]        
     )
+
+    # montlhly limit
+    mod.ext[:constraints][:monthly_gen] = @constraint(mod, [jm=JM,jy=JY],
+        gH_m[jm,jy] <= sum(Wm[jd,jm]*gH[jh,jd,jy] for jh in JH,jd in JD)
+    ) 
 
     # Investment limits: YoY investment is limited
     mod.ext[:constraints][:cap_limit] = @constraint(mod,
         capH[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
     )
     mod.ext[:constraints][:cap_limit] = @constraint(mod, [jy=2:JY[end]],
-        capH[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1] # [GW]
+        capH[jy] <= DELTA_CAP_MAX*(sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy-1) + LEG_CAP[jy-1]) # [GW]
     )
 
     # Electricity consumption
@@ -117,13 +151,21 @@ function build_h2s_agent!(mod::Model)
     )    
 
     # Total H2 production
-    mod.ext[:constraints][:gen_limit_energy_sources] = @constraint(mod, [jy=JY],
-        gH[jy] <= -sum(W[jd]*η_E_H2*g[jh,jd,jy] for jh in JH, jd in JD) + (η_NG_H2*dNG[jy]) # [TWh]
-    )
+    if mod.ext[:parameters][:EOM] == 1 
+        mod.ext[:constraints][:gen_limit_energy_sources] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
+            gH[jh,jd,jy] <= -η_E_H2*g[jh,jd,jy]  # [TWh]
+        )
+    end
+
+    if mod.ext[:parameters][:NG] == 1 
+        mod.ext[:constraints][:gen_limit_energy_sources] = @constraint(mod, [jy=JY],
+            sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD) <= η_NG_H2*dNG[jy] # [TWh]
+        )
+    end
     
     if mod.ext[:parameters][:H2CN_prod] == 1
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
-            gHCN[jy] <= gH[jy] # [TWh]
+            gHCN[jy] <=  sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD) # [TWh]
         )
     else
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],

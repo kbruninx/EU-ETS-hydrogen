@@ -51,9 +51,21 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     mod.ext[:parameters][:ρ_h_REC] = 0                                                                  # ADMM rho value 
     
     # Parameters related to the H2 market
-    mod.ext[:parameters][:λ_H2] = zeros(data["nyears"],1)       # Price structure
-    mod.ext[:parameters][:gH_bar] = zeros(data["nyears"],1)     # ADMM penalty term
-    mod.ext[:parameters][:ρ_H2] = data["rho_H2"]                # ADMM rho value 
+    mod.ext[:parameters][:λ_h_H2] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])       # Price structure
+    mod.ext[:parameters][:gH_h_bar] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])     # ADMM penalty term
+    mod.ext[:parameters][:ρ_h_H2] = data["rho_H2"]                                                   # ADMM rho value 
+
+    mod.ext[:parameters][:λ_d_H2] = zeros(data["nReprDays"],data["nyears"])       # Price structure
+    mod.ext[:parameters][:gH_d_bar] = zeros(data["nReprDays"],data["nyears"])     # ADMM penalty term
+    mod.ext[:parameters][:ρ_d_H2] = data["rho_H2"]                                # ADMM rho value 
+
+    mod.ext[:parameters][:λ_m_H2] = zeros(data["nMonths"],data["nyears"])       # Price structure
+    mod.ext[:parameters][:gH_m_bar] = zeros(data["nMonths"],data["nyears"])     # ADMM penalty term
+    mod.ext[:parameters][:ρ_m_H2] = data["rho_H2"]                              # ADMM rho value 
+
+    mod.ext[:parameters][:λ_y_H2] = zeros(data["nyears"])       # Price structure
+    mod.ext[:parameters][:gH_y_bar] = zeros(data["nyears"])     # ADMM penalty term
+    mod.ext[:parameters][:ρ_y_H2] = data["rho_H2"]              # ADMM rho value 
 
     # Parameters related to the carbon-neutral H2 generation subsidy
     mod.ext[:parameters][:λ_H2CN_prod] = zeros(data["nyears"],1)        # Price structure

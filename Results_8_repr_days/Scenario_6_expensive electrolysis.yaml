@@ -2,7 +2,7 @@ REC:
   RES_share_other_2021: 0.174119315
   RES_target_2020: 0.34
 EOM:
-  SF: 1.0
+  SF: 1
 scenario:
   remarks: missing
   H2_demand_2030: 20
@@ -14,11 +14,12 @@ scenario:
   MSR: 2021
   scen_number: 6
   ref_scen_number: 1
-  RES_target_2030: 1.2000000000000002
+  RES_target_2030: 0.4
   H2_demand_2050: 50
   CNH2_demand_2024: 1
   gamma: 1
   CNH2_demand_2030: 10
+  H2_balance: "Yearly"
   sens_number: 12
   max_em_change: 10
 General:
@@ -328,7 +329,7 @@ NG:
   P_2023: 150
   P_2030: 43.9
   P_2025: 100
-  SF: 1.0
+  SF: 1
   P_2019: 25
   P_2028: 45
   P_2026: 75
@@ -378,7 +379,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0.0
-    max_YoY_new_cap: 960.0
+    max_YoY_new_cap: 500
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -398,7 +399,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 960.0
+    max_YoY_new_cap: 500
     H2: "YES"
 H2:
   demand: 10

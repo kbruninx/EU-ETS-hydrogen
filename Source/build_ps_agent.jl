@@ -95,13 +95,13 @@ function build_ps_agent!(mod::Model)
             cap[1] <= DELTA_CAP_MAX*LEG_CAP[1] # [GW]
         )
         mod.ext[:constraints][:invest_limit] = @constraint(mod, [jy=2:JY[end]],
-            cap[jy] <= DELTA_CAP_MAX*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy-1) + LEG_CAP[jy-1]
+            cap[jy] <= DELTA_CAP_MAX*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy-1) + LEG_CAP[jy-1])
         ) 
 
         # Generation of RES from new capacity that participates in REC auction
         if mod.ext[:parameters][:REC] == 1
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-                r_y[jy] <= sum(W[jd]*AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy])  for jh in JH, jd in JD)/1000 - sum(W[jd]*r_h[jh,jd,jy] for jh in JH,jd in JD) - sum(W[jd]*r_d[jd,jy] for jd in JD)  # scaling factor needed to go from GW -> TWh
+                r_y[jy] <= sum(W[jd]*AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy])  for jh in JH, jd in JD)/1000 - sum(W[jd]*r_h[jh,jd,jy] for jh in JH,jd in JD) - sum(W[jd]*r_d[jd,jy] for jd in JD) - sum(r_m[jm,jy] for jm in JM)  # scaling factor needed to go from GW -> TWh
             )
             mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
                 r_m[jm,jy] <= sum(Wm[jd,jm]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000

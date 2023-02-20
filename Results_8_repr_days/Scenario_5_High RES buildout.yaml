@@ -7,7 +7,7 @@ scenario:
   remarks: missing
   H2_demand_2030: 20
   Additionality: "Daily"
-  CNH2_cap_target_2030: 100
+  CNH2_cap_target_2030: 200.0
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 6
@@ -19,10 +19,11 @@ scenario:
   CNH2_demand_2024: 1
   gamma: 1
   CNH2_demand_2030: 10
+  H2_balance: "Yearly"
   sens_number: 19
   max_em_change: 10
 General:
-  discount_rate: 0.1
+  discount_rate: 0.09600000000000002
   nMonths: 12
   inflation: 0.02
   nTimesteps: 24
@@ -378,7 +379,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0.0
-    max_YoY_new_cap: 1000
+    max_YoY_new_cap: 500
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -398,7 +399,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 1000
+    max_YoY_new_cap: 500
     H2: "YES"
 H2:
   demand: 10
