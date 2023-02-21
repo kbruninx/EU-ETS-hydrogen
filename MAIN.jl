@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "DelftBlue" # NA, DelftBlue or ThinKing
+HPC = "NA" #"DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -160,7 +160,7 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
 else
     # Range of scenarios to be simulated
     start_scen = 1
-    stop_scen = 100
+    stop_scen = 2
     start_sens = 1 
     stop_sens = 100 # will be overwritten 
 end
