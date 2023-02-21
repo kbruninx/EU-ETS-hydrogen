@@ -6,7 +6,10 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     results["r_d"] = Dict()
     results["r_h"] = Dict()
     results["b"] = Dict()
-    results["h2"] = Dict()
+    results["h2_y"] = Dict()
+    results["h2_d"] = Dict()
+    results["h2_m"] = Dict()
+    results["h2_h"] = Dict()
     results["h2cn_prod"] = Dict()
     results["h2cn_cap"] = Dict()
 
@@ -31,8 +34,14 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
         push!(results["g"][m],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
     end
     for m in agents[:h2]
-        results["h2"][m] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 
-        push!(results["h2"][m],zeros(data["nyears"]))
+        results["h2_y"][m] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 
+        push!(results["h2_y"][m],zeros(data["nyears"]))
+        results["h2_m"][m] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"]) 
+        push!(results["h2_m"][m],zeros(data["nMonths"],data["nyears"]))
+        results["h2_d"][m] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"]) 
+        push!(results["h2_d"][m],zeros(data["nReprDays"],data["nyears"]))
+        results["h2_h"][m] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"]) 
+        push!(results["h2_h"][m],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
     end
     for m in agents[:h2cn_prod]
         results["h2cn_prod"][m] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"]) 
@@ -61,8 +70,15 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(results["λ"]["REC_d"],zeros(data["nReprDays"],data["nyears"]))
     results["λ"]["REC_h"] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"])  
     push!(results["λ"]["REC_h"],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
-    results["λ"]["H2"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])  
-    push!(results["λ"]["H2"],zeros(data["nyears"]))
+    results["λ"]["H2_h"] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"])  
+    push!(results["λ"]["H2_h"],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
+    results["λ"]["H2_d"] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"])  
+    push!(results["λ"]["H2_d"],zeros(data["nReprDays"],data["nyears"]))
+    results["λ"]["H2_m"] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"])  
+    push!(results["λ"]["H2_m"],zeros(data["nMonths"],data["nyears"]))
+    results["λ"]["H2_y"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])  
+    push!(results["λ"]["H2_y"],zeros(data["nyears"]))
+
     results["λ"]["H2CN_prod"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])  
     push!(results["λ"]["H2CN_prod"],zeros(data["nyears"]))
     results["λ"]["H2CN_cap"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])  
@@ -85,8 +101,14 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(ADMM["Imbalances"]["REC_d"],zeros(data["nReprDays"],data["nyears"]))
     ADMM["Imbalances"]["REC_h"] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"])
     push!(ADMM["Imbalances"]["REC_h"],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
-    ADMM["Imbalances"]["H2"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])
-    push!(ADMM["Imbalances"]["H2"],zeros(data["nyears"]))
+    ADMM["Imbalances"]["H2_h"] = CircularBuffer{Array{Float64,3}}(data["CircularBufferSize"])
+    push!(ADMM["Imbalances"]["H2_h"],zeros(data["nTimesteps"],data["nReprDays"],data["nyears"]))
+    ADMM["Imbalances"]["H2_d"] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"])
+    push!(ADMM["Imbalances"]["H2_d"],zeros(data["nReprDays"],data["nyears"]))
+    ADMM["Imbalances"]["H2_m"] = CircularBuffer{Array{Float64,2}}(data["CircularBufferSize"])
+    push!(ADMM["Imbalances"]["H2_m"],zeros(data["nMonths"],data["nyears"]))
+    ADMM["Imbalances"]["H2_y"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])
+    push!(ADMM["Imbalances"]["H2_y"],zeros(data["nyears"]))
     ADMM["Imbalances"]["H2CN_prod"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])
     push!(ADMM["Imbalances"]["H2CN_prod"],zeros(data["nyears"]))
     ADMM["Imbalances"]["H2CN_cap"] = CircularBuffer{Array{Float64,1}}(data["CircularBufferSize"])
@@ -108,8 +130,14 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(ADMM["Residuals"]["Primal"]["REC_h"],0)
     ADMM["Residuals"]["Primal"]["EOM"] = CircularBuffer{Float64}(data["CircularBufferSize"])
     push!(ADMM["Residuals"]["Primal"]["EOM"],0)
-    ADMM["Residuals"]["Primal"]["H2"] = CircularBuffer{Float64}(data["CircularBufferSize"])
-    push!(ADMM["Residuals"]["Primal"]["H2"],0)
+    ADMM["Residuals"]["Primal"]["H2_h"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Primal"]["H2_h"],0)
+    ADMM["Residuals"]["Primal"]["H2_d"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Primal"]["H2_d"],0)
+    ADMM["Residuals"]["Primal"]["H2_m"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Primal"]["H2_m"],0)
+    ADMM["Residuals"]["Primal"]["H2_y"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Primal"]["H2_y"],0)
     ADMM["Residuals"]["Primal"]["H2CN_prod"] = CircularBuffer{Float64}(data["CircularBufferSize"])
     push!(ADMM["Residuals"]["Primal"]["H2CN_prod"],0)
     ADMM["Residuals"]["Primal"]["H2CN_cap"] = CircularBuffer{Float64}(data["CircularBufferSize"])
@@ -128,8 +156,14 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(ADMM["Residuals"]["Dual"]["REC_h"],0)
     ADMM["Residuals"]["Dual"]["EOM"] = CircularBuffer{Float64}(data["CircularBufferSize"])
     push!(ADMM["Residuals"]["Dual"]["EOM"],0)
-    ADMM["Residuals"]["Dual"]["H2"] = CircularBuffer{Float64}(data["CircularBufferSize"])
-    push!(ADMM["Residuals"]["Dual"]["H2"],0)
+    ADMM["Residuals"]["Dual"]["H2_h"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Dual"]["H2_h"],0)
+    ADMM["Residuals"]["Dual"]["H2_d"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Dual"]["H2_d"],0)
+    ADMM["Residuals"]["Dual"]["H2_m"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Dual"]["H2_m"],0)
+    ADMM["Residuals"]["Dual"]["H2_y"] = CircularBuffer{Float64}(data["CircularBufferSize"])
+    push!(ADMM["Residuals"]["Dual"]["H2_y"],0)
     ADMM["Residuals"]["Dual"]["H2CN_prod"] = CircularBuffer{Float64}(data["CircularBufferSize"])
     push!(ADMM["Residuals"]["Dual"]["H2CN_prod"],0)
     ADMM["Residuals"]["Dual"]["H2CN_cap"] = CircularBuffer{Float64}(data["CircularBufferSize"])
@@ -142,7 +176,10 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     ADMM["Tolerance"]["REC_m"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/12*sqrt(data["nyears"]*12)  # unknown what maximum monthly REC requirement will be, assume equal distribtuion over year
     ADMM["Tolerance"]["REC_d"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/365*sqrt(data["nyears"]*data["nReprDays"])   # unknown what maximum daily REC requirement will be, assume equal distribtuion over year
     ADMM["Tolerance"]["REC_h"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])/8760*sqrt(data["nyears"]*data["nTimesteps"]*data["nReprDays"])   # unknown what maximum hourly REC requirement will be, assume equal distribtuion over year
-    ADMM["Tolerance"]["H2"] = data["epsilon"]/100*maximum(H2["D"])*sqrt(data["nyears"])
+    ADMM["Tolerance"]["H2_h"] = data["epsilon"]/100*maximum(H2["D_h"])*sqrt(data["nyears"]*data["nTimesteps"]*data["nReprDays"])
+    ADMM["Tolerance"]["H2_d"] = data["epsilon"]/100*maximum(H2["D_d"])*sqrt(data["nyears"]*data["nReprDays"])
+    ADMM["Tolerance"]["H2_m"] = data["epsilon"]/100*maximum(H2["D_m"])*sqrt(data["nyears"]*data["nMonths"])
+    ADMM["Tolerance"]["H2_y"] = data["epsilon"]/100*maximum(H2["D_y"])*sqrt(data["nyears"])
     ADMM["Tolerance"]["H2CN_prod"] = data["epsilon"]/100*maximum(H2CN_prod["H2CN_PRODT"])*sqrt(data["nyears"])
     ADMM["Tolerance"]["H2CN_cap"] = data["epsilon"]/100*maximum(H2CN_cap["H2CN_CAPT"])*sqrt(data["nyears"])
 
@@ -171,8 +208,30 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     else
         push!(ADMM["ρ"]["REC_h"],0)
     end
-    ADMM["ρ"]["H2"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    push!(ADMM["ρ"]["H2"],data["rho_H2"])
+    ADMM["ρ"]["H2_h"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    if data["H2_balance"] == "Hourly" 
+        push!(ADMM["ρ"]["H2_h"],data["rho_H2"])
+    else
+        push!(ADMM["ρ"]["H2_h"],0)
+    end
+    ADMM["ρ"]["H2_d"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    if data["H2_balance"] == "Daily" 
+        push!(ADMM["ρ"]["H2_d"],data["rho_H2"])
+    else
+        push!(ADMM["ρ"]["H2_d"],0)
+    end
+    ADMM["ρ"]["H2_m"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    if data["H2_balance"] == "Monthly" 
+        push!(ADMM["ρ"]["H2_m"],data["rho_H2"])
+    else
+        push!(ADMM["ρ"]["H2_m"],0)
+    end
+    ADMM["ρ"]["H2_y"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    if data["H2_balance"] == "Yearly" 
+        push!(ADMM["ρ"]["H2_y"],data["rho_H2"])
+    else
+        push!(ADMM["ρ"]["H2_y"],0)
+    end
     ADMM["ρ"]["H2CN_prod"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["H2CN_prod"],data["rho_H2CN_prod"])
     ADMM["ρ"]["H2CN_cap"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 

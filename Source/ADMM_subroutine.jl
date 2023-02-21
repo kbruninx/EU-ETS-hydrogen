@@ -31,9 +31,18 @@ TO_local = TimerOutput()
         mod.ext[:parameters][:ρ_h_REC] = ADMM["ρ"]["REC_h"][end]
     end
     if mod.ext[:parameters][:H2] == 1
-        mod.ext[:parameters][:gH_bar] = results["h2"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2"][end]
-        mod.ext[:parameters][:λ_H2] = results["λ"]["H2"][end] 
-        mod.ext[:parameters][:ρ_H2] = ADMM["ρ"]["H2"][end]
+        mod.ext[:parameters][:gH_h_bar] = results["h2_h"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2_h"][end]
+        mod.ext[:parameters][:λ_h_H2] = results["λ"]["H2_h"][end] 
+        mod.ext[:parameters][:ρ_h_H2] = ADMM["ρ"]["H2_h"][end]
+        mod.ext[:parameters][:gH_d_bar] = results["h2_d"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2_d"][end]
+        mod.ext[:parameters][:λ_d_H2] = results["λ"]["H2_d"][end] 
+        mod.ext[:parameters][:ρ_d_H2] = ADMM["ρ"]["H2_d"][end]
+        mod.ext[:parameters][:gH_m_bar] = results["h2_m"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2_m"][end]
+        mod.ext[:parameters][:λ_m_H2] = results["λ"]["H2_m"][end] 
+        mod.ext[:parameters][:ρ_m_H2] = ADMM["ρ"]["H2_m"][end]
+        mod.ext[:parameters][:gH_y_bar] = results["h2_y"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2_y"][end]
+        mod.ext[:parameters][:λ_y_H2] = results["λ"]["H2_y"][end] 
+        mod.ext[:parameters][:ρ_y_H2] = ADMM["ρ"]["H2_y"][end]
     end
     if mod.ext[:parameters][:H2CN_prod] == 1
         mod.ext[:parameters][:gHCN_bar] = results["h2cn_prod"][m][end] - 1/(H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["H2CN_prod"][end]
@@ -86,7 +95,10 @@ end
         push!(results["r_h"][m], collect(value.(mod.ext[:variables][:r_h])))
     end
     if mod.ext[:parameters][:H2] == 1
-        push!(results["h2"][m], collect(value.(mod.ext[:variables][:gH])))
+        push!(results["h2_h"][m], collect(value.(mod.ext[:variables][:gH])))
+        push!(results["h2_d"][m], collect(value.(mod.ext[:expressions][:gH_d])))
+        push!(results["h2_m"][m], collect(value.(mod.ext[:variables][:gH_m])))
+        push!(results["h2_y"][m], collect(value.(mod.ext[:expressions][:gH_y])))
     end                     
     if mod.ext[:parameters][:H2CN_prod] == 1
         push!(results["h2cn_prod"][m], collect(value.(mod.ext[:variables][:gHCN])))

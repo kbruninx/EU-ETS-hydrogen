@@ -6,3 +6,7 @@
 *.spl
 *.syntex.gz
 *.fdb_latexmk
+Results_1_repr_days/
+Results_8_repr_days/
+results 12012022/
+results 13012022/

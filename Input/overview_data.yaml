@@ -121,6 +121,27 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
    emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
+   max_YoY_new_cap: 500 # % of current capacity
+   YoY_OC: 0 # % change in overnight investment cost YoY
+   Legcap_out: 15 # years 
+   REC: "NO" # eligible for RECs
+   ETS: "YES" # covered by ETS
+   EOM: "NO" # participates in EOM
+   H2: "YES" # participate in the carbon neutral H2 market
+   H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+   H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+   NG: "YES" # participate in the natural gas market  
+
+  SMRCCS: # unless stated otherwise, based on EUR-pypsa_data
+   OC: 1032 # M€/GW.  
+   fuelCosts: 0 # M€/MtH2  - will be linked to the gas price 
+   Lifetime: 25 # years  
+   Leadtime: 2  # years - own assumption  
+   AF: 1 # - own calculation
+   Legcap_2021: 0.35 # GW  - calculation based on https://publications.jrc.ec.europa.eu/repository/handle/JRC130683
+   efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
+   efficiency_NG_H2: 0.67 # efficiency conversion natural gas to hydrogen 
+   emissions: 0.0205 # [ton CO2/MWh] = [Mton CO2/TWh]  - assumed capture rate of 90%
    max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 

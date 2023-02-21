@@ -11,7 +11,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
 
 
     vector_output = [data["scen_number"]; sens; ADMM["n_iter"]; ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
-                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][5]; tot_em; tot_cost; H2_policy_cost]
+                     ADMM["Residuals"]["Primal"]["EOM"][end];ADMM["Residuals"]["Primal"]["REC_y"][end]+ADMM["Residuals"]["Primal"]["REC_m"][end]+ADMM["Residuals"]["Primal"]["REC_d"][end]+ADMM["Residuals"]["Primal"]["REC_h"][end]; ADMM["Residuals"]["Primal"]["H2"][end]; ADMM["Residuals"]["Primal"]["H2CN_prod"][end]; ADMM["Residuals"]["Primal"]["H2CN_cap"][end]; ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; ADMM["Residuals"]["Dual"]["REC_y"][end]+ADMM["Residuals"]["Dual"]["REC_m"][end]+ADMM["Residuals"]["Dual"]["REC_d"][end]+ADMM["Residuals"]["Dual"]["REC_h"][end]; ADMM["Residuals"]["Dual"]["H2"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; results[ "λ"]["EUA"][end][2]; tot_em; tot_cost;H2_policy_cost]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")), DataFrame(reshape(vector_output,1,:),:auto), delim=";",append=true);
 
     # ETS
@@ -55,7 +55,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         LEG_CAP = mdict[m].ext[:parameters][:LEG_CAP]
         cap = value.(mdict[m].ext[:variables][:capH])
         h2_cap[mm,:] = [sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy] for jy in mdict[m].ext[:sets][:JY]]    
-        h2_prod[mm,:] = value.(mdict[m].ext[:variables][:gH])./data["conv_factor"]
+        h2_prod[mm,:] = value.(mdict[m].ext[:expressions][:gH_y])./data["conv_factor"]
         mm = mm+1
     end
     h2cn_prod = zeros(length(agents[:h2cn_prod]),data["nyears"])
@@ -66,7 +66,29 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         h2cn_prod[mm,:] = value.(mdict[m].ext[:variables][:gHCN])./data["conv_factor"]
         mm = mm+1
     end
-    mat_output = [Years transpose(h2_cap) transpose(h2_prod) transpose(h2cn_cap) transpose(h2cn_prod) results["λ"]["H2"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_prod"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_cap"][end]]
+    gHw_h = Dict()
+    gHw_d = Dict()
+    gHw_m = Dict()
+    for m in agents[:h2s]  
+        gHw_h[m] = value.(mdict[m].ext[:expressions][:gH_h_w])
+        gHw_d[m] = value.(mdict[m].ext[:expressions][:gH_d_w])
+        gHw_m[m] = value.(mdict[m].ext[:variables][:gH_m])
+    end
+    gHw_h_tot = sum(gHw_h[m] for m in agents[:h2s]) # total hydrogen production, weighted
+    gHw_d_tot = sum(gHw_d[m] for m in agents[:h2s]) # total hydrogen production, weighted
+    gHw_m_tot = sum(gHw_m[m] for m in agents[:h2s]) # total hydrogen production 
+
+    if data["H2_balance"] == "Hourly"
+        λ_H2_avg = [sum(gHw_h_tot[:,:,jy].*results["λ"]["H2_h"][end][:,:,jy])./sum(gHw_h_tot[:,:,jy])*data["conv_factor"]/1000 for jy in mdict[agents[:h2s][1]].ext[:sets][:JY]]
+    elseif data["H2_balance"] == "Daily"
+        λ_H2_avg = [sum(gHw_d_tot[:,jy].*results["λ"]["H2_d"][end][:,jy])./sum(gHw_d_tot[:,jy])*data["conv_factor"]/1000 for jy in mdict[agents[:h2s][1]].ext[:sets][:JY]]
+    elseif data["H2_balance"] == "Monthly"
+        λ_H2_avg = [sum(gHw_m_tot[:,jy].*results["λ"]["H2_m"][end][:,jy])./sum(gHw_m_tot[:,jy])*data["conv_factor"]/1000 for jy in mdict[agents[:h2s][1]].ext[:sets][:JY]]
+    elseif data["H2_balance"] == "Yearly"
+        λ_H2_avg = results["λ"]["H2_y"][end]*data["conv_factor"]/1000
+    end
+
+    mat_output = [Years transpose(h2_cap) transpose(h2_prod) transpose(h2cn_cap) transpose(h2cn_prod) λ_H2_avg results["λ"]["H2CN_prod"][end]*data["conv_factor"]/1000 results["λ"]["H2CN_cap"][end]]
     CSV.write(joinpath(home_dir,string("Results_",data["nReprDays"],"_repr_days"),string("Scenario_",data["scen_number"],"_H2_",sens,".csv")), DataFrame(mat_output,:auto), delim=";",header=["Year";string.("CAP_",agents[:h2s]);string.("PROD_",agents[:h2s]);string.("CN_CAP_",agents[:h2cn_prod]);string.("CN_PROD_",agents[:h2cn_prod]);"PriceH2";"PremiumH2CN_prod";"PremiumH2CN_cap"]);
 
     # Operational data
