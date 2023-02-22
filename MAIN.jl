@@ -49,12 +49,14 @@ include(joinpath(home_dir,"Source","define_ETS_parameters.jl"))
 include(joinpath(home_dir,"Source","define_EOM_parameters.jl"))
 include(joinpath(home_dir,"Source","define_REC_parameters.jl"))
 include(joinpath(home_dir,"Source","define_H2_parameters.jl"))
+include(joinpath(home_dir,"Source","define_H2import_parameters.jl"))
 include(joinpath(home_dir,"Source","define_H2CN_prod_parameters.jl"))
 include(joinpath(home_dir,"Source","define_H2CN_cap_parameters.jl"))
 include(joinpath(home_dir,"Source","define_NG_parameters.jl"))
 include(joinpath(home_dir,"Source","build_ind_agent.jl"))
 include(joinpath(home_dir,"Source","build_ps_agent.jl"))
 include(joinpath(home_dir,"Source","build_H2S_agent.jl"))
+include(joinpath(home_dir,"Source","build_H2import_agent.jl"))
 include(joinpath(home_dir,"Source","define_results.jl"))
 include(joinpath(home_dir,"Source","ADMM.jl"))
 include(joinpath(home_dir,"Source","ADMM_subroutine.jl"))
@@ -62,6 +64,7 @@ include(joinpath(home_dir,"Source","update_ind_emissions.jl"))
 include(joinpath(home_dir,"Source","solve_ind_agent.jl"))
 include(joinpath(home_dir,"Source","solve_ps_agent.jl"))
 include(joinpath(home_dir,"Source","solve_H2S_agent.jl"))
+include(joinpath(home_dir,"Source","solve_H2import_agent.jl"))
 include(joinpath(home_dir,"Source","update_supply.jl"))
 include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
@@ -159,14 +162,14 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1
-    stop_scen = 2
+    start_scen = 2
+    stop_scen = 10
     start_sens = 1 
     stop_sens = 100 # will be overwritten 
 end
 
-scen_number = 7
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+#scen_number = 7
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -178,7 +181,7 @@ data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload 
 data = merge(data,scenario_definition)
 
 sens_number = 1 
-# for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
+for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
 if sens_number >= 2
@@ -220,8 +223,9 @@ println("   ")
 agents = Dict()
 agents[:ps] = [id for id in keys(data["PowerSector"])] 
 agents[:h2s] = [id for id in keys(data["HydrogenSector"])]
-agents[:ind] = ["Ind"] 
-agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind])   
+agents[:ind] = ["Ind"]
+agents[:h2import] = [id for id in keys(data["HydrogenImport"])]
+agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind],agents[:h2import])   
 # Different markets - to be completed based on the agents
 agents[:eom] = []                  
 agents[:ets] = []                  
@@ -257,11 +261,12 @@ define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["scenario"]),ts,
 H2 = Dict()
 define_H2_parameters!(H2,merge(data["General"],data["H2"],data["scenario"]),ts,repr_days,H2CN_prod)
 
+
+
 # Parameters/variables natural gas market
 NG = Dict()
 define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days)
 
-# Parameters/variables natural gas market
 for m in agents[:ind]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents)           # Parameters common to all agents
     define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"],data["scenario"]))                    # Industry
@@ -273,6 +278,10 @@ end
 for m in agents[:h2s]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents)  # Parameters common to all agents
     define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m],data["scenario"]),ts,repr_days,REC)      # Hydrogen sector
+end
+for m in agents[:h2import]
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenImport"][m]),ts,repr_days,agents)  # Parameters common to all agents
+    define_H2import_parameters!(mdict[m],merge(data["General"],data["HydrogenImport"][m],data["scenario"]),ts,repr_days,REC)      # Hydrogen sector
 end
 
 # Calculate number of agents in each market
@@ -296,6 +305,9 @@ for m in agents[:ps]
 end
 for m in agents[:h2s]
     build_h2s_agent!(mdict[m])
+end
+for m in agents[:h2import]
+    build_h2import_agent!(mdict[m])
 end
 
 println("Build model: done")
@@ -352,7 +364,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end loop over sensititivity
-# end # end for loop over scenarios
+end # end loop over sensititivity
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

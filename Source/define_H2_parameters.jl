@@ -11,6 +11,5 @@ function define_H2_parameters!(H2::Dict,data::Dict,ts::DataFrame,repr_days::Data
     # Weighted demand
     H2["W"] = W = Dict(jd => repr_days[!,:weights][jd] for jd=1:data["nReprDays"])
     H2["Dw"] = [W[jd]*H2["D_h"][jh,jd,jy] for jh=1:data["nTimesteps"], jd=1:data["nReprDays"], jy=1:data["nyears"]]
-
     return H2
 end

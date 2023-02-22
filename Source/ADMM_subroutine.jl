@@ -73,6 +73,10 @@ elseif m in agents[:h2s]
     @timeit TO_local "Solve hydrogen sector" begin
         solve_h2s_agent!(mod)  
     end
+elseif m in agents[:h2import]
+    @timeit TO_local "Solve hydrogen import" begin
+        solve_h2import_agent!(mod)
+    end
 end
 
 # Query results

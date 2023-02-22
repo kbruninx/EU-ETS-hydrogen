@@ -11,111 +11,58 @@ scenario:
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
-  MSR: 2021
+  Sens_analysis: "NO"
   scen_number: 1
+  MSR: "NA"
   ref_scen_number: 1
   RES_target_2030: 0.4
+  CNH2_demand_2040: 0
   H2_demand_2050: 50
   CNH2_demand_2024: 0
   gamma: 1
   CNH2_demand_2030: 0
   H2_balance: "Yearly"
+  CNH2_cap_target_2040: 0
   sens_number: 1
-  max_em_change: 10
+  max_em_change: 100
 General:
+  operationalYear: 2040
   discount_rate: 0.1
   nMonths: 12
   inflation: 0.02
   nTimesteps: 24
   nyears: 40
   nReprDays: 8
-PowerSector:
-  Biomass:
-    REC: "YES"
-    fuelCosts: 50
-    YoY_VC: 0
-    OC: 3381
-    EOM: "YES"
-    AF: 0.6
-    Leadtime: 5
-    Lifetime: 25
-    YoY_OC: -0.5
+HydrogenImport:
+  Import:
+    EOM: "NO"
     H2CN_cap: "NO"
+    REC: "NO"
+    α_H2_import: 1
     H2CN_prod: "NO"
     ETS: "NO"
-    Legcap_2021: 21.0
     NG: "NO"
-    Legcap_out: 15
-    emissions: 0
-    max_YoY_new_cap: 50
-    efficiency: 0
-    AF_ts: "NA"
-    H2: "NO"
-  SPP_lignite:
+    H2: "YES"
+PowerSector:
+  CCGT_new:
     REC: "NO"
-    fuelCosts: 22.5
-    YoY_VC: 0
-    OC: 3845
-    EOM: "YES"
-    AF: 0.5
-    Leadtime: 8
-    Lifetime: 40
-    Legcap_2020: 51.2
-    Legcap_2019: 52.6
-    YoY_OC: 0
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "YES"
-    Legcap_2021: 48.7
-    NG: "NO"
-    Legcap_out: 50
-    emissions: 0.909
-    max_YoY_new_cap: 0
-    efficiency: 0
-    AF_ts: "NA"
-    H2: "NO"
-  Solar:
-    REC: "YES"
     fuelCosts: 0
     YoY_VC: 0
-    OC: 529
+    OC: 880
     EOM: "YES"
-    AF: 1
-    Leadtime: 1
-    Lifetime: 30
-    Legcap_2020: 94.45
-    Legcap_2019: 84.12
-    YoY_OC: -1.4
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "NO"
-    Legcap_2021: 110.84
-    NG: "NO"
-    Legcap_out: 15
-    emissions: 0
-    max_YoY_new_cap: 50
-    efficiency: 0
-    AF_ts: "SOLAR"
-    H2: "NO"
-  ICE:
-    REC: "NO"
-    fuelCosts: 198
-    YoY_VC: 0
-    OC: 453
-    EOM: "YES"
-    AF: 0.85
-    Leadtime: 1
-    Lifetime: 15
-    YoY_OC: 0
+    AF: 0.9
+    Leadtime: 3
+    Lifetime: 25
+    YoY_OC: -0.3
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "YES"
-    Legcap_2021: 16.95
-    NG: "NO"
-    Legcap_out: 10
-    emissions: 1.028
+    Legcap_2021: 170
+    NG: "YES"
+    Legcap_out: 20
+    emissions: 0.456
     max_YoY_new_cap: 50
-    efficiency: 0
+    efficiency: 0.5
     AF_ts: "NA"
     H2: "NO"
   WindOffshore:
@@ -140,6 +87,29 @@ PowerSector:
     max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_OFFSHORE"
+    H2: "NO"
+  SPP_coal:
+    REC: "NO"
+    fuelCosts: 26.91
+    YoY_VC: 2
+    OC: 3845
+    EOM: "YES"
+    AF: 0.4
+    Leadtime: 8
+    Lifetime: 40
+    Legcap_2020: 132.0
+    Legcap_2019: 135.4
+    YoY_OC: 0
+    H2CN_cap: "NO"
+    H2CN_prod: "NO"
+    ETS: "YES"
+    Legcap_2021: 123.6
+    NG: "NO"
+    Legcap_out: 15
+    emissions: 0.875
+    max_YoY_new_cap: 50
+    efficiency: 0
+    AF_ts: "NA"
     H2: "NO"
   WindOnshore:
     REC: "YES"
@@ -187,70 +157,28 @@ PowerSector:
     efficiency: 0
     AF_ts: "NA"
     H2: "NO"
-  CCGT_old:
-    REC: "NO"
+  Solar:
+    REC: "YES"
     fuelCosts: 0
     YoY_VC: 0
-    OC: 880
+    OC: 529
     EOM: "YES"
-    AF: 0.85
-    Leadtime: 5
-    Lifetime: 25
-    YoY_OC: -0.3
+    AF: 1
+    Leadtime: 1
+    Lifetime: 30
+    Legcap_2020: 94.45
+    Legcap_2019: 84.12
+    YoY_OC: -1.4
     H2CN_cap: "NO"
     H2CN_prod: "NO"
-    ETS: "YES"
-    Legcap_2021: 70
-    NG: "YES"
-    Legcap_out: 15
-    emissions: 0.456
-    max_YoY_new_cap: 0
-    efficiency: 0.5
-    AF_ts: "NA"
-    H2: "NO"
-  CCGT_new:
-    REC: "NO"
-    fuelCosts: 0
-    YoY_VC: 0
-    OC: 880
-    EOM: "YES"
-    AF: 0.9
-    Leadtime: 3
-    Lifetime: 25
-    YoY_OC: -0.3
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "YES"
-    Legcap_2021: 100
-    NG: "YES"
-    Legcap_out: 20
-    emissions: 0.342
-    max_YoY_new_cap: 50
-    efficiency: 0.6
-    AF_ts: "NA"
-    H2: "NO"
-  SPP_coal:
-    REC: "NO"
-    fuelCosts: 26.91
-    YoY_VC: 2
-    OC: 3845
-    EOM: "YES"
-    AF: 0.3
-    Leadtime: 8
-    Lifetime: 40
-    Legcap_2020: 80.8
-    Legcap_2019: 82.8
-    YoY_OC: 0
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "YES"
-    Legcap_2021: 74.9
+    ETS: "NO"
+    Legcap_2021: 110.84
     NG: "NO"
     Legcap_out: 15
-    emissions: 0.846
+    emissions: 0
     max_YoY_new_cap: 50
     efficiency: 0
-    AF_ts: "NA"
+    AF_ts: "SOLAR"
     H2: "NO"
   OCGT:
     REC: "NO"
@@ -277,10 +205,10 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 10000
+  max_iter: 5000
   rho_EOM: 1
   epsilon: 0.1
-  rho_REC: 1
+  rho_REC: 0.1
   rho_H2CN_prod: 1
   rho_H2: 1
 Industry:
@@ -361,26 +289,6 @@ HydrogenSector:
     emissions: 0.205
     max_YoY_new_cap: 50
     H2: "YES"
-  electrolysis:
-    efficiency_NG_H2: 0
-    REC: "YES"
-    fuelCosts: 0
-    OC: 650
-    EOM: "YES"
-    AF: 1
-    Leadtime: 1
-    Lifetime: 15
-    YoY_OC: -2.1
-    H2CN_cap: "YES"
-    efficiency_E_H2: 0.66
-    H2CN_prod: "YES"
-    ETS: "NO"
-    Legcap_2021: 0.135
-    NG: "NO"
-    Legcap_out: 15
-    emissions: 0.0
-    max_YoY_new_cap: 500
-    H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
     REC: "NO"
@@ -399,7 +307,47 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 500
+    max_YoY_new_cap: 1000
+    H2: "YES"
+  Alkaline_base:
+    efficiency_NG_H2: 0
+    REC: "YES"
+    fuelCosts: 0
+    OC: 1000
+    EOM: "YES"
+    AF: 1
+    Leadtime: 2
+    Lifetime: 20
+    YoY_OC: -2.1
+    H2CN_cap: "YES"
+    efficiency_E_H2: 0.7
+    H2CN_prod: "YES"
+    ETS: "NO"
+    Legcap_2021: 0.135
+    NG: "NO"
+    Legcap_out: 20
+    emissions: 0.0
+    max_YoY_new_cap: 1000
+    H2: "YES"
+  Alkaline_peak:
+    efficiency_NG_H2: 0
+    REC: "YES"
+    fuelCosts: 0
+    OC: 750
+    EOM: "YES"
+    AF: 1
+    Leadtime: 2
+    Lifetime: 20
+    YoY_OC: -2.1
+    H2CN_cap: "YES"
+    efficiency_E_H2: 0.65
+    H2CN_prod: "YES"
+    ETS: "NO"
+    Legcap_2021: 0.135
+    NG: "NO"
+    Legcap_out: 20
+    emissions: 0.0
+    max_YoY_new_cap: 1000
     H2: "YES"
 H2:
   demand: 10
