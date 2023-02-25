@@ -16,7 +16,7 @@ function solve_h2import_agent!(mod::Model)
     
     # Extract variables and expressions
     ρ_y_H2 = mod.ext[:parameters][:ρ_y_H2] # rho-value in ADMM related to H2 market
-    gH = mod.ext[:variables][:gH] 
+    gH = mod.ext[:variables][:gH]
     gH_m = mod.ext[:variables][:gH_m]
     gH_y = mod.ext[:expressions][:gH_y]
 

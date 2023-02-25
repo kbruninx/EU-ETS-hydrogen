@@ -122,7 +122,14 @@ sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),Da
 # Create file with results 
 # add column for sensitivity analsysis
 if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv"))) != 1
-    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"EUA_2021";"CumulativeEmissions";"TotalCost";"PolicyCost"])
+    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),
+                DataFrame(),
+                delim=";",
+                header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";
+                        "PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; 
+                        "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";
+                        "EUA_2021";"CumulativeEmissions";"TotalCost";"PolicyCost"]
+    )
 end
 
 # Create folder for results
@@ -224,7 +231,10 @@ agents = Dict()
 agents[:ps] = [id for id in keys(data["PowerSector"])] 
 agents[:h2s] = [id for id in keys(data["HydrogenSector"])]
 agents[:ind] = ["Ind"]
-agents[:h2import] = [id for id in keys(data["HydrogenImport"])]
+agents[:h2import] = []
+if data["scenario"]["import"] == "YES"
+    agents[:h2import] = [id for id in keys(data["HydrogenImport"])]
+end
 agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind],agents[:h2import])   
 # Different markets - to be completed based on the agents
 agents[:eom] = []                  

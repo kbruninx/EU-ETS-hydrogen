@@ -16,7 +16,7 @@ function build_h2import_agent!(mod)
 
     # Decision variables
     gH = mod.ext[:variables][:gH] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="generation_hydrogen") 
-    gH_m = mod.ext[:variables][:gH_m] = @variable(mod, [jm=JM,jy=JY],lower_bound=0, base_name="generation_hydrogen_monthly") # needs to be variable to get feasible solution with representative days (combination of days may not allow exact match of montly demand, may be infeasible)
+    #gH_m = mod.ext[:variables][:gH_m] = @variable(mod, [jm=JM,jy=JY],lower_bound=0, base_name="generation_hydrogen_monthly") # needs to be variable to get feasible solution with representative days (combination of days may not allow exact match of montly demand, may be infeasible)
     
     # Create affine expressions 
     gH_y = mod.ext[:expressions][:gH_y] = @expression(mod, [jy=JY],
@@ -30,6 +30,9 @@ function build_h2import_agent!(mod)
     )
     gH_d_w = mod.ext[:expressions][:gH_d_w] = @expression(mod, [jd=JD,jy=JY],
     W[jd]*sum(gH[jh,jd,jy] for jh in JH)
+    )
+    gH_m = mod.ext[:variables][:gH_m] = @expression(mod, [jm=JM,jy=JY],
+    sum(Wm[jd]*sum(gH[jh,jd,jy] for jh in JH) for jd in JD)
     )
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
     α_H2_import*sum(A[jy]*gH_y[jy]^2 for jy in JY)
