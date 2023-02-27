@@ -122,15 +122,10 @@ sensitivity_overview = CSV.read(joinpath(home_dir,"overview_sensitivity.csv"),Da
 # Create file with results 
 # add column for sensitivity analsysis
 if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv"))) != 1
-    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),
-                DataFrame(),
-                delim=";",
-                header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";
-                        "PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; 
-                        "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";
-                        "EUA_2021";"CumulativeEmissions";"TotalCost";"PolicyCost"]
-    )
+    CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"Alpha";"EUA_2022";"CumulativeEmissions";"TotalCost";"PolicyCost"])
 end
+
+
 
 # Create folder for results
 if isdir(joinpath(home_dir,string("Results_",temp_data["General"]["nReprDays"],"_repr_days"))) != 1
@@ -169,14 +164,14 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 2
+    start_scen = 1
     stop_scen = 10
     start_sens = 1 
     stop_sens = 100 # will be overwritten 
 end
 
-#scen_number = 7
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+#scen_number = 5
+ for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -187,7 +182,7 @@ scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_over
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 data = merge(data,scenario_definition)
 
-sens_number = 1 
+#sens_number = 1 
 for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
@@ -228,6 +223,7 @@ println("   ")
 
 ## 2. Initiate models for representative agents 
 agents = Dict()
+agents = Dict()
 agents[:ps] = [id for id in keys(data["PowerSector"])] 
 agents[:h2s] = [id for id in keys(data["HydrogenSector"])]
 agents[:ind] = ["Ind"]
@@ -235,7 +231,7 @@ agents[:h2import] = []
 if data["scenario"]["import"] == "YES"
     agents[:h2import] = [id for id in keys(data["HydrogenImport"])]
 end
-agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind],agents[:h2import])   
+agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind],agents[:h2import])  
 # Different markets - to be completed based on the agents
 agents[:eom] = []                  
 agents[:ets] = []                  
@@ -271,12 +267,11 @@ define_H2CN_cap_parameters!(H2CN_cap,merge(data["General"],data["scenario"]),ts,
 H2 = Dict()
 define_H2_parameters!(H2,merge(data["General"],data["H2"],data["scenario"]),ts,repr_days,H2CN_prod)
 
-
-
 # Parameters/variables natural gas market
 NG = Dict()
 define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days)
 
+# Parameters/variables natural gas market
 for m in agents[:ind]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents)           # Parameters common to all agents
     define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"],data["scenario"]))                    # Industry
@@ -336,16 +331,22 @@ define_results!(merge(data["General"],data["ADMM"],data["scenario"]),results,ADM
 ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                             # calculate equilibrium 
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
-# Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
+# Calibration of industry MACC (β) and import MC (α)
+while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] || abs(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]) > data["H2"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
-
     mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+    println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
+
+    # Calibration α - new estimate:
+    if data["scenario"]["import"] == "YES" 
+        println(string("Calibration error 2021 H2 prices: " , results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]," €/kg H2"))
+        mdict["Import"].ext[:parameters][:α_H2_import] = copy(mdict["Import"].ext[:parameters][:α_H2_import]/(1+(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"])/data["H2"]["P_calibration"])^(1/2))
+        println(string("New estimate for α: ", mdict["Import"].ext[:parameters][:α_H2_import]))
+    end
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))
-    println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
     println(string("        "))
 
     # Calculate equilibrium with new estimate beta
@@ -353,6 +354,7 @@ while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["In
     ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                       # calculate equilibrium 
     ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                               # wall time 
 end
+# Calibration of hydrogen import
 
 println(string("Done!"))
 println(string("        "))
