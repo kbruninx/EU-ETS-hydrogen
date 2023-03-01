@@ -14,6 +14,11 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     tot_cost = sum(value(mdict[m].ext[:expressions][:tot_cost]) for m in agents[:all])
     tot_em = sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]) 
     H2_policy_cost = sum(sum(results["h2cn_prod"][m][end].*results["λ"]["H2CN_prod"][end]) + sum(results["h2cn_cap"][m][end].*results["λ"]["H2CN_cap"][end]) for m in agents[:h2cn_prod])
+    if data["import"] == "YES" 
+        α = mdict["Import"].ext[:parameters][:α_H2_import]
+    else
+        α = 0
+    end
 
     vector_output = [data["scen_number"]; sens; ADMM["n_iter"];
                      ADMM["walltime"];ADMM["Residuals"]["Primal"]["ETS"][end];ADMM["Residuals"]["Primal"]["MSR"][end]; 
@@ -23,7 +28,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
                      ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; 
                      ADMM["Residuals"]["Dual"]["REC_y"][end]+ADMM["Residuals"]["Dual"]["REC_m"][end]+ADMM["Residuals"]["Dual"]["REC_d"][end]+ADMM["Residuals"]["Dual"]["REC_h"][end]; 
                      ADMM["Residuals"]["Dual"]["H2_y"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; 
-                     ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; mdict["Import"].ext[:parameters][:α_H2_import]
+                     ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; α;
                      results[ "λ"]["EUA"][end][2]; tot_em; tot_cost;H2_policy_cost
                      ]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")),
@@ -86,7 +91,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         LEG_CAP = mdict[m].ext[:parameters][:LEG_CAP]
         cap = value.(mdict[m].ext[:variables][:capH])
         h2_cap[mm,:] = [sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy] for jy in mdict[m].ext[:sets][:JY]]    
-        h2_prod[mm,:] = value.(mdict[m].ext[:expressions][:gH_y])./data["conv_factor"]
+        h2_prod[mm,:] = value.(mdict[m].ext[:expressions][:gH_y])./data["conv_factor"] # Convert to Mt
         mm = mm+1
     end
     h2cn_prod = zeros(length(agents[:h2cn_prod]),data["nyears"])
@@ -94,12 +99,12 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     mm = 1
     for m in agents[:h2cn_prod]
         h2cn_cap[mm,:] = value.(mdict[m].ext[:variables][:capHCN])
-        h2cn_prod[mm,:] = value.(mdict[m].ext[:variables][:gHCN])./data["conv_factor"]
+        h2cn_prod[mm,:] = value.(mdict[m].ext[:variables][:gHCN])./data["conv_factor"] # Convert to Mt
         mm = mm+1
     end
     mm = 1
     for m in agents[:h2import]
-        h2_import[mm,:] = value.(mdict[m].ext[:expressions][:gH_y])
+        h2_import[mm,:] = value.(mdict[m].ext[:expressions][:gH_y])./data["conv_factor"] # Convert to Mt
         mm = mm+1
     end
 

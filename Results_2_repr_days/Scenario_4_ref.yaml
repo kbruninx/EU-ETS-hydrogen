@@ -11,9 +11,9 @@ scenario:
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
   Sens_analysis: "NO"
-  scen_number: 5
+  scen_number: 4
   MSR: "NA"
-  ref_scen_number: 1
+  ref_scen_number: 4
   RES_target_2030: 0.4
   CNH2_demand_2040: 0
   import: "YES"
@@ -21,7 +21,7 @@ scenario:
   CNH2_demand_2024: 0
   gamma: 1
   CNH2_demand_2030: 0
-  H2_balance: "Yearly"
+  H2_balance: "Hourly"
   CNH2_cap_target_2040: 0
   sens_number: 1
   max_em_change: 100
@@ -204,7 +204,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 5000
+  max_iter: 50
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
@@ -349,7 +349,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
-  P_calibration: 151
+  P_calibration: 5000000
   demand: 10
   conv_factor: 33
   tolerance_calibration: 0.5

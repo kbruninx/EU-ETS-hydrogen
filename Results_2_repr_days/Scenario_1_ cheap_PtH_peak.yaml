@@ -11,7 +11,7 @@ scenario:
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
   Sens_analysis: "NO"
-  scen_number: 5
+  scen_number: 1
   MSR: "NA"
   ref_scen_number: 1
   RES_target_2030: 0.4
@@ -23,7 +23,7 @@ scenario:
   CNH2_demand_2030: 0
   H2_balance: "Yearly"
   CNH2_cap_target_2040: 0
-  sens_number: 1
+  sens_number: 4
   max_em_change: 100
 General:
   operationalYear: 2040
@@ -205,7 +205,7 @@ ADMM:
   rho_EUA: 1
   rho_H2CN_cap: 1
   max_iter: 5000
-  rho_EOM: 500
+  rho_EOM: 10
   epsilon: 0.1
   rho_REC: 0.1
   rho_H2CN_prod: 1
@@ -312,7 +312,7 @@ HydrogenSector:
     efficiency_NG_H2: 0
     REC: "YES"
     fuelCosts: 0
-    OC: 1000
+    OC: 960.0
     EOM: "YES"
     AF: 1
     Leadtime: 2
@@ -332,7 +332,7 @@ HydrogenSector:
     efficiency_NG_H2: 0
     REC: "YES"
     fuelCosts: 0
-    OC: 750
+    OC: 600.0
     EOM: "YES"
     AF: 1
     Leadtime: 2
@@ -349,7 +349,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
-  P_calibration: 151
+  P_calibration: 5
   demand: 10
   conv_factor: 33
   tolerance_calibration: 0.5

@@ -9,8 +9,8 @@ General:
 
 ADMM:
  rho_EUA: 1 # rho ADMM penalty term, EUA market
- rho_EOM: 10 # rho ADMM penalty term, EOM 
- rho_REC: 00.1 # rho ADMM penalty term, REC electricity
+ rho_EOM: 500 # rho ADMM penalty term, EOM 
+ rho_REC: 0.1 # rho ADMM penalty term, REC electricity
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
@@ -73,7 +73,7 @@ NG:
 H2:
   demand: 10 # baseline demand for hydrogen, mtH2
   conv_factor: 33 # 1 mt H2 = 33 TWh
-  P_calibration: 5 # €/kg
+  P_calibration: 151 # €/MWh
   tolerance_calibration: 0.5 # €/kg
 
 

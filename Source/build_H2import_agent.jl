@@ -9,9 +9,26 @@ function build_h2import_agent!(mod)
     W = mod.ext[:parameters][:W] # weight of the representative days
     Wm = mod.ext[:parameters][:Wm] # weight of the representative days
     A = mod.ext[:parameters][:A]
+    λ_h_H2 = mod.ext[:parameters][:λ_h_H2] # H2 prices
+    gH_h_bar = mod.ext[:parameters][:gH_h_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_h_H2 = mod.ext[:parameters][:ρ_h_H2] # rho-value in ADMM related to H2 market
+    λ_d_H2 = mod.ext[:parameters][:λ_d_H2] # H2 prices
+    gH_d_bar = mod.ext[:parameters][:gH_d_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_d_H2 = mod.ext[:parameters][:ρ_d_H2] # rho-value in ADMM related to H2 market
+    λ_m_H2 = mod.ext[:parameters][:λ_m_H2] # H2 prices
+    gH_m_bar = mod.ext[:parameters][:gH_m_bar] # element in ADMM penalty term related to hydrogen market
+    ρ_m_H2 = mod.ext[:parameters][:ρ_m_H2] # rho-value in ADMM related to H2 market
     λ_y_H2 = mod.ext[:parameters][:λ_y_H2] # H2 prices
     gH_y_bar = mod.ext[:parameters][:gH_y_bar] # element in ADMM penalty term related to hydrogen market
     ρ_y_H2 = mod.ext[:parameters][:ρ_y_H2] # rho-value in ADMM related to H2 market
+    λ_H2CN_prod = mod.ext[:parameters][:λ_H2CN_prod] # Carbon neutral H2 generation subsidy
+    gHCN_bar = mod.ext[:parameters][:gHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen generation subsidy
+    ρ_H2CN_prod = mod.ext[:parameters][:ρ_H2CN_prod] # rho-value in ADMM related to carbon neutral H2 generation subsidy 
+    λ_H2CN_cap = mod.ext[:parameters][:λ_H2CN_cap] # Carbon neutral H2 capacity subsidy
+    capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
+    ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
+    ADD_SF = mod.ext[:parameters][:ADD_SF] 
+
     α_H2_import = mod.ext[:parameters][:α_H2_import]
 
     # Decision variables
@@ -35,19 +52,19 @@ function build_h2import_agent!(mod)
     sum(Wm[jd]*sum(gH[jh,jd,jy] for jh in JH) for jd in JD)
     )
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
-    α_H2_import*sum(A[jy]*gH_y[jy]^2 for jy in JY)
+    α_H2_import*sum(A[jy]*W[jd]*gH[jh,jd,jy]^2 for jh in JH, jd in JD, jy in JY)
     )
     
     # Objective
     @objective(mod, Min, 
-    + α_H2_import*sum(A[jy]*gH[jh,jd,jy]^2 for jh in JH, jd in JD, jy in JY)
+    + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]^2) for jh in JH, jd in JD, jy in JY)
     - sum(A[jy]*gH_y[jy]*λ_y_H2[jy] for jy in JY)
     + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY)
     )
 
-    mod.ext[:constraints][:H2_balance] = @constraint(mod, [jh=JH,jd=JD,jy=JY], 
-    gH[jh,jd,jy] == gH[1,1,jy] 
-    )
+    #mod.ext[:constraints][:H2_balance] = @constraint(mod, [jh=JH,jd=JD,jy=JY], 
+    #gH[jh,jd,jy] == gH[1,1,jy] 
+    #)
 
     optimize!(mod);
     

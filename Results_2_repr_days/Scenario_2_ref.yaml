@@ -4,7 +4,6 @@ REC:
 EOM:
   SF: 1
 scenario:
-  remarks: "Calibrate MACC using Monthly H2 balance"
   H2_demand_2030: 20
   Additionality: "NA"
   CNH2_cap_target_2030: 0
@@ -17,7 +16,7 @@ scenario:
   ref_scen_number: 2
   RES_target_2030: 0.4
   CNH2_demand_2040: 0
-  import: "NO"
+  import: "YES"
   H2_demand_2050: 50
   CNH2_demand_2024: 0
   gamma: 1
@@ -39,7 +38,6 @@ HydrogenImport:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
-    α_H2_import: 1
     H2CN_prod: "NO"
     ETS: "NO"
     NG: "NO"
@@ -206,8 +204,8 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 10
-  rho_EOM: 10
+  max_iter: 5000
+  rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
   rho_H2CN_prod: 1
@@ -351,5 +349,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
+  P_calibration: 5000000
   demand: 10
   conv_factor: 33
+  tolerance_calibration: 0.5

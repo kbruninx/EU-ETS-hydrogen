@@ -332,27 +332,29 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC (β) and import MC (α)
-while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] || abs(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]) > data["H2"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
-    # Calibration β - new estimate:
-    println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
-    println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
+if data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
+    while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] || (data["scenario"]["import"] == "YES" && abs(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]) > data["H2"]["tolerance_calibration"])
+        # Calibration β - new estimate:
+        println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
+        mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+        println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
 
-    # Calibration α - new estimate:
-    if data["scenario"]["import"] == "YES" 
-        println(string("Calibration error 2021 H2 prices: " , results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]," €/kg H2"))
-        mdict["Import"].ext[:parameters][:α_H2_import] = copy(mdict["Import"].ext[:parameters][:α_H2_import]/(1+(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"])/data["H2"]["P_calibration"])^(1/2))
-        println(string("New estimate for α: ", mdict["Import"].ext[:parameters][:α_H2_import]))
+        # Calibration α - new estimate:
+        if data["scenario"]["import"] == "YES" 
+            println(string("Calibration error 2021 H2 prices: " , results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]," €/kg H2"))
+            mdict["Import"].ext[:parameters][:α_H2_import] = copy(mdict["Import"].ext[:parameters][:α_H2_import]/(1+(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"])/data["H2"]["P_calibration"])^(1/2))
+            println(string("New estimate for α: ", mdict["Import"].ext[:parameters][:α_H2_import]))
+        end
+
+        println(string("Required iterations: ",ADMM["n_iter"]))
+        println(string("Required walltime: ",ADMM["walltime"], " minutes"))
+        println(string("        "))
+
+        # Calculate equilibrium with new estimate beta
+        define_results!(merge(data["General"],data["ADMM"],data["scenario"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)      # initialize structure of results, only those that will be stored in each iteration
+        ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                       # calculate equilibrium 
+        ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                               # wall time 
     end
-
-    println(string("Required iterations: ",ADMM["n_iter"]))
-    println(string("Required walltime: ",ADMM["walltime"], " minutes"))
-    println(string("        "))
-
-    # Calculate equilibrium with new estimate beta
-    define_results!(merge(data["General"],data["ADMM"],data["scenario"]),results,ADMM,agents,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG)      # initialize structure of results, only those that will be stored in each iteration
-    ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)                                                       # calculate equilibrium 
-    ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                               # wall time 
 end
 # Calibration of hydrogen import
 
