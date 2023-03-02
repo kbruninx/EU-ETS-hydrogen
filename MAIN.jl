@@ -16,8 +16,8 @@ if HPC == "DelftBlue"  # only for running this on DelftBlue
 end
 
 if HPC == "ThinKing"  # only for running this on VSC
-    # ENV["GRB_LICENSE_FILE"] = " "
-    # ENV["GUROBI_HOME"] = " "
+    ENV["GRB_LICENSE_FILE"] = "./Hpc/gurobi.lic"
+    ENV["GUROBI_HOME"] = "$VSC_DATA/gurobi900/linux64"
 end
 
 # Include packages 
@@ -164,7 +164,7 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 1
+    start_scen = 6
     stop_scen = 10
     start_sens = 1 
     stop_sens = 100 # will be overwritten 
@@ -342,7 +342,7 @@ if data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
         # Calibration α - new estimate:
         if data["scenario"]["import"] == "YES" 
             println(string("Calibration error 2021 H2 prices: " , results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"]," €/kg H2"))
-            mdict["Import"].ext[:parameters][:α_H2_import] = copy(mdict["Import"].ext[:parameters][:α_H2_import]/(1+(results[ "λ"]["H2_y"][end][1]-data["H2"]["P_calibration"])/data["H2"]["P_calibration"])^(1/2))
+            mdict["Import"].ext[:parameters][:α_H2_import] = copy(mdict["Import"].ext[:parameters][:α_H2_import]/(1+(results[ "λ"]["H2_y"][end][10]-data["H2"]["P_calibration"])/data["H2"]["P_calibration"])^(1/2))
             println(string("New estimate for α: ", mdict["Import"].ext[:parameters][:α_H2_import]))
         end
 

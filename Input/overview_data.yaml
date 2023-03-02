@@ -1,5 +1,5 @@
 General: 
-  nyears: 30
+  nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
   nReprDays: 2 # days
   nMonths: 12 # number of months
@@ -73,8 +73,8 @@ NG:
 H2:
   demand: 10 # baseline demand for hydrogen, mtH2
   conv_factor: 33 # 1 mt H2 = 33 TWh
-  P_calibration: 151 # €/MWh
-  tolerance_calibration: 0.5 # €/kg
+  P_calibration: 121 # €/MWh
+  tolerance_calibration: 2 # €/MWh
 
 
 Industry: 

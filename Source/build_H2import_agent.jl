@@ -56,8 +56,8 @@ function build_h2import_agent!(mod)
     )
     
     # Objective
-    @objective(mod, Min, 
-    + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]^2) for jh in JH, jd in JD, jy in JY)
+    @objective(mod, Min,
+    + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
     - sum(A[jy]*gH_y[jy]*λ_y_H2[jy] for jy in JY)
     + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY)
     )

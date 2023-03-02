@@ -204,7 +204,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 50
+  max_iter: 5000
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
@@ -349,7 +349,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
-  P_calibration: 151
+  P_calibration: 121
   demand: 10
   conv_factor: 33
-  tolerance_calibration: 0.5
+  tolerance_calibration: 2

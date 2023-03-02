@@ -2,6 +2,7 @@ function solve_h2import_agent!(mod::Model)
     # Extract sets
     JH = mod.ext[:sets][:JH]
     JD = mod.ext[:sets][:JD]
+    JM = mod.ext[:sets][:JM]
     JY = mod.ext[:sets][:JY]
        
     # Extract parameters 
@@ -22,15 +23,15 @@ function solve_h2import_agent!(mod::Model)
     gH_m = mod.ext[:variables][:gH_m]
     gH_y = mod.ext[:expressions][:gH_y]
 
-    if ρ_h_H2 > 0 # If yearly matching used
-        λ_h_H2 = mod.ext[:parameters][:λ_h_H2] # H2 prices
-        gH_h_bar = mod.ext[:parameters][:gH_y_bar] # element in ADMM penalty term related to hydrogen market
-        gH = mod.ext[:variables][:gH]
-
-        H2_obj = mod.ext[:expressions][:H2_obj] = @expression(mod,
-            - sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-            + sum(ρ_h_H2/2*W[jd]*(gH[jh,jd,jy] - gH_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) 
-        )
+    if ρ_h_H2 > 0
+            λ_h_H2 = mod.ext[:parameters][:λ_h_H2] # H2 prices
+            gH_h_bar = mod.ext[:parameters][:gH_h_bar] # element in ADMM penalty term related to hydrogen market
+            gH = mod.ext[:variables][:gH]
+    
+            H2_obj = mod.ext[:expressions][:H2_obj] = @expression(mod,
+                - sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+                + sum(ρ_h_H2/2*W[jd]*(gH[jh,jd,jy] - gH_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) 
+            )
     elseif ρ_d_H2 > 0 
         λ_d_H2 = mod.ext[:parameters][:λ_d_H2] # H2 prices
         gH_d_bar = mod.ext[:parameters][:gH_d_bar] # element in ADMM penalty term related to hydrogen market
@@ -76,7 +77,7 @@ function solve_h2import_agent!(mod::Model)
     end
     # Update objective 
     mod.ext[:objective] = @objective(mod, Min,
-         + α_H2_import*sum(A[jy]*gH[jh,jd,jy]^2 for jh in JH, jd in JD, jy in JY)
+         + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
          + H2_obj
          + H2CN_obj
     )
