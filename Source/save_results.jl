@@ -151,19 +151,13 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     # Extract hydrogen and electricity production and import data
     Hours = collect(1:data["nTimesteps"]*data["nReprDays"])
     year = data["operationalYear"]-2020
-    h2_oper = zeros(length(agents[:h2cn_prod]),data["nReprDays"]*data["nTimesteps"])
-    h2_import = zeros(length(agents[:h2import]), data["nReprDays"]*data["nTimesteps"])
+    h2 = zeros(length(agents[:h2]),data["nReprDays"]*data["nTimesteps"])
     el_prod = zeros(length(agents[:ps]), data["nReprDays"] * data["nTimesteps"])
 
     mm = 1
-    for m in agents[:h2cn_prod]
-        h2_oper[mm,:] = -vec(value.(mdict[m].ext[:variables][:g][:,:,year]))
+    for m in agents[:h2]
+        h2_oper[mm,:] = -vec(value.(mdict[m].ext[:variables][:gH][:,:,year]))
         mm = mm+1
-    end
-    mm = 1
-    for m in agents[:h2import]
-        h2_import[mm, :] = vec(value.(mdict[m].ext[:variables][:gH][:, :, year]))
-        mm += 1
     end
     mm = 1
     for m in agents[:ps]
@@ -171,7 +165,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         mm += 1
     end
     eom_price = vec(values.(results["λ"]["EOM"][1][:,:,year]))
-    mat_output = [Hours eom_price transpose(h2_oper) transpose(h2_import) transpose(el_prod)]
+    mat_output = [Hours eom_price transpose(h2) transpose(el_prod)]
     CSV.write(
         joinpath(
             home_dir,
@@ -183,8 +177,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
         header=[
             "Hour"; 
             "EOM_price";
-            string.("PROD_", agents[:h2cn_prod]);
-            string.("IMP_", agents[:h2import]);
+            string.("PROD_", agents[:h2]);
             string.("PROD_", agents[:ps])
             ]
     )
