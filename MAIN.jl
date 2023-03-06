@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "ThinkKing" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -16,7 +16,7 @@ if HPC == "DelftBlue"  # only for running this on DelftBlue
 end
 
 if HPC == "ThinKing"  # only for running this on VSC
-    ENV["GRB_LICENSE_FILE"] = "./Hpc/gurobi.lic"
+    ENV["GRB_LICENSE_FILE"] = "./gurobi.lic"
     ENV["GUROBI_HOME"] = "$VSC_DATA/gurobi900/linux64"
 end
 
@@ -164,10 +164,10 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 6
-    stop_scen = 10
+    start_scen = 11
+    stop_scen = 16
     start_sens = 1 
-    stop_sens = 100 # will be overwritten 
+    stop_sens = 1 # will be overwritten 
 end
 
 #scen_number = 5

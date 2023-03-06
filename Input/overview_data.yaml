@@ -103,7 +103,7 @@ HydrogenSector:
    efficiency_E_H2: 0 # efficiency conversion electricity to hydrogen 
    efficiency_NG_H2: 0.75 # efficiency conversion natural gas to hydrogen 
    emissions: 0.205 # [ton CO2/MWh gas] = [Mton CO2/TWh gas] 
-   max_YoY_new_cap: 50 # % of current capacity
+   max_YoY_new_cap: 1000 # % of current capacity
    YoY_OC: 0 # % change in overnight investment cost YoY
    Legcap_out: 15 # years 
    REC: "NO" # eligible for RECs
@@ -184,7 +184,7 @@ HydrogenImport:
     ETS: "NO" # covered by ETS
     EOM: "NO" # participates in EOM
     H2: "YES" # participate in the carbon neutral H2 market
-    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+    H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
     H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
     NG: "NO" # participate in the natural gas market  
 

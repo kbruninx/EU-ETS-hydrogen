@@ -33,6 +33,7 @@ function build_h2import_agent!(mod)
 
     # Decision variables
     gH = mod.ext[:variables][:gH] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="generation_hydrogen") 
+    gHCN = mod.ext[:variables][:gHCN] = @variable(mod, [jy=JY], lower_bound=0, base_name="generation_carbon_neutral_hydrogen")
     #gH_m = mod.ext[:variables][:gH_m] = @variable(mod, [jm=JM,jy=JY],lower_bound=0, base_name="generation_hydrogen_monthly") # needs to be variable to get feasible solution with representative days (combination of days may not allow exact match of montly demand, may be infeasible)
     
     # Create affine expressions 
@@ -52,20 +53,31 @@ function build_h2import_agent!(mod)
     sum(Wm[jd]*sum(gH[jh,jd,jy] for jh in JH) for jd in JD)
     )
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
-    α_H2_import*sum(A[jy]*W[jd]*gH[jh,jd,jy]^2 for jh in JH, jd in JD, jy in JY)
+    sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     )
     
     # Objective
     @objective(mod, Min,
     + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
     - sum(A[jy]*gH_y[jy]*λ_y_H2[jy] for jy in JY)
+    - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
     + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY)
+    + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)
     )
 
     #mod.ext[:constraints][:H2_balance] = @constraint(mod, [jh=JH,jd=JD,jy=JY], 
     #gH[jh,jd,jy] == gH[1,1,jy] 
     #)
-
+    if mod.ext[:parameters][:H2CN_prod] == 1
+        mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
+            gHCN[jy] <=  sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD) # [TWh]
+        )
+    else
+        mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
+            gHCN[jy] == 0 # [TWh]
+        )
+    end
+    
     optimize!(mod);
     
     return mod

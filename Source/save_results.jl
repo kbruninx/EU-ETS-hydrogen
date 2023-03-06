@@ -13,7 +13,8 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     # Aggregate metrics 
     tot_cost = sum(value(mdict[m].ext[:expressions][:tot_cost]) for m in agents[:all])
     tot_em = sum(results["e"][m][end][jy] for m in agents[:ets],jy in mdict[agents[:ps][1]].ext[:sets][:JY]) 
-    H2_policy_cost = sum(sum(results["h2cn_prod"][m][end].*results["λ"]["H2CN_prod"][end]) + sum(results["h2cn_cap"][m][end].*results["λ"]["H2CN_cap"][end]) for m in agents[:h2cn_prod])
+    H2_policy_cost = sum(sum(results["h2cn_prod"][m][end].*results["λ"]["H2CN_prod"][end])  for m in agents[:h2cn_prod])
+                    + sum(sum(results["h2cn_cap"][m][end].*results["λ"]["H2CN_cap"][end]) for m in agents[:h2cn_cap])
     if data["import"] == "YES" 
         α = mdict["Import"].ext[:parameters][:α_H2_import]
     else
@@ -97,8 +98,12 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     h2cn_prod = zeros(length(agents[:h2cn_prod]),data["nyears"])
     h2cn_cap = zeros(length(agents[:h2cn_prod]),data["nyears"])
     mm = 1
-    for m in agents[:h2cn_prod]
+    for m in agents[:h2cn_cap]
         h2cn_cap[mm,:] = value.(mdict[m].ext[:variables][:capHCN])
+        mm = mm+1
+    end
+    mm = 1
+    for m in agents[:h2cn_prod]
         h2cn_prod[mm,:] = value.(mdict[m].ext[:variables][:gHCN])./data["conv_factor"] # Convert to Mt
         mm = mm+1
     end
@@ -156,7 +161,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
 
     mm = 1
     for m in agents[:h2]
-        h2_oper[mm,:] = -vec(value.(mdict[m].ext[:variables][:gH][:,:,year]))
+        h2[mm,:] = -vec(value.(mdict[m].ext[:variables][:gH][:,:,year]))
         mm = mm+1
     end
     mm = 1
