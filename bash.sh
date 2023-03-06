@@ -9,5 +9,5 @@
 
 cd $VSC_DATA/EU-ETS-hydrogen
 
-MAIN.jl
+julia MAIN.jl
 
