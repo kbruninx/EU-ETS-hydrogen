@@ -1,7 +1,7 @@
 
 
-#PBS -l nodes=1:ppn=12
-#PBS -l walltime=00:05:00
+#PBS -l nodes=1:ppn=36
+#PBS -l walltime=23:50:00
 #PBS -l pmem=3gb
 #PBS -A lp_elect_gen_modeling group
 #PBS -m abe

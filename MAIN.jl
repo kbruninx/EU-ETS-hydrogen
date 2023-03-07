@@ -125,8 +125,6 @@ if isfile(joinpath(home_dir,string("overview_results_",temp_data["General"]["nRe
     CSV.write(joinpath(home_dir,string("overview_results_",temp_data["General"]["nReprDays"],"_repr_days.csv")),DataFrame(),delim=";",header=["scen_number";"sensitivity";"n_iter";"walltime";"PrimalResidual_ETS";"PrimalResidual_MSR";"PrimalResidual_EOM";"PrimalResidual_REC";"PrimalResidual_H2";"PrimalResidual_H2CN_prod";"PrimalResidual_H2CN_cap"; "DualResidual_ETS"; "DualResidual_EOM";"DualResidual_REC";"DualResidual_H2";"DualResidual_H2CN_prod";"DualResidual_H2CN_cap";"Beta";"Alpha";"EUA_2022";"CumulativeEmissions";"TotalCost";"PolicyCost"])
 end
 
-
-
 # Create folder for results
 if isdir(joinpath(home_dir,string("Results_",temp_data["General"]["nReprDays"],"_repr_days"))) != 1
     mkdir(joinpath(home_dir,string("Results_",temp_data["General"]["nReprDays"],"_repr_days")))
@@ -164,10 +162,10 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
    stop_sens = dict_sim_number["stop_sens"]
 else
     # Range of scenarios to be simulated
-    start_scen = 11
-    stop_scen = 16
+    start_scen = 5
+    stop_scen = 24
     start_sens = 1 
-    stop_sens = 1 # will be overwritten 
+    stop_sens = 100 # will be overwritten 
 end
 
 #scen_number = 5

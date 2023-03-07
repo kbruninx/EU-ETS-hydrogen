@@ -4,7 +4,7 @@ HydrogenSector Alkaline_base OC; 1.2; Expensive_PtH_base
 HydrogenSector Alkaline_peak OC; 0.8; cheap_PtH_peak
 HydrogenSector Alkaline_peak OC; 1.2; expensive_PtH_peak
 NG SF;0.8;low_natural_gas_price
-NG SF;2;high_natural_gas_price
+NG SF;1.2;high_natural_gas_price
 scenario RES_target_2030;1.25;2030_res_target_50
 scenario RES_target_2030;1.5;2030_res_target_60
 PowerSector Solar-WindOnshore-WindOffshore YoY_OC;0.5;Expensive_RES
