@@ -1,7 +1,7 @@
 General: 
   nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 8 # days
+  nReprDays: 2 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
@@ -14,7 +14,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 10000 # maximum number of iterations
+ max_iter: 5000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -75,6 +75,8 @@ H2:
   conv_factor: 33 # 1 mt H2 = 33 TWh
   P_calibration: 121 # €/MWh
   tolerance_calibration: 2 # €/MWh
+  a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
+  a_2: 1400000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
 
 
 Industry: 
@@ -187,6 +189,8 @@ HydrogenImport:
     H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
     H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
     NG: "NO" # participate in the natural gas market  
+    a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
+    a_2: 1400000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
 
 # Legacy capacities (2021), load and renewable availability factors based on ENTSO-E https://transparency.entsoe.eu
 # Unless stated otherwise, cost/tech data from EUR-PyPSA https://technology-data.readthedocs.io/en/latest/# 

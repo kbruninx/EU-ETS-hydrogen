@@ -11,7 +11,9 @@ function solve_h2import_agent!(mod::Model)
     A = mod.ext[:parameters][:A]
     λ_y_H2 = mod.ext[:parameters][:λ_y_H2] # H2 prices
     gH_y_bar = mod.ext[:parameters][:gH_y_bar] # element in ADMM penalty term related to hydrogen market
-    α_H2_import = mod.ext[:parameters][:α_H2_import]
+
+    α_1 = mod.ext[:parameters][:α_1]
+    α_2 = mod.ext[:parameters][:α_2]
 
     
     # Extract variables and expressions    
@@ -77,7 +79,7 @@ function solve_h2import_agent!(mod::Model)
     end
     # Update objective 
     mod.ext[:objective] = @objective(mod, Min,
-         + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
+         + sum(A[jy]*(α_2*gH[jh,jd,jy]+ α_1)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
          + H2_obj
          + H2CN_obj
     )

@@ -16,9 +16,11 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
     H2_policy_cost = sum(sum(results["h2cn_prod"][m][end].*results["λ"]["H2CN_prod"][end])  for m in agents[:h2cn_prod])
                     + sum(sum(results["h2cn_cap"][m][end].*results["λ"]["H2CN_cap"][end]) for m in agents[:h2cn_cap])
     if data["import"] == "YES" 
-        α = mdict["Import"].ext[:parameters][:α_H2_import]
+        α_1 = mdict["Import"].ext[:parameters][:α_1]
+        α_2 = mdict["Import"].ext[:parameters][:α_2]
     else
-        α = 0
+        α_1 = 0
+        α_2 = 0
     end
 
     vector_output = [data["scen_number"]; sens; ADMM["n_iter"];
@@ -29,7 +31,7 @@ function save_results(mdict::Dict,EOM::Dict,ETS::Dict,ADMM::Dict,results::Dict,d
                      ADMM["Residuals"]["Dual"]["ETS"][end]; ADMM["Residuals"]["Dual"]["EOM"][end]; 
                      ADMM["Residuals"]["Dual"]["REC_y"][end]+ADMM["Residuals"]["Dual"]["REC_m"][end]+ADMM["Residuals"]["Dual"]["REC_d"][end]+ADMM["Residuals"]["Dual"]["REC_h"][end]; 
                      ADMM["Residuals"]["Dual"]["H2_y"][end];ADMM["Residuals"]["Dual"]["H2CN_prod"][end]; 
-                     ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; α;
+                     ADMM["Residuals"]["Dual"]["H2CN_cap"][end]; mdict["Ind"].ext[:parameters][:β]; α_2;
                      results[ "λ"]["EUA"][end][2]; tot_em; tot_cost;H2_policy_cost
                      ]
     CSV.write(joinpath(home_dir,string("overview_results_",data["nReprDays"],"_repr_days.csv")),

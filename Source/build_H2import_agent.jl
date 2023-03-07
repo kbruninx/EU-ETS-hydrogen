@@ -29,7 +29,8 @@ function build_h2import_agent!(mod)
     ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
     ADD_SF = mod.ext[:parameters][:ADD_SF] 
 
-    α_H2_import = mod.ext[:parameters][:α_H2_import]
+    α_1 = mod.ext[:parameters][:α_1]
+    α_2 = mod.ext[:parameters][:α_2]
 
     # Decision variables
     gH = mod.ext[:variables][:gH] = @variable(mod, [jh=JH,jd=JD,jy=JY], lower_bound=0, base_name="generation_hydrogen") 
@@ -53,12 +54,12 @@ function build_h2import_agent!(mod)
     sum(Wm[jd]*sum(gH[jh,jd,jy] for jh in JH) for jd in JD)
     )
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
-    sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+    sum(A[jy]*(α_2*gH[jh,jd,jy]+ α_1)*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     )
     
     # Objective
     @objective(mod, Min,
-    + sum(A[jy]*(α_H2_import*gH[jh,jd,jy]+ 53)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
+    + sum(A[jy]*(α_2*gH[jh,jd,jy]+ α_1)*gH[jh,jd,jy]  for jh in JH, jd in JD, jy in JY)
     - sum(A[jy]*gH_y[jy]*λ_y_H2[jy] for jy in JY)
     - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
     + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY)

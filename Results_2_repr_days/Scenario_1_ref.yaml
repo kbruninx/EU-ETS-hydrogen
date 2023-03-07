@@ -31,16 +31,18 @@ General:
   nMonths: 12
   inflation: 0.02
   nTimesteps: 24
-  nyears: 30
+  nyears: 40
   nReprDays: 2
 HydrogenImport:
   Import:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
-    H2CN_prod: "NO"
+    a_1: 150
+    H2CN_prod: "YES"
     ETS: "NO"
     NG: "NO"
+    a_2: 1400000
     H2: "YES"
 PowerSector:
   CCGT_new:
@@ -286,7 +288,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.205
-    max_YoY_new_cap: 50
+    max_YoY_new_cap: 1000
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -349,7 +351,9 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
+  a_1: 150
   P_calibration: 121
   demand: 10
   conv_factor: 33
   tolerance_calibration: 2
+  a_2: 1400000

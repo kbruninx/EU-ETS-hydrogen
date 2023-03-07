@@ -10,7 +10,7 @@ scenario:
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
-  Sens_analysis: "NO"
+  Sens_analysis: "YES"
   scen_number: 14
   MSR: "NA"
   ref_scen_number: 1
@@ -38,9 +38,11 @@ HydrogenImport:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
+    a_1: 150
     H2CN_prod: "YES"
     ETS: "NO"
     NG: "NO"
+    a_2: 1400000
     H2: "YES"
 PowerSector:
   CCGT_new:
@@ -204,7 +206,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 5000
+  max_iter: 10
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
@@ -349,7 +351,9 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
+  a_1: 150
   P_calibration: 121
   demand: 10
   conv_factor: 33
   tolerance_calibration: 2
+  a_2: 1400000

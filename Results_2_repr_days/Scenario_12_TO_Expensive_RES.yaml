@@ -1,0 +1,21 @@
+ ────────────────────────────────────────────────────────────────────────────────
+                                        Time                    Allocations      
+                               ───────────────────────   ────────────────────────
+       Tot / % measured:            3.20s / 659.1%          1.22GiB / 1035.3%    
+
+ Section               ncalls     time    %tot     avg     alloc    %tot      avg
+ ────────────────────────────────────────────────────────────────────────────────
+ Solve power sector        70    10.3s   48.6%   147ms   6.98GiB   55.1%   102MiB
+ Solve hydrogen sector     40    9.24s   43.7%   231ms   4.22GiB   33.4%   108MiB
+ Query results            130    1.30s    6.2%  10.0ms    425MiB    3.3%  3.27MiB
+ Solve hydrogen import     10    249ms    1.2%  24.9ms    807MiB    6.2%  80.7MiB
+ Solve industry            10   36.8ms    0.2%  3.68ms    160MiB    1.2%  16.0MiB
+ Compute ADMM penal...    130   10.4ms    0.0%  80.0μs   53.3MiB    0.4%   420KiB
+ Compute dual resid...     10   10.1ms    0.0%  1.01ms   40.1MiB    0.3%  4.01MiB
+ Compute imbalances        10   1.79ms    0.0%   179μs   2.47MiB    0.0%   253KiB
+ Compute primal res...     10    934μs    0.0%  93.4μs    545KiB    0.0%  54.5KiB
+ Update EUA supply         10    904μs    0.0%  90.4μs    156KiB    0.0%  15.6KiB
+ Update ρ                  10    592μs    0.0%  59.2μs   18.2KiB    0.0%  1.82KiB
+ Update prices             10    446μs    0.0%  44.6μs    649KiB    0.0%  64.9KiB
+ Progress bar              10    240μs    0.0%  24.0μs   34.2KiB    0.0%  3.42KiB
+ ────────────────────────────────────────────────────────────────────────────────
