@@ -36,7 +36,8 @@ println("        ")
 const GUROBI_ENV = Gurobi.Env()
 # set parameters:
 GRBsetparam(GUROBI_ENV, "OutputFlag", "0")   
-GRBsetparam(GUROBI_ENV, "Threads", "4")   
+GRBsetparam(GUROBI_ENV, "Threads", "4")
+GRBsetparam(GUROBI_ENV, "Method", "2")  
 GRBsetparam(GUROBI_ENV, "TimeLimit", "300")  # will only affect solutions if you're selecting representative days  
 println("        ")
 

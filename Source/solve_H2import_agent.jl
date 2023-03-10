@@ -63,7 +63,6 @@ function solve_h2import_agent!(mod::Model)
         )
     end  
 
- 
     if mod.ext[:parameters][:H2CN_prod] == 1
         λ_H2CN_prod = mod.ext[:parameters][:λ_H2CN_prod] # Carbon neutral H2 generation subsidy
         gHCN_bar = mod.ext[:parameters][:gHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen generation subsidy

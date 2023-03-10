@@ -4,7 +4,6 @@ REC:
 EOM:
   SF: 1
 scenario:
-  remarks: "Used to calibrate MACC"
   H2_demand_2030: 20
   Additionality: "NA"
   CNH2_cap_target_2030: 0
@@ -17,6 +16,7 @@ scenario:
   ref_scen_number: 1
   RES_target_2030: 0.4
   CNH2_demand_2040: 0
+  import: "YES"
   H2_demand_2050: 50
   CNH2_demand_2024: 0
   gamma: 1
@@ -38,10 +38,11 @@ HydrogenImport:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
-    α_H2_import: 1
-    H2CN_prod: "NO"
+    a_1: 150
+    H2CN_prod: "YES"
     ETS: "NO"
     NG: "NO"
+    a_2: 1400000
     H2: "YES"
 PowerSector:
   CCGT_new:
@@ -206,7 +207,7 @@ ADMM:
   rho_EUA: 1
   rho_H2CN_cap: 1
   max_iter: 5000
-  rho_EOM: 1
+  rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
   rho_H2CN_prod: 1
@@ -287,7 +288,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.205
-    max_YoY_new_cap: 50
+    max_YoY_new_cap: 1000
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -350,5 +351,9 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
+  a_1: 150
+  P_calibration: 121
   demand: 10
   conv_factor: 33
+  tolerance_calibration: 2
+  a_2: 1400000

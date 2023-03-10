@@ -9,21 +9,11 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 # created subroutine to allow multi-treading to solve agents' decision problems
                 @spawn ADMM_subroutine!(m,data,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,TO)
             end
-
-            # Single-threaded version
-            # for m in agents[:all] 
-            #     # created subroutine to allow multi-treading to solve agents' decision problems
-            #     ADMM_subroutine!(m,results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict[m],agents,TO)
-            # end
-
             # Update supply of allowances 
-            @timeit TO "Update EUA supply" begin
                 update_supply!(sum(results["e"][m][end] for m in agents[:ets]),ETS,merge(data["General"],data["ETS"],data["scenario"]))
                 push!(results["s"],copy(ETS["S"]))
-            end
 
             # Imbalances 
-            @timeit TO "Compute imbalances" begin
                 push!(ADMM["Imbalances"]["ETS"], results["s"][end]-sum(results["b"][m][end] for m in agents[:ets]))
                 push!(ADMM["Imbalances"]["EOM"], sum(results["g"][m][end] for m in agents[:eom]) - EOM["D"][:,:,:])
                 push!(ADMM["Imbalances"]["REC_y"], sum(results["r_y"][m][end] for m in agents[:rec]) + REC["RS_other_2021"]*EOM["D_cum"][1]*ceil.(REC["RT"]) - REC["RT"][:].*EOM["D_cum"][:])
@@ -46,10 +36,8 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 end
                 push!(ADMM["Imbalances"]["H2CN_prod"], sum(results["h2cn_prod"][m][end] for m in agents[:h2cn_prod]) - H2CN_prod["H2CN_PRODT"][:])
                 push!(ADMM["Imbalances"]["H2CN_cap"], sum(results["h2cn_cap"][m][end] for m in agents[:h2cn_cap]) - H2CN_cap["H2CN_CAPT"][:])
-            end
 
             # Primal residuals 
-            @timeit TO "Compute primal residuals" begin
                 push!(ADMM["Residuals"]["Primal"]["ETS"], sqrt(sum(ADMM["Imbalances"]["ETS"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["MSR"], sqrt(sum(ADMM["Imbalances"]["MSR"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["EOM"], sqrt(sum(ADMM["Imbalances"]["EOM"][end].^2)))
@@ -63,10 +51,8 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 push!(ADMM["Residuals"]["Primal"]["H2_y"], sqrt(sum(ADMM["Imbalances"]["H2_y"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["H2CN_prod"], sqrt(sum(ADMM["Imbalances"]["H2CN_prod"][end].^2)))
                 push!(ADMM["Residuals"]["Primal"]["H2CN_cap"], sqrt(sum(ADMM["Imbalances"]["H2CN_cap"][end].^2)))
-            end
 
             # Dual residuals
-            @timeit TO "Compute dual residuals" begin 
             if iter > 1
                 push!(ADMM["Residuals"]["Dual"]["ETS"], sqrt(sum(sum((ADMM["ρ"]["EUA"][end]*((results["b"][m][end]-sum(results["b"][mstar][end] for mstar in agents[:ets])./(ETS["nAgents"]+1)) - (results["b"][m][end-1]-sum(results["b"][mstar][end-1] for mstar in agents[:ets])./(ETS["nAgents"]+1)))).^2 for m in agents[:ets])))) 
                 push!(ADMM["Residuals"]["Dual"]["EOM"], sqrt(sum(sum((ADMM["ρ"]["EOM"][end]*((results["g"][m][end]-sum(results["g"][mstar][end] for mstar in agents[:eom])./(EOM["nAgents"]+1)) - (results["g"][m][end-1]-sum(results["g"][mstar][end-1] for mstar in agents[:eom])./(EOM["nAgents"]+1)))).^2 for m in agents[:eom]))))               
@@ -90,11 +76,9 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 push!(ADMM["Residuals"]["Dual"]["H2CN_prod"], sqrt(sum(sum((ADMM["ρ"]["H2CN_prod"][end]*((results["h2cn_prod"][m][end]-sum(results["h2cn_prod"][mstar][end] for mstar in agents[:h2cn_prod])./(H2CN_prod["nAgents"]+1)) - (results["h2cn_prod"][m][end-1]-sum(results["h2cn_prod"][mstar][end-1] for mstar in agents[:h2cn_prod])./(H2CN_prod["nAgents"]+1)))).^2 for m in agents[:h2cn_prod]))))
                 push!(ADMM["Residuals"]["Dual"]["H2CN_cap"], sqrt(sum(sum((ADMM["ρ"]["H2CN_cap"][end]*((results["h2cn_cap"][m][end]-sum(results["h2cn_cap"][mstar][end] for mstar in agents[:h2cn_cap])./(H2CN_cap["nAgents"]+1)) - (results["h2cn_cap"][m][end-1]-sum(results["h2cn_cap"][mstar][end-1] for mstar in agents[:h2cn_cap])./(H2CN_cap["nAgents"]+1)))).^2 for m in agents[:h2cn_cap]))))
             end
-            end
 
             # Price updates 
             # In general, price caps or floors can be imposed, but may slow down convergence (a negative price gives a stronger incentive than a zero price).
-            @timeit TO "Update prices" begin
                 if data["scenario"]["ref_scen_number"] == data["scenario"]["scen_number"] && data["scenario"]["sens_number"] == 1 # calibration run, 2021 to be calibrated
                     push!(results[ "λ"]["EUA"], results[ "λ"]["EUA"][end] - ADMM["ρ"]["EUA"][end]/100*ADMM["Imbalances"]["ETS"][end])    
                 else # 2019-2021 ETS prices fixed to historical values
@@ -121,63 +105,14 @@ function ADMM!(results::Dict,ADMM::Dict,ETS::Dict,EOM::Dict,REC::Dict,H2::Dict,H
                 push!(results[ "λ"]["H2CN_prod"], results[ "λ"]["H2CN_prod"][end] - ADMM["ρ"]["H2CN_prod"][end]/100*ADMM["Imbalances"]["H2CN_prod"][end])
                 push!(results[ "λ"]["H2CN_cap"], results[ "λ"]["H2CN_cap"][end] - ADMM["ρ"]["H2CN_cap"][end]/1000*ADMM["Imbalances"]["H2CN_cap"][end])
                 push!(results[ "λ"]["NG"], NG["λ"])
-            end
 
             # Update ρ-values
-            @timeit TO "Update ρ" begin
                 update_rho!(ADMM,iter)
-            end
-
-            # Progress bar
-            @timeit TO "Progress bar" begin
-                if data["scenario"]["Additionality"] == "Monthly"
-                    if data["scenario"]["H2_balance"] == "Hourly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-m %.3f -- ΔH2-h %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_m"][end]/ADMM["Tolerance"]["REC_m"],ADMM["Residuals"]["Primal"]["H2_h"][end]/ADMM["Tolerance"]["H2_h"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Daily"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-m %.3f -- ΔH2-d %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_m"][end]/ADMM["Tolerance"]["REC_m"],ADMM["Residuals"]["Primal"]["H2_d"][end]/ADMM["Tolerance"]["H2_d"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Monthly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-m %.3f -- ΔH2-m %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_m"][end]/ADMM["Tolerance"]["REC_m"],ADMM["Residuals"]["Primal"]["H2_m"][end]/ADMM["Tolerance"]["H2_m"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Yearly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-m %.3f -- ΔH2-y %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_m"][end]/ADMM["Tolerance"]["REC_m"],ADMM["Residuals"]["Primal"]["H2_y"][end]/ADMM["Tolerance"]["H2_y"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    end 
-                elseif data["scenario"]["Additionality"] == "Daily"
-                    if data["scenario"]["H2_balance"] == "Hourly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-d %.3f -- ΔH2-h %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_d"][end]/ADMM["Tolerance"]["REC_d"],ADMM["Residuals"]["Primal"]["H2_h"][end]/ADMM["Tolerance"]["H2_h"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Daily"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-d %.3f -- ΔH2-d %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_d"][end]/ADMM["Tolerance"]["REC_d"],ADMM["Residuals"]["Primal"]["H2_d"][end]/ADMM["Tolerance"]["H2_d"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Monthly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-d %.3f -- ΔH2-m %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_d"][end]/ADMM["Tolerance"]["REC_d"],ADMM["Residuals"]["Primal"]["H2_m"][end]/ADMM["Tolerance"]["H2_m"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Yearly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-d %.3f -- ΔH2-y %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_d"][end]/ADMM["Tolerance"]["REC_d"],ADMM["Residuals"]["Primal"]["H2_y"][end]/ADMM["Tolerance"]["H2_y"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    end 
-                elseif data["scenario"]["Additionality"] == "Hourly"
-                    if data["scenario"]["H2_balance"] == "Hourly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-h %.3f -- ΔH2-h %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_h"][end]/ADMM["Tolerance"]["REC_h"],ADMM["Residuals"]["Primal"]["H2_h"][end]/ADMM["Tolerance"]["H2_h"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Daily"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-h %.3f -- ΔH2-d %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_h"][end]/ADMM["Tolerance"]["REC_h"],ADMM["Residuals"]["Primal"]["H2_d"][end]/ADMM["Tolerance"]["H2_d"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Monthly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-h %.3f -- ΔH2-m %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_h"][end]/ADMM["Tolerance"]["REC_h"],ADMM["Residuals"]["Primal"]["H2_m"][end]/ADMM["Tolerance"]["H2_m"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Yearly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f --  ΔREC-h %.3f -- ΔH2-y %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["REC_h"][end]/ADMM["Tolerance"]["REC_h"],ADMM["Residuals"]["Primal"]["H2_y"][end]/ADMM["Tolerance"]["H2_y"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    end 
-                else
-                    if data["scenario"]["H2_balance"] == "Hourly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f -- ΔH2-h %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["H2_h"][end]/ADMM["Tolerance"]["H2_h"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Daily"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f -- ΔH2-d %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["H2_d"][end]/ADMM["Tolerance"]["H2_d"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Monthly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f -- ΔH2-m %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["H2_m"][end]/ADMM["Tolerance"]["H2_m"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    elseif data["scenario"]["H2_balance"] == "Yearly"
-                        set_description(iterations, string(@sprintf("ΔETS: %.3f -- ΔMSR: %.3f -- ΔEOM %.3f -- ΔREC-y %.3f -- ΔH2-y %.3f -- ΔH2CN-PROD %.3f -- ΔH2CN-CAP %.3f ",  ADMM["Residuals"]["Primal"]["ETS"][end]/ADMM["Tolerance"]["ETS"],ADMM["Residuals"]["Primal"]["MSR"][end]/ADMM["Tolerance"]["ETS"], ADMM["Residuals"]["Primal"]["EOM"][end]/ADMM["Tolerance"]["EOM"],ADMM["Residuals"]["Primal"]["REC_y"][end]/ADMM["Tolerance"]["REC_y"],ADMM["Residuals"]["Primal"]["H2_y"][end]/ADMM["Tolerance"]["H2_y"],ADMM["Residuals"]["Primal"]["H2CN_prod"][end]/ADMM["Tolerance"]["H2CN_prod"],ADMM["Residuals"]["Primal"]["H2CN_cap"][end]/ADMM["Tolerance"]["H2CN_cap"])))
-                    end 
-                end
-            end
 
             # Check convergence: primal and dual satisfy tolerance 
             if ADMM["Residuals"]["Primal"]["MSR"][end] <= ADMM["Tolerance"]["ETS"] && ADMM["Residuals"]["Primal"]["ETS"][end] <= ADMM["Tolerance"]["ETS"] && ADMM["Residuals"]["Dual"]["ETS"][end] <= ADMM["Tolerance"]["ETS"] && ADMM["Residuals"]["Primal"]["EOM"][end] <= ADMM["Tolerance"]["EOM"] && ADMM["Residuals"]["Dual"]["EOM"][end] <= ADMM["Tolerance"]["EOM"] && ADMM["Residuals"]["Primal"]["REC_y"][end] <= ADMM["Tolerance"]["REC_y"] && ADMM["Residuals"]["Primal"]["REC_m"][end] <= ADMM["Tolerance"]["REC_m"] && ADMM["Residuals"]["Primal"]["REC_d"][end] <= ADMM["Tolerance"]["REC_d"] && ADMM["Residuals"]["Primal"]["REC_h"][end] <= ADMM["Tolerance"]["REC_h"] && ADMM["Residuals"]["Dual"]["REC_y"][end] <= ADMM["Tolerance"]["REC_y"] && ADMM["Residuals"]["Dual"]["REC_m"][end] <= ADMM["Tolerance"]["REC_m"] && ADMM["Residuals"]["Dual"]["REC_d"][end] <= ADMM["Tolerance"]["REC_d"] && ADMM["Residuals"]["Dual"]["REC_h"][end] <= ADMM["Tolerance"]["REC_h"] && ADMM["Residuals"]["Primal"]["H2_h"][end] <= ADMM["Tolerance"]["H2_h"] && ADMM["Residuals"]["Dual"]["H2_h"][end] <= ADMM["Tolerance"]["H2_h"] && ADMM["Residuals"]["Primal"]["H2_d"][end] <= ADMM["Tolerance"]["H2_d"] && ADMM["Residuals"]["Dual"]["H2_d"][end] <= ADMM["Tolerance"]["H2_d"] && ADMM["Residuals"]["Primal"]["H2_m"][end] <= ADMM["Tolerance"]["H2_m"] && ADMM["Residuals"]["Dual"]["H2_m"][end] <= ADMM["Tolerance"]["H2_m"] && ADMM["Residuals"]["Primal"]["H2_y"][end] <= ADMM["Tolerance"]["H2_y"] && ADMM["Residuals"]["Dual"]["H2_y"][end] <= ADMM["Tolerance"]["H2_y"] && ADMM["Residuals"]["Primal"]["H2CN_prod"][end] <= ADMM["Tolerance"]["H2CN_prod"] && ADMM["Residuals"]["Dual"]["H2CN_prod"][end] <= ADMM["Tolerance"]["H2CN_prod"] && ADMM["Residuals"]["Primal"]["H2CN_cap"][end] <= ADMM["Tolerance"]["H2CN_cap"] && ADMM["Residuals"]["Dual"]["H2CN_cap"][end] <= ADMM["Tolerance"]["H2CN_cap"]
                 convergence = 1
             end
-
             # store number of iterations
             ADMM["n_iter"] = copy(iter)
         end

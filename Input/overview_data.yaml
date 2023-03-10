@@ -1,7 +1,7 @@
 General: 
   nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 2 # days
+  nReprDays: 8 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
