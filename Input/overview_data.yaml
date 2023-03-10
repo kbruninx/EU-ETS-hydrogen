@@ -1,7 +1,7 @@
 General: 
   nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 8 # days
+  nReprDays: 16 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
@@ -76,7 +76,7 @@ H2:
   P_calibration: 121 # €/MWh
   tolerance_calibration: 2 # €/MWh
   a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
-  a_2: 1400000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
+  a_2: 140000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
 
 
 Industry: 

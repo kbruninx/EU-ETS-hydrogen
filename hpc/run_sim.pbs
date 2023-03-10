@@ -3,7 +3,7 @@
 #PBS -l walltime=8:00:00 
 #PBS -A lp_elect_gen_modeling 
 #PBS -m abe 
-#PBS -M kenneth.bruninx@kuleuven.be
+#PBS -M alexander.hoogsteyn@kuleuven.be
 
-cd $VSC_DATA/BR_EV/
-julia MAIN_v4.jl --start_scen 1 --stop_scen 2
+cd $VSC_DATA/EU-ETS-HYDROGEN/
+julia MAIN.jl --start_scen 1 --stop_scen 4
