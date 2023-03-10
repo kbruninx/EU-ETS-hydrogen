@@ -4,7 +4,7 @@ REC:
 EOM:
   SF: 1
 scenario:
-  remarks: missing
+  remarks: "sensitivity analysis"
   H2_demand_2030: 20
   Additionality: "NA"
   CNH2_cap_target_2030: 100
@@ -277,7 +277,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 10000
+  max_iter: 10
   rho_EOM: 1
   epsilon: 0.1
   rho_REC: 1

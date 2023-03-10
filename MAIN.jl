@@ -93,7 +93,7 @@ else
     # Create syntethic time series - https://ucm.pages.gitlab.kuleuven.be/representativeperiodsfinder.jl/examples/days_re_ordering/ 
     pf = PeriodsFinder(config_file; populate_entries=true)
     # specific settings to create syntethic time series
-    pf.config["method"]["optimization"]["binary_ordering"] = false
+    pf.config["method"]["optimization"]["binary_ordering"] = true
     pf.config["method"]["options"]["representative_periods"] = temp_data["General"]["nReprDays"]
     pf.config["results"]["result_dir"] = string("output_",temp_data["General"]["nReprDays"],"_repr_days")
     delete!(pf.config["method"]["optimization"], "duration_curve_error")
