@@ -104,7 +104,6 @@ function solve_h2s_agent!(mod::Model)
         λ_d_H2 = mod.ext[:parameters][:λ_d_H2] # H2 prices
         gH_d_bar = mod.ext[:parameters][:gH_d_bar] # element in ADMM penalty term related to hydrogen market
         gH_d = mod.ext[:expressions][:gH_d]
-
         H2_obj = mod.ext[:expressions][:H2_obj] = @expression(mod,
             - sum(A[jy]*W[jd]*λ_d_H2[jd,jy]*gH_d[jd,jy] for jd in JD, jy in JY)
             + sum(ρ_d_H2/2*W[jd]*(gH_d[jd,jy] - gH_d_bar[jd,jy])^2 for jd in JD, jy in JY) 
@@ -137,14 +136,37 @@ function solve_h2s_agent!(mod::Model)
         capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
         ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
         gHCN = mod.ext[:variables][:gHCN] 
-        capHCN = mod.ext[:variables][:capHCN] 
+        gH_y = mod.ext[:expressions][:gH_y]
+        gH = mod.ext[:variables][:gH]
+        capHCN = mod.ext[:variables][:capHCN]
+        capH = mod.ext[:variables][:capH]
+
+        #Extract premiums 
+        H2FP_PREM = mod.ext[:parameters][:H2FP_PREM]
+        λ_HPA = mod.ext[:parameters][:λ_HPA]
+        is_HPA_covered = mod.ext[:parameters][:is_HPA_covered]
+        H2_CAPG = mod.ext[:parameters][:H2CAP_PREM]
 
         H2CN_obj = mod.ext[:expressions][:H2CN_obj] = @expression(mod,
             - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
             - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
             + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
             + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
+            - sum(A[jy]*H2FP_PREM[jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY) 
+            - sum(A[jy]*H2_CAPG[jy]*capH[jy] for jy in JY)
         )
+        # HPA is added to objective function
+        if sum(is_HPA_covered) != 0
+            if ρ_h_H2 > 0
+                H2CN_obj = H2CN_obj - sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy]-W[jd]*λ_h_H2[jh,jd,jy])*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+            elseif ρ_d_H2 > 0
+                H2CN_obj = H2CN_obj - sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy]-W[jd]*λ_d_H2[jd,jy])*gH_d[jd,jy] for jd in JD, jy in JY)
+            elseif ρ_m_H2 > 0
+                H2CN_obj = H2CN_obj - sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy]-λ_m_H2[jm,jy])*gH_m[jm,jy] for jm in JM, jy in JY)
+            elseif ρ_y_H2 > 0 
+                H2CN_obj = H2CN_obj - sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy]-λ_y_H2[jy])*gH_y[jy] for jy in JY)
+            end
+        end
     else
         H2CN_obj = mod.ext[:expressions][:H2CN_obj] = @expression(mod,
            0

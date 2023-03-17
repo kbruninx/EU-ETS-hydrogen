@@ -10,6 +10,12 @@ function define_H2S_parameters!(mod::Model, data::Dict,ts::DataFrame,repr_days::
     mod.ext[:parameters][:LEG_CAP][1] = data["AF"]*data["Legcap_2021"]  
     mod.ext[:parameters][:LEG_CAP][2:data["nyears"]] = [data["AF"]*data["Legcap_2021"]*maximum([0,(data["Legcap_out"]-jy+1)/data["Legcap_out"]]) for jy=1:data["nyears"]-1] 
     mod.ext[:parameters][:CAP_LT] = zeros(data["nyears"],data["nyears"]) 
+    mod.ext[:parameters][:max_support_duration] = data["max_support_duration"]
+    mod.ext[:parameters][:H2FP_PREM] = [zeros(3); data["H2F_premium"]*ones(data["contract_duration"]); zeros(data["nyears"]-3-data["contract_duration"])]
+    mod.ext[:parameters][:λ_HPA] = [zeros(3); data["HPA_price"]*ones(data["contract_duration"]); zeros(data["nyears"]-3-data["contract_duration"])]
+    mod.ext[:parameters][:is_HPA_covered] = [zeros(3); (data["HPA_price"] != 0)*ones(data["contract_duration"]); zeros(data["nyears"]-3-data["contract_duration"])]
+    mod.ext[:parameters][:H2CAP_PREM] = [zeros(3); data["H2_cap_grant"]*ones(data["contract_duration"]); zeros(data["nyears"]-3-data["contract_duration"])]
+
     for y=1:data["nyears"]
         if y+data["Leadtime"] < data["nyears"]
             for yy = y+data["Leadtime"]:minimum([y+data["Leadtime"]+data["Lifetime"]- 1, data["nyears"]])

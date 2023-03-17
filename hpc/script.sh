@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=13
 #SBATCH --partition=compute
 #SBATCH --mem-per-cpu=8GB
-#SBATCH --account=research-tpm-ess
+#SBATCH --account=lp_elect_gen_modeling
 #SBATCH --array=1-4
 
 module load 2022r2

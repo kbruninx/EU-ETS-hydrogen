@@ -1,11 +1,13 @@
 General: 
   nyears: 40
   nTimesteps: 24 # number of timesteps per representative day
-  nReprDays: 16 # days
+  nReprDays: 2 # days
   nMonths: 12 # number of months
   inflation: 0.02
   discount_rate: 0.1
   operationalYear: 2040
+  contract_duration: 10
+
 
 ADMM:
  rho_EUA: 1 # rho ADMM penalty term, EUA market
@@ -76,7 +78,7 @@ H2:
   P_calibration: 121 # €/MWh
   tolerance_calibration: 2 # €/MWh
   a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
-  a_2: 140000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
+  a_2: 140000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q
 
 
 Industry: 
@@ -186,7 +188,7 @@ HydrogenImport:
     ETS: "NO" # covered by ETS
     EOM: "NO" # participates in EOM
     H2: "YES" # participate in the carbon neutral H2 market
-    H2CN_prod: "YES" # participate in the carbon neutral H2 market (production)
+    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
     H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
     NG: "NO" # participate in the natural gas market  
     a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 

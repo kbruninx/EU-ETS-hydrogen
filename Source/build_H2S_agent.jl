@@ -19,6 +19,14 @@ function build_h2s_agent!(mod::Model)
     η_NG_H2 = mod.ext[:parameters][:η_NG_H2] # efficiency NG->H2
     λ_NG = mod.ext[:parameters][:λ_NG] # natural gas price
 
+    # Extract H2 policy parameters
+    max_support_duration = mod.ext[:parameters][:max_support_duration]
+    H2FP_PREM = mod.ext[:parameters][:H2FP_PREM]
+    λ_HPA = mod.ext[:parameters][:λ_HPA]
+    is_HPA_covered = mod.ext[:parameters][:is_HPA_covered]
+    H2_CAPG = mod.ext[:parameters][:H2CAP_PREM]
+
+
     # ADMM algorithm parameters
     λ_EUA = mod.ext[:parameters][:λ_EUA] # EUA prices
     b_bar = mod.ext[:parameters][:b_bar] # element in ADMM penalty term related to EUA auctions
@@ -92,10 +100,51 @@ function build_h2s_agent!(mod::Model)
     mod.ext[:expressions][:gH_d_w] = @expression(mod, [jd=JD,jy=JY],
         W[jd]*sum(gH[jh,jd,jy] for jh in JH)
     )
+    # Used to calculate total system cost, hence does not consider exogenous costs of the modelled comodities
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
-        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)  
+        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)
         + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
     )
+    # Agent revenue before  do consider all cost of an agent, including exogenous costs of the modelled comodities 
+    mod.ext[:expressions][:agent_revenue_before_support] = @expression(mod, 
+        - sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY)
+        - sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY)
+        + sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
+        + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)  
+        + sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*W[jd]*λ_d_H2[jd,jy]*gH_d[jd,jy] for jd in JD, jy in JY)
+        + sum(A[jy]*λ_m_H2[jm,jy]*gH_m[jm,jy] for jm in JM, jy in JY)
+        + sum(A[jy]*λ_y_H2[jy]*gH_y[jy] for jy in JY)
+    )
+
+    # Hydrogen policy costs 
+    mod.ext[:expressions][:hpa_cost] = @expression(mod, 
+        sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy]
+            -λ_y_H2[jy]
+            -sum(λ_m_H2[jm,jy] for jm in JM)
+            -sum(W[jd]*λ_d_H2[jd,jy] for jd in JD)
+            -sum(W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD))  for jy in JY)
+    )
+    mod.ext[:expressions][:h2f_cost] = @expression(mod, 
+        sum(A[jy]*H2FP_PREM[jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY) 
+    )
+    mod.ext[:expressions][:h2_cap_grant_cost] = @expression(mod, 
+        sum(A[jy]*H2_CAPG[jy]*capH[jy] for jy in JY)
+    )
+
+    # Agent revenue do consider all cost of an agent, including exogenous costs of the modelled comodities
+    mod.ext[:expressions][:agent_revenue_after_support] = @expression(mod, 
+        mod.ext[:expressions][:agent_revenue_before_support]
+        + mod.ext[:expressions][:hpa_cost]
+        + mod.ext[:expressions][:h2f_cost]
+        + mod.ext[:expressions][:h2_cap_grant_cost]
+        + sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+        + sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
+        + sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+        + sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
+        + sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY)
+)
 
     # Definition of the objective function
     mod.ext[:objective] = @objective(mod, Min,
@@ -105,14 +154,20 @@ function build_h2s_agent!(mod::Model)
     - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
     - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
     - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-    + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
+    + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY)
     - sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     - sum(A[jy]*W[jd]*λ_d_H2[jd,jy]*gH_d[jd,jy] for jd in JD, jy in JY)
     - sum(A[jy]*λ_m_H2[jm,jy]*gH_m[jm,jy] for jm in JM, jy in JY)
     - sum(A[jy]*λ_y_H2[jy]*gH_y[jy] for jy in JY)
     - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
-    - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
-    + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
+    - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY)
+    - sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
+    - sum(A[jy]*H2FP_PREM[jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY) 
+    - sum(A[jy]*H2_CAPG[jy]*capH[jy] for jy in JY)
+    - sum(A[jy]*is_HPA_covered[jy]*(λ_HPA[jy] -λ_y_H2[jy]
+        -sum(λ_m_H2[jm,jy] for jm in JM)
+        -sum(W[jd]*λ_d_H2[jd,jy] for jd in JD)
+        -sum(W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD))  for jy in JY)
     + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
     + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
     + sum(ρ_h_H2/2*W[jd]*(gH[jh,jd,jy] - gH_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) 
@@ -166,6 +221,9 @@ function build_h2s_agent!(mod::Model)
     if mod.ext[:parameters][:H2CN_prod] == 1
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],
             gHCN[jy] <=  sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD) # [TWh]
+        )
+        mod.ext[:constraints][:max_support_duration] = @constraint(mod, [jy=JY], 
+            gHCN[jy] <= max_support_duration * (sum(CAP_LT[y2,jy]*capH[y2] for y2=1:jy) + LEG_CAP[jy])/1000 # [TWh]
         )
     else
         mod.ext[:constraints][:gen_limit_carbon_neutral] = @constraint(mod, [jy=JY],

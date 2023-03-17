@@ -17,6 +17,12 @@ b = mod.ext[:variables][:b] = @variable(mod, [jy=JY], lower_bound = 0, base_name
 mod.ext[:expressions][:tot_cost] = @expression(mod, 
     sum(A[jy]*AC[jy] for jy in JY)
 )
+mod.ext[:expressions][:agent_revenue_before_support] = @expression(mod,
+    -sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
+)
+mod.ext[:expressions][:agent_revenue_after_support] = @expression(mod,
+    mod.ext[:expressions][:agent_revenue_before_support]
+)
 
 # Objective
 @objective(mod, Min, sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) +sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY))

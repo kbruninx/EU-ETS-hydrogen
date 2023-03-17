@@ -65,6 +65,19 @@ function build_ps_agent!(mod::Model)
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
         + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     )
+    mod.ext[:expressions][:agent_revenue_before_support] = @expression(mod,
+        - sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
+        - sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        - sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
+    )
+    mod.ext[:expressions][:agent_revenue_after_support] = @expression(mod,
+        mod.ext[:expressions][:agent_revenue_before_support]
+        + sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
+        + sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
+        + sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
+        + sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+    )
 
     # Objective 
     mod.ext[:objective] = @objective(mod, Min,

@@ -1,0 +1,51 @@
+method:
+  options:
+    mandatory_periods:
+      - 35
+      - 54
+      - 93
+      - 102
+      - 160
+      - 170
+      - 244
+      - 277
+      - 290
+      - 336
+      - 338
+      - 364
+    total_periods: 365
+    sampling_time: "Hour(1)"
+    representative_periods: 12
+    time_steps_per_period: 24
+  optimization:
+    binary_ordering: false
+    time_series_error:
+      weight: 1
+      type: "absolute"
+    integral_weights: false
+    equal_weights: false
+results:
+  save_results: true
+  result_dir: "output_12_repr_days"
+  create_plots: true
+base_dir: "c:\\Users\\u0137718\\Documents\\Git repo's\\EU-ETS-hydrogen\\Input"
+time_series:
+  WindOffshore:
+    value_column: "WIND_OFFSHORE"
+  default:
+    weight: 1
+    source: "timeseries.csv"
+    start: 1
+    interpolation_type: "linear"
+    sampling_time: "Hour(1)"
+    csv_options:
+      delim: ";"
+    timestamp: "Datetime"
+  Other:
+    value_column: "OTHER"
+  Load:
+    value_column: "LOAD"
+  WindOnshore:
+    value_column: "WIND_ONSHORE"
+  Solar:
+    value_column: "SOLAR"
