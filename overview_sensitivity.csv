@@ -1,4 +1,7 @@
 Parameter;Scaling;remarks
+HydrogenImport Import a_1; 0.0; no fixed cost
+HydrogenImport Import a_2; 0.1; cheap_import
+HydrogenImport Import a_2; 0.01; cheaper_import
 HydrogenSector Alkaline_base OC; 0.8; cheap_PtH_base
 HydrogenSector Alkaline_base OC; 1.2; Expensive_PtH_base
 HydrogenSector Alkaline_peak OC; 0.8; cheap_PtH_peak

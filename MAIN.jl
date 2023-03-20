@@ -164,7 +164,7 @@ if HPC == "DelftBlue" || HPC == "ThinKing"
 else
     # Range of scenarios to be simulated
     start_scen = 1
-    stop_scen = 34
+    stop_scen = 4
     start_sens = 1 
     stop_sens = 1 # will be overwritten 
 end

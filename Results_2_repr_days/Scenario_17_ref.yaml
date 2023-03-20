@@ -6,15 +6,15 @@ EOM:
 scenario:
   H2_demand_2030: 20
   Additionality: "NA"
-  CNH2_cap_target_2030: 40
+  CNH2_cap_target_2030: 0
   LRF_2031: 0.042
   LRF_2021: 0.042
   CNH2_cap_target_2024: 0
-  Sens_analysis: "YES"
+  Sens_analysis: "NO"
   scen_number: 17
   MSR: "NA"
   ref_scen_number: 1
-  max_support_duration: 8760
+  max_support_duration: 3000
   CNH2_demand_2040: 0
   RES_target_2030: 0.4
   HPA_price: 0
@@ -23,7 +23,7 @@ scenario:
   H2_cap_grant: 0
   CNH2_demand_2024: 0
   H2S_premium: 0
-  H2F_premium: 0
+  H2F_premium: 30
   gamma: 1
   CNH2_demand_2030: 0
   H2_balance: "Yearly"
@@ -212,7 +212,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 50
+  max_iter: 5000
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1

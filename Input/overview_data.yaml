@@ -61,10 +61,10 @@ NG:
   P_2020: 25 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2021: 80 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2022: 200 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2023: 150 # markets seem to consider that prices remain high for longer
-  P_2024: 125 # markets seem to consider that prices remain high for longer - 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2025: 100 # markets seem to consider that prices remain high for longer - 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2026: 75  # markets seem to consider that prices remain high for longer - 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2023: 47.5 ## Dec 2024 ttf future (20 March 2023)
+  P_2024: 48.7 # Dec 2024 ttf future (20 March 2023)
+  P_2025: 42.0 # Dec 2024 ttf future (20 March 2023)
+  P_2026: 46.1  # 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2027: 45.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2028: 45 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2029: 44.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
@@ -77,7 +77,7 @@ H2:
   conv_factor: 33 # 1 mt H2 = 33 TWh
   P_calibration: 121 # €/MWh
   tolerance_calibration: 2 # €/MWh
-  a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
+  a_1: 0 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
   a_2: 140000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q
 
 
@@ -192,7 +192,7 @@ HydrogenImport:
     H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
     NG: "NO" # participate in the natural gas market  
     a_1: 150 # Fixed component in MC hydrogen import: MC = a_1 + a_2*q 
-    a_2: 1400000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
+    a_2: 100000 # Variable component in MC hydrogen import: MC = a_1 + a_2*q 
 
 # Legacy capacities (2021), load and renewable availability factors based on ENTSO-E https://transparency.entsoe.eu
 # Unless stated otherwise, cost/tech data from EUR-PyPSA https://technology-data.readthedocs.io/en/latest/# 

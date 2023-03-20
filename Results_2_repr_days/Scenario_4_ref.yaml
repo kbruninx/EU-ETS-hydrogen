@@ -212,7 +212,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 50
+  max_iter: 5000
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1

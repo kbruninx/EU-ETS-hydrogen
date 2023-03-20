@@ -14,7 +14,7 @@ scenario:
   scen_number: 16
   MSR: "NA"
   ref_scen_number: 4
-  max_support_duration: 8760
+  max_support_duration: 3000
   CNH2_demand_2040: 0
   RES_target_2030: 0.4
   HPA_price: 0
@@ -212,7 +212,7 @@ ADMM:
   CircularBufferSize: 2
   rho_EUA: 1
   rho_H2CN_cap: 1
-  max_iter: 50
+  max_iter: 5000
   rho_EOM: 500
   epsilon: 0.1
   rho_REC: 0.1
