@@ -44,7 +44,7 @@ HydrogenImport:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
-    a_1: 150
+    a_1: 40
     H2CN_prod: "NO"
     ETS: "NO"
     NG: "NO"
@@ -357,7 +357,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
-  a_1: 0
+  a_1: 60
   P_calibration: 121
   demand: 10
   conv_factor: 33
