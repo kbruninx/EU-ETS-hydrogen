@@ -44,11 +44,11 @@ HydrogenImport:
     EOM: "NO"
     H2CN_cap: "NO"
     REC: "NO"
-    a_1: 150
+    a_1: 40
     H2CN_prod: "NO"
     ETS: "NO"
     NG: "NO"
-    a_2: 1400000
+    a_2: 100000
     H2: "YES"
 PowerSector:
   CCGT_new:
@@ -261,16 +261,16 @@ ETS:
   S_2020: 2173.195623
   X_MSR_MAX_NEG_2023: 100
 NG:
-  P_2023: 150
+  P_2023: 47.5
   P_2030: 43.9
-  P_2025: 100
+  P_2025: 42.0
   SF: 1
   P_2019: 25
   P_2028: 45
-  P_2026: 75
+  P_2026: 46.1
   P_2020: 25
   P_2021: 80
-  P_2024: 125
+  P_2024: 48.7
   YoY: 0
   P_2029: 44.5
   P_2022: 200
@@ -357,7 +357,7 @@ HydrogenSector:
     max_YoY_new_cap: 1000
     H2: "YES"
 H2:
-  a_1: 150
+  a_1: 60
   P_calibration: 121
   demand: 10
   conv_factor: 33
