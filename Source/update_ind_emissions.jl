@@ -1,7 +1,8 @@
 function update_ind_emissions!(mod::Model,data::Dict,ETS::Dict)
     # Baseline emissions, corrected for share of industry in emissions 
-    E_REF = data["E_ref"]*ones(data["nyears"],1)*data["SF_ind"]
-  
+    E_REF = data["E_ref"]*ones(data["nyears"],1)
+    E_REF[4:end] = E_REF[4:end] + data["E_ref_maritime"]*ones(data["nyears"]-3,1)
+
     for y = 2:data["nyears"] # Emissions are only price-dependent as of 2022 (y=2)
         λ_nom = maximum([0,mod.ext[:parameters][:λ_EUA][y]/(1+data["inflation"])^(y-1)]) # M€/MtCO2, discounted to 2021 values, limited to positive values
         mod.ext[:parameters][:e][y] = minimum([E_REF[y],maximum([0,E_REF[y] - (λ_nom/mod.ext[:parameters][:β])^(1/data["gamma"])])]) # emissions according to MACC

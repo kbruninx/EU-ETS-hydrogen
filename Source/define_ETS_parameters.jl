@@ -1,16 +1,7 @@
 function define_ETS_parameters!(ETS::Dict,data::Dict)
-    # LRF 
-    LRF_tot = data["LRF_stat_2021"]/data["CAP_stat_2021"]*(data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"])
-    ETS["LRF"] = zeros(data["nyears"])                                                                                 
-    ETS["LRF"][1:10] = LRF_tot*data["LRF_2021"]/0.022*ones(10,1)                            # 2021-2030
-    ETS["LRF"][11:end] = LRF_tot*data["LRF_2031"]/0.022*ones(data["nyears"]-10,1)           # 2031-end ETS
-       
     # CAP
     ETS["CAP"] = zeros(data["nyears"])
-    ETS["CAP"][1] = data["CAP_stat_2021"]+data["CAP_aviation_2021"]+data["CAP_maritime_2021"]               # 2021
-    for y =2:data["nyears"]                                                                                 # 2022-end
-        ETS["CAP"][y]= maximum([ETS["CAP"][y-1]-ETS["LRF"][y-1] 0])
-    end
+    ETS["CAP"][1:20] = [1596 1552 1509 1412 1412 1295 1233 1141 1049 958 866 774 682 591 499 407 315 224 132 40]
 
     # Supply 
     ETS["S"] = copy(ETS["CAP"])
@@ -26,16 +17,12 @@ function define_ETS_parameters!(ETS::Dict,data::Dict)
     ETS["MSR"][1,12] = data["MSR_2020"]
     ETS["C"] = zeros(data["nyears"],12);
     ETS["X_MSR_MAX_POS"] = zeros(data["nyears"])
-    if data["MSR"] == 2018
-        ETS["X_MSR_MAX_POS"][1:3] = data["X_MSR_MAX_POS_2019"]*ones(3);  # 24% until 2023
-        ETS["X_MSR_MAX_POS"][4:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-3); 
-    elseif data["MSR"] == 2021
-        ETS["X_MSR_MAX_POS"][1:10] = data["X_MSR_MAX_POS_2019"]*ones(10);  # 24% until 2030
-        ETS["X_MSR_MAX_POS"][11:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-10); 
-    end
+    ETS["X_MSR_MAX_POS"][1:3] = data["X_MSR_MAX_POS_2019"]*ones(3);  # 24% until 2023, 2018 MSR rules
+    ETS["X_MSR_MAX_POS"][4:10] = data["X_MSR_MAX_POS_2019"]*ones(7);  # 24% until 2030, 2023 MSR rules
+    ETS["X_MSR_MAX_POS"][11:end] = data["X_MSR_MAX_POS_2023"]*ones(data["nyears"]-10); # 2023 MSR rules
     ETS["X_MSR_MAX_NEG"] = zeros(data["nyears"])
-    ETS["X_MSR_MAX_NEG"][1:3] = data["X_MSR_MAX_NEG_2019"]*ones(3);  
-    ETS["X_MSR_MAX_NEG"][4:end] = data["X_MSR_MAX_NEG_2023"]*ones(data["nyears"]-3); 
+    ETS["X_MSR_MAX_NEG"][1:3] = data["X_MSR_MAX_NEG_2019"]*ones(3);  # 2018 MSR rules
+    ETS["X_MSR_MAX_NEG"][4:end] = data["X_MSR_MAX_NEG_2023"]*ones(data["nyears"]-3);  # 2023 MSR rule
     ETS["TNAC_MAX"] = data["TNAC_MAX"]
     ETS["TNAC_MIN"] = data["TNAC_MIN"]
     ETS["TNAC_THRESHOLD"] = data["TNAC_THRESHOLD"]

@@ -4,6 +4,8 @@ function solve_h2s_agent!(mod::Model)
    JD = mod.ext[:sets][:JD]
    JM = mod.ext[:sets][:JM]
    JY = mod.ext[:sets][:JY]
+   JY_pre2030 = mod.ext[:sets][:JY_pre2030]
+   JY_post2030 = mod.ext[:sets][:JY_post2030]
       
    # Extract parameters 
    W = mod.ext[:parameters][:W] # weight of the representative days
@@ -36,52 +38,99 @@ function solve_h2s_agent!(mod::Model)
         λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
         r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
         ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
-        ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
-        ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
-        ρ_m_REC = mod.ext[:parameters][:ρ_m_REC] # rho-value in ADMM related to REC auctions
+        ρ_h_REC_pre2030 = mod.ext[:parameters][:ρ_h_REC_pre2030] # rho-value in ADMM related to REC auctions
+        ρ_d_REC_pre2030 = mod.ext[:parameters][:ρ_d_REC_pre2030] # rho-value in ADMM related to REC auctions
+        ρ_m_REC_pre2030 = mod.ext[:parameters][:ρ_m_REC_pre2030] # rho-value in ADMM related to REC auctions
+        ρ_h_REC_post2030 = mod.ext[:parameters][:ρ_h_REC_post2030] # rho-value in ADMM related to REC auctions
+        ρ_d_REC_post2030 = mod.ext[:parameters][:ρ_d_REC_post2030] # rho-value in ADMM related to REC auctions
+        ρ_m_REC_post2030 = mod.ext[:parameters][:ρ_m_REC_post2030] # rho-value in ADMM related to REC auctions
         r_y = mod.ext[:variables][:r_y] 
 
-        if ρ_h_REC > 0 
+        if ρ_h_REC_pre2030 > 0 
             λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
             r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
             r_h = mod.ext[:variables][:r_h] 
 
-            REC_obj = mod.ext[:expressions][:REC_obj] = @expression(mod,
-                - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-                - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-                + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
-                + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
+            REC_obj_pre2030 = mod.ext[:expressions][:REC_obj_pre2030] = @expression(mod,
+                - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY_pre2030)
+                + sum(ρ_h_REC_pre2030/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY_pre2030)
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_pre2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_pre2030)
             )
-        elseif ρ_d_REC > 0 
+        elseif ρ_d_REC_pre2030 > 0 
             λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
             r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
             r_d = mod.ext[:variables][:r_d]  
 
-            REC_obj = mod.ext[:expressions][:REC_obj] = @expression(mod,
-                - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-                - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
-                + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
-                + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
+            REC_obj_pre2030 = mod.ext[:expressions][:REC_obj_pre2030] = @expression(mod,
+                - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY_pre2030)
+                + sum(ρ_d_REC_pre2030/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY_pre2030)
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_pre2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_pre2030)
             )
-        elseif ρ_m_REC > 0 
+            
+        elseif ρ_m_REC_pre2030 > 0 
             λ_m_REC = mod.ext[:parameters][:λ_m_REC] # REC prices
             r_m_bar = mod.ext[:parameters][:r_m_bar] # element in ADMM penalty term related to REC auctions
             r_m = mod.ext[:variables][:r_m] 
 
-            REC_obj = mod.ext[:expressions][:REC_obj] = @expression(mod,
-                - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-                - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
-                + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
-                + sum(ρ_m_REC/2*(r_m[jm,jy] - r_m_bar[jm,jy])^2 for jm in JM, jy in JY)
+            REC_obj_pre2030 = mod.ext[:expressions][:REC_obj_pre2030] = @expression(mod,
+                - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY_pre2030)
+                + sum(ρ_m_REC_pre2030/2*(r_m[jm,jy] - r_m_bar[jm,jy])^2 for jm in JM, jy in JY_pre2030)
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_pre2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_pre2030)
+            )
+        else
+            REC_obj_pre2030 = mod.ext[:expressions][:REC_obj_pre2030] = @expression(mod,
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_pre2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_pre2030)
+            )
+        end
+
+        if ρ_h_REC_post2030 > 0 
+            λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
+            r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
+            r_h = mod.ext[:variables][:r_h] 
+
+            REC_obj_post2030 = mod.ext[:expressions][:REC_obj_post2030] = @expression(mod,
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_post2030)
+                - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY_post2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_post2030)
+                + sum(ρ_h_REC_post2030/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY_post2030)
+            )
+        elseif ρ_d_REC_post2030 > 0 
+            λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
+            r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
+            r_d = mod.ext[:variables][:r_d]  
+
+            REC_obj_post2030 = mod.ext[:expressions][:REC_obj_post2030] = @expression(mod,
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_post2030)
+                - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY_post2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_post2030)
+                + sum(ρ_d_REC_post2030/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY_post2030)
+            )
+        elseif ρ_m_REC_post2030 > 0 
+            λ_m_REC = mod.ext[:parameters][:λ_m_REC] # REC prices
+            r_m_bar = mod.ext[:parameters][:r_m_bar] # element in ADMM penalty term related to REC auctions
+            r_m = mod.ext[:variables][:r_m] 
+
+            REC_obj_post2030 = mod.ext[:expressions][:REC_obj_post2030] = @expression(mod,
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_post2030)
+                - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY_post2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_post2030)
+                + sum(ρ_m_REC_post2030/2*(r_m[jm,jy] - r_m_bar[jm,jy])^2 for jm in JM, jy in JY_post2030)
             )
         else 
-            REC_obj = mod.ext[:expressions][:REC_obj] = @expression(mod,
-                - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-                + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
+            REC_obj_post2030 = mod.ext[:expressions][:REC_obj_post2030] = @expression(mod,
+                - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY_post2030)
+                + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY_post2030)
             )
         end
     else
-        REC_obj = mod.ext[:expressions][:REC_obj] = @expression(mod,
+        REC_obj_pre2030 = mod.ext[:expressions][:REC_obj_pre2030] = @expression(mod,
+            0
+        )
+        REC_obj_post2030 = mod.ext[:expressions][:REC_obj_post2030] = @expression(mod,
             0
         )
     end 
@@ -188,7 +237,8 @@ function solve_h2s_agent!(mod::Model)
     mod.ext[:objective] = @objective(mod, Min,
         + CAPEX_obj
         + EOM_obj
-        + REC_obj
+        + REC_obj_pre2030
+        + REC_obj_post2030
         + ETS_obj
         + H2_obj
         + H2CN_obj

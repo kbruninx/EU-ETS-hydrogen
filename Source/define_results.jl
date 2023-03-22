@@ -190,48 +190,30 @@ function define_results!(data::Dict,results::Dict,ADMM::Dict,agents::Dict,ETS::D
     push!(ADMM["ρ"]["EOM"],data["rho_EOM"])
     ADMM["ρ"]["REC_y"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["REC_y"],data["rho_REC"])    
-    ADMM["ρ"]["REC_m"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["Additionality"] == "Monthly" 
-        push!(ADMM["ρ"]["REC_m"],data["rho_REC"])
-    else
-        push!(ADMM["ρ"]["REC_m"],0)
-    end
-    ADMM["ρ"]["REC_d"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["Additionality"] == "Daily" 
-        push!(ADMM["ρ"]["REC_d"],data["rho_REC"])
-    else
-        push!(ADMM["ρ"]["REC_d"],0)
-    end
-    ADMM["ρ"]["REC_h"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["Additionality"] == "Hourly" 
-        push!(ADMM["ρ"]["REC_h"],data["rho_REC"])
-    else
-        push!(ADMM["ρ"]["REC_h"],0)
-    end
+    ADMM["ρ"]["REC_y_pre2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_y_pre2030"],data["rho_REC_y_pre2030"])    
+    ADMM["ρ"]["REC_m_pre2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_m_pre2030"],data["rho_REC_m_pre2030"])
+    ADMM["ρ"]["REC_d_pre2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_d_pre2030"],data["rho_REC_d_pre2030"])
+    ADMM["ρ"]["REC_h_pre2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_h_pre2030"],data["rho_REC_h_pre2030"])
+    ADMM["ρ"]["REC_y_post2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_y_post2030"],data["rho_REC_y_post2030"])    
+    ADMM["ρ"]["REC_m_post2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_m_post2030"],data["rho_REC_m_post2030"])
+    ADMM["ρ"]["REC_d_post2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_d_post2030"],data["rho_REC_d_post2030"])
+    ADMM["ρ"]["REC_h_post2030"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
+    push!(ADMM["ρ"]["REC_h_post2030"],data["rho_REC_h_post2030"])
     ADMM["ρ"]["H2_h"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["H2_balance"] == "Hourly" 
-        push!(ADMM["ρ"]["H2_h"],data["rho_H2"])
-    else
-        push!(ADMM["ρ"]["H2_h"],0)
-    end
+    push!(ADMM["ρ"]["H2_h"],data["rho_H2_h"])
     ADMM["ρ"]["H2_d"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["H2_balance"] == "Daily" 
-        push!(ADMM["ρ"]["H2_d"],data["rho_H2"])
-    else
-        push!(ADMM["ρ"]["H2_d"],0)
-    end
+    push!(ADMM["ρ"]["H2_d"],data["rho_H2_d"])
     ADMM["ρ"]["H2_m"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["H2_balance"] == "Monthly" 
-        push!(ADMM["ρ"]["H2_m"],data["rho_H2"])
-    else
-        push!(ADMM["ρ"]["H2_m"],0)
-    end
+    push!(ADMM["ρ"]["H2_m"],data["rho_H2_m"])
     ADMM["ρ"]["H2_y"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
-    if data["H2_balance"] == "Yearly" 
-        push!(ADMM["ρ"]["H2_y"],data["rho_H2"])
-    else
-        push!(ADMM["ρ"]["H2_y"],0)
-    end
+    push!(ADMM["ρ"]["H2_y"],data["rho_H2_y"])
     ADMM["ρ"]["H2CN_prod"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 
     push!(ADMM["ρ"]["H2CN_prod"],data["rho_H2CN_prod"])
     ADMM["ρ"]["H2CN_cap"] = CircularBuffer{Float64}(data["CircularBufferSize"]) 

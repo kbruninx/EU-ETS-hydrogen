@@ -41,6 +41,7 @@ GRBsetparam(GUROBI_ENV, "TimeLimit", "300")  # will only affect solutions if you
 println("        ")
 
 # Include functions
+include(joinpath(home_dir,"Source","define_rho_parameters.jl"))
 include(joinpath(home_dir,"Source","define_common_parameters.jl"))
 include(joinpath(home_dir,"Source","define_H2S_parameters.jl"))
 include(joinpath(home_dir,"Source","define_ps_parameters.jl"))
@@ -162,10 +163,10 @@ else
     start_scen = 1
     stop_scen = 100
     start_sens = 1 
-    stop_sens = 100 # will be overwritten 
+    stop_sens = 100  
 end
 
-scen_number = 7
+scen_number = 2
 # for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
@@ -177,7 +178,11 @@ scenario_definition = Dict("scenario" => Dict([String(collect(keys(scenario_over
 data = YAML.load_file(joinpath(home_dir,"Input","overview_data.yaml")) # reload data to avoid previous sensitivity analysis affected data
 data = merge(data,scenario_definition)
 
+# Define rho-values based on additionality rules and hydrogen demand resolution in this scenario
+define_rho_parameters!(data)
+
 sens_number = 1 
+
 # for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
@@ -340,11 +345,11 @@ println(string("        "))
 
 ## 6. Postprocessing and save results 
 if sens_number >= 2
-    save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,sensitivity_overview[sens_number-1,:remarks]) 
+    save_results(mdict,EOM,ETS,H2,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,sensitivity_overview[sens_number-1,:remarks]) 
     # @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_",sensitivity_overview[sens_number-1,:remarks]))
     YAML.write_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_TO_",sensitivity_overview[sens_number-1,:remarks],".yaml")),TO)
 else
-    save_results(mdict,EOM,ETS,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,"ref") 
+    save_results(mdict,EOM,ETS,H2,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,"ref") 
     # @save joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref"))
     YAML.write_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_TO_ref.yaml")),TO)
 end

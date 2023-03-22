@@ -5,20 +5,20 @@ EOM:
   SF: 1
 scenario:
   remarks: "Used to calibrate MACC"
+  Additionality_pre_2030: "NA"
   H2_demand_2030: 20
-  Additionality: "NA"
-  CNH2_cap_target_2030: 0
-  LRF_2031: 0.042
-  LRF_2021: 0.042
-  CNH2_cap_target_2024: 0
-  MSR: 2021
+  CNH2_cap_target_2030: 40
+  Additionality_post_2030: "NA"
+  CNH2_cap_target_2024: 6
+  MSR: "YES"
   scen_number: 1
   ref_scen_number: 1
-  RES_target_2030: 0.4
+  RES_target_2030: 0.45
   H2_demand_2050: 50
   CNH2_demand_2024: 0
+  sensitivity: "NO"
   gamma: 1
-  CNH2_demand_2030: 0
+  CNH2_demand_2030: 5.6
   H2_balance: "Yearly"
   sens_number: 1
   max_em_change: 10
@@ -274,18 +274,30 @@ PowerSector:
     AF_ts: "NA"
     H2: "NO"
 ADMM:
+  rho_REC_y_pre2030: 0
   CircularBufferSize: 2
+  rho_REC_m_post2030: 0
+  rho_REC_y: 1
+  rho_REC_d_pre2030: 0
+  rho_H2_h: 0
+  rho_H2_y: 1
+  rho_H2: 1
+  rho_H2_d: 0
   rho_EUA: 1
-  rho_H2CN_cap: 1
   max_iter: 10000
+  rho_REC_h_post2030: 0
+  rho_REC_y_post2030: 0
+  rho_REC_m_pre2030: 0
+  rho_REC: 1
+  rho_REC_h_pre2030: 0
+  rho_H2CN_cap: 1
   rho_EOM: 1
   epsilon: 0.1
-  rho_REC: 1
   rho_H2CN_prod: 1
-  rho_H2: 1
+  rho_REC_d_post2030: 0
+  rho_H2_m: 0
 Industry:
-  E_ref: 1900
-  SF_ind: 0.38410844005092487
+  E_ref: 800
   REC: "NO"
   E_ind_2020: 548.6
   EOM: "NO"
@@ -295,14 +307,13 @@ Industry:
   ETS: "YES"
   NG: "NO"
   E_ind_2019: 598
+  E_ref_maritime: 80
   tolerance_calibration: 1
   H2: "NO"
 ETS:
-  CAP_maritime_2021: 40
   MSR_2019: 1297.124722
   TNAC_2020: 1578.772426
   TNAC_THRESHOLD: 1096
-  LRF_stat_2021: 43.003515
   E_2019: 1562.33
   TNAC_2019: 1385.496166
   E_2021: 1290.418987
@@ -314,31 +325,29 @@ ETS:
   X_MSR_MAX_POS_2023: 0.12
   TNAC_MAX: 833
   P_calibration: 80
-  CAP_stat_2021: 1571.583007
   E_2020: 1352.492616
   P_2020: 24.76
   MSR_2020: 1924.551469
   MSR_2021: 2632.682071
-  X_MSR_MAX_NEG_2019: 100
-  CAP_aviation_2021: 24.5
   P_2021: 80
+  X_MSR_MAX_NEG_2019: 100
   TNAC_2021: 1449.214182
   S_2020: 2173.195623
   X_MSR_MAX_NEG_2023: 100
 NG:
-  P_2023: 150
+  P_2023: 80
   P_2030: 43.9
-  P_2025: 100
+  P_2025: 46.6
   SF: 1
   P_2019: 25
   P_2028: 45
-  P_2026: 75
+  P_2026: 46.1
   P_2020: 25
   P_2021: 80
-  P_2024: 125
+  P_2024: 51.4
   YoY: 0
   P_2029: 44.5
-  P_2022: 200
+  P_2022: 150
   P_2027: 45.5
 HydrogenSector:
   SMR:

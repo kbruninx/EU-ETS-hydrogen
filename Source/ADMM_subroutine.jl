@@ -17,18 +17,23 @@ TO_local = TimerOutput()
         mod.ext[:parameters][:r_y_bar] = results["r_y"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_y"][end]
         mod.ext[:parameters][:λ_y_REC] = results["λ"]["REC_y"][end] 
         mod.ext[:parameters][:ρ_y_REC] = ADMM["ρ"]["REC_y"][end]
+        mod.ext[:parameters][:ρ_y_REC_pre2030] = ADMM["ρ"]["REC_y_pre2030"][end]
+        mod.ext[:parameters][:ρ_y_REC_post2030] = ADMM["ρ"]["REC_y_post2030"][end]
         # Monthly
         mod.ext[:parameters][:r_m_bar] = results["r_m"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_m"][end]
         mod.ext[:parameters][:λ_m_REC] = results["λ"]["REC_m"][end] 
-        mod.ext[:parameters][:ρ_m_REC] = ADMM["ρ"]["REC_m"][end]
+        mod.ext[:parameters][:ρ_m_REC_pre2030] = ADMM["ρ"]["REC_m_pre2030"][end]
+        mod.ext[:parameters][:ρ_m_REC_post2030] = ADMM["ρ"]["REC_m_post2030"][end]
         # Daily
         mod.ext[:parameters][:r_d_bar] = results["r_d"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_d"][end]
         mod.ext[:parameters][:λ_d_REC] = results["λ"]["REC_d"][end] 
-        mod.ext[:parameters][:ρ_d_REC] = ADMM["ρ"]["REC_d"][end]
+        mod.ext[:parameters][:ρ_d_REC_pre2030] = ADMM["ρ"]["REC_d_pre2030"][end]
+        mod.ext[:parameters][:ρ_d_REC_post2030] = ADMM["ρ"]["REC_d_post2030"][end]
         # Hourly
         mod.ext[:parameters][:r_h_bar] = results["r_h"][m][end] - 1/(REC["nAgents"]+H2CN_prod["nAgents"]+1)*ADMM["Imbalances"]["REC_h"][end]
         mod.ext[:parameters][:λ_h_REC] = results["λ"]["REC_h"][end] 
-        mod.ext[:parameters][:ρ_h_REC] = ADMM["ρ"]["REC_h"][end]
+        mod.ext[:parameters][:ρ_h_REC_pre2030] = ADMM["ρ"]["REC_h_pre2030"][end]
+        mod.ext[:parameters][:ρ_h_REC_post2030] = ADMM["ρ"]["REC_h_post2030"][end]
     end
     if mod.ext[:parameters][:H2] == 1
         mod.ext[:parameters][:gH_h_bar] = results["h2_h"][m][end] - 1/(H2["nAgents"]+1)*ADMM["Imbalances"]["H2_h"][end]

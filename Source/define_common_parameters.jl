@@ -10,6 +10,8 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
 
     # Sets
     mod.ext[:sets][:JY] = 1:data["nyears"]    
+    mod.ext[:sets][:JY_pre2030] = 1:10  
+    mod.ext[:sets][:JY_post2030] = 11:data["nyears"]    
     mod.ext[:sets][:JM] = 1:12
     mod.ext[:sets][:JD] = 1:data["nReprDays"]
     mod.ext[:sets][:JH] = 1:data["nTimesteps"]
@@ -34,38 +36,43 @@ function define_common_parameters!(m::String,mod::Model, data::Dict, ts::DataFra
     mod.ext[:parameters][:ρ_EOM] = data["rho_EOM"]                                              # ADMM rho value 
 
     # Parameters related to the REC
-    mod.ext[:parameters][:λ_y_REC] = zeros(data["nyears"],1)       # Price structure
-    mod.ext[:parameters][:r_y_bar] = zeros(data["nyears"],1)       # ADMM penalty term
-    mod.ext[:parameters][:ρ_y_REC] = 0                             # ADMM rho value 
+    mod.ext[:parameters][:λ_y_REC] = zeros(data["nyears"],1)                # Price structure
+    mod.ext[:parameters][:r_y_bar] = zeros(data["nyears"],1)                # ADMM penalty term
+    mod.ext[:parameters][:ρ_y_REC] = data["rho_REC_y"]                      # ADMM rho value 
+    mod.ext[:parameters][:ρ_y_REC_pre2030] = data["rho_REC_y_pre2030"]      # ADMM rho value 
+    mod.ext[:parameters][:ρ_y_REC_post2030] = data["rho_REC_y_post2030"]    # ADMM rho value 
 
     mod.ext[:parameters][:λ_m_REC] = zeros(12,data["nyears"])                     # Price structure
     mod.ext[:parameters][:r_m_bar] = zeros(12,data["nyears"])                     # ADMM penalty term
-    mod.ext[:parameters][:ρ_m_REC] = 0                                            # ADMM rho value 
+    mod.ext[:parameters][:ρ_m_REC_pre2030] = data["rho_REC_m_pre2030"]            # ADMM rho value 
+    mod.ext[:parameters][:ρ_m_REC_post2030] = data["rho_REC_m_post2030"]          # ADMM rho value 
    
     mod.ext[:parameters][:λ_d_REC] = zeros(data["nReprDays"],data["nyears"])       # Price structure
     mod.ext[:parameters][:r_d_bar] = zeros(data["nReprDays"],data["nyears"])       # ADMM penalty term
-    mod.ext[:parameters][:ρ_d_REC] = 0                                             # ADMM rho value 
-    
+    mod.ext[:parameters][:ρ_d_REC_pre2030] = data["rho_REC_d_pre2030"]             # ADMM rho value 
+    mod.ext[:parameters][:ρ_d_REC_post2030] = data["rho_REC_d_post2030"]           # ADMM rho value 
+
     mod.ext[:parameters][:λ_h_REC] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])         # Price structure
     mod.ext[:parameters][:r_h_bar] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])         # ADMM penalty term
-    mod.ext[:parameters][:ρ_h_REC] = 0                                                                  # ADMM rho value 
-    
+    mod.ext[:parameters][:ρ_h_REC_pre2030] = data["rho_REC_h_pre2030"]                                  # ADMM rho value 
+    mod.ext[:parameters][:ρ_h_REC_post2030] = data["rho_REC_h_post2030"]                                # ADMM rho value 
+
     # Parameters related to the H2 market
     mod.ext[:parameters][:λ_h_H2] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])       # Price structure
     mod.ext[:parameters][:gH_h_bar] = zeros(data["nTimesteps"],data["nReprDays"],data["nyears"])     # ADMM penalty term
-    mod.ext[:parameters][:ρ_h_H2] = data["rho_H2"]                                                   # ADMM rho value 
+    mod.ext[:parameters][:ρ_h_H2] = data["rho_H2_h"]                                                 # ADMM rho value 
 
     mod.ext[:parameters][:λ_d_H2] = zeros(data["nReprDays"],data["nyears"])       # Price structure
     mod.ext[:parameters][:gH_d_bar] = zeros(data["nReprDays"],data["nyears"])     # ADMM penalty term
-    mod.ext[:parameters][:ρ_d_H2] = data["rho_H2"]                                # ADMM rho value 
+    mod.ext[:parameters][:ρ_d_H2] = data["rho_H2_d"]                              # ADMM rho value 
 
     mod.ext[:parameters][:λ_m_H2] = zeros(data["nMonths"],data["nyears"])       # Price structure
     mod.ext[:parameters][:gH_m_bar] = zeros(data["nMonths"],data["nyears"])     # ADMM penalty term
-    mod.ext[:parameters][:ρ_m_H2] = data["rho_H2"]                              # ADMM rho value 
+    mod.ext[:parameters][:ρ_m_H2] = data["rho_H2_m"]                            # ADMM rho value 
 
     mod.ext[:parameters][:λ_y_H2] = zeros(data["nyears"])       # Price structure
     mod.ext[:parameters][:gH_y_bar] = zeros(data["nyears"])     # ADMM penalty term
-    mod.ext[:parameters][:ρ_y_H2] = data["rho_H2"]              # ADMM rho value 
+    mod.ext[:parameters][:ρ_y_H2] = data["rho_H2_y"]            # ADMM rho value 
 
     # Parameters related to the carbon-neutral H2 generation subsidy
     mod.ext[:parameters][:λ_H2CN_prod] = zeros(data["nyears"],1)        # Price structure

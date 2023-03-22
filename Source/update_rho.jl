@@ -15,26 +15,36 @@ function update_rho!(ADMM::Dict, iter::Int64)
 
         if ADMM["Residuals"]["Primal"]["REC_y"][end] > 2*ADMM["Residuals"]["Dual"]["REC_y"][end]
             push!(ADMM["ρ"]["REC_y"], minimum([1000,1.1*ADMM["ρ"]["REC_y"][end]]))
+            push!(ADMM["ρ"]["REC_y_pre2030"], minimum([1000,1.1*ADMM["ρ"]["REC_y_pre2030"][end]]))
+            push!(ADMM["ρ"]["REC_y_post2030"], minimum([1000,1.1*ADMM["ρ"]["REC_y_post2030"][end]]))
         elseif ADMM["Residuals"]["Dual"]["REC_y"][end] > 2*ADMM["Residuals"]["Primal"]["REC_y"][end]
             push!(ADMM["ρ"]["REC_y"], 1/1.1*ADMM["ρ"]["REC_y"][end])
+            push!(ADMM["ρ"]["REC_y_pre2030"], 1/1.1*ADMM["ρ"]["REC_y_pre2030"][end])
+            push!(ADMM["ρ"]["REC_y_post2030"], 1/1.1*ADMM["ρ"]["REC_y_post2030"][end])
         end
 
         if ADMM["Residuals"]["Primal"]["REC_m"][end] > 2*ADMM["Residuals"]["Dual"]["REC_m"][end]
-            push!(ADMM["ρ"]["REC_m"], minimum([1000,1.1*ADMM["ρ"]["REC_m"][end]]))
+            push!(ADMM["ρ"]["REC_m_pre2030"], minimum([1000,1.1*ADMM["ρ"]["REC_m_pre2030"][end]]))
+            push!(ADMM["ρ"]["REC_m_post2030"], minimum([1000,1.1*ADMM["ρ"]["REC_m_post2030"][end]]))
         elseif ADMM["Residuals"]["Dual"]["REC_m"][end] > 2*ADMM["Residuals"]["Primal"]["REC_m"][end]
-            push!(ADMM["ρ"]["REC_m"], 1/1.1*ADMM["ρ"]["REC_m"][end])
+            push!(ADMM["ρ"]["REC_m_pre2030"], 1/1.1*ADMM["ρ"]["REC_m_pre2030"][end])
+            push!(ADMM["ρ"]["REC_m_post2030"], 1/1.1*ADMM["ρ"]["REC_m_post2030"][end])
         end
 
         if ADMM["Residuals"]["Primal"]["REC_d"][end] > 2*ADMM["Residuals"]["Dual"]["REC_d"][end]
-            push!(ADMM["ρ"]["REC_d"], minimum([1000,1.1*ADMM["ρ"]["REC_d"][end]]))
+            push!(ADMM["ρ"]["REC_d_pre2030"], minimum([1000,1.1*ADMM["ρ"]["REC_d_pre2030"][end]]))
+            push!(ADMM["ρ"]["REC_d_post2030"], minimum([1000,1.1*ADMM["ρ"]["REC_d_post2030"][end]]))
         elseif ADMM["Residuals"]["Dual"]["REC_d"][end] > 2*ADMM["Residuals"]["Primal"]["REC_d"][end]
-            push!(ADMM["ρ"]["REC_d"], 1/1.1*ADMM["ρ"]["REC_d"][end])
+            push!(ADMM["ρ"]["REC_d_pre2030"], 1/1.1*ADMM["ρ"]["REC_d_pre2030"][end])
+            push!(ADMM["ρ"]["REC_d_post2030"], 1/1.1*ADMM["ρ"]["REC_d_post2030"][end])
         end
 
         if ADMM["Residuals"]["Primal"]["REC_h"][end] > 2*ADMM["Residuals"]["Dual"]["REC_h"][end]
-            push!(ADMM["ρ"]["REC_h"], minimum([1000,1.1*ADMM["ρ"]["REC_h"][end]]))
+            push!(ADMM["ρ"]["REC_h_pre2030"], minimum([1000,1.1*ADMM["ρ"]["REC_h_pre2030"][end]]))
+            push!(ADMM["ρ"]["REC_h_post2030"], minimum([1000,1.1*ADMM["ρ"]["REC_h_post2030"][end]]))
         elseif ADMM["Residuals"]["Dual"]["REC_h"][end] > 2*ADMM["Residuals"]["Primal"]["REC_h"][end]
-            push!(ADMM["ρ"]["REC_h"], 1/1.1*ADMM["ρ"]["REC_h"][end])
+            push!(ADMM["ρ"]["REC_h_pre2030"], 1/1.1*ADMM["ρ"]["REC_h_pre2030"][end])
+            push!(ADMM["ρ"]["REC_h_pre2030"], 1/1.1*ADMM["ρ"]["REC_h_post2030"][end])
         end
 
         if ADMM["Residuals"]["Primal"]["H2_h"][end] > 2*ADMM["Residuals"]["Dual"]["H2_h"][end]

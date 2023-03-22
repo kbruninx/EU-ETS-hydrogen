@@ -4,6 +4,8 @@ function build_h2s_agent!(mod::Model)
     JD = mod.ext[:sets][:JD]
     JM = mod.ext[:sets][:JM]
     JY = mod.ext[:sets][:JY]
+    JY_pre2030 = mod.ext[:sets][:JY_pre2030]
+    JY_post2030 = mod.ext[:sets][:JY_post2030]
        
     # Extract parameters
     W = mod.ext[:parameters][:W] # weight of the representative days
@@ -20,42 +22,14 @@ function build_h2s_agent!(mod::Model)
     λ_NG = mod.ext[:parameters][:λ_NG] # natural gas price
 
     # ADMM algorithm parameters
-    λ_EUA = mod.ext[:parameters][:λ_EUA] # EUA prices
-    b_bar = mod.ext[:parameters][:b_bar] # element in ADMM penalty term related to EUA auctions
-    ρ_EUA = mod.ext[:parameters][:ρ_EUA] # rho-value in ADMM related to EUA auctions
-    λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
-    g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
-    ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EUA auctions
-    λ_h_H2 = mod.ext[:parameters][:λ_h_H2] # H2 prices
-    gH_h_bar = mod.ext[:parameters][:gH_h_bar] # element in ADMM penalty term related to hydrogen market
-    ρ_h_H2 = mod.ext[:parameters][:ρ_h_H2] # rho-value in ADMM related to H2 market
-    λ_d_H2 = mod.ext[:parameters][:λ_d_H2] # H2 prices
-    gH_d_bar = mod.ext[:parameters][:gH_d_bar] # element in ADMM penalty term related to hydrogen market
-    ρ_d_H2 = mod.ext[:parameters][:ρ_d_H2] # rho-value in ADMM related to H2 market
-    λ_m_H2 = mod.ext[:parameters][:λ_m_H2] # H2 prices
-    gH_m_bar = mod.ext[:parameters][:gH_m_bar] # element in ADMM penalty term related to hydrogen market
-    ρ_m_H2 = mod.ext[:parameters][:ρ_m_H2] # rho-value in ADMM related to H2 market
-    λ_y_H2 = mod.ext[:parameters][:λ_y_H2] # H2 prices
-    gH_y_bar = mod.ext[:parameters][:gH_y_bar] # element in ADMM penalty term related to hydrogen market
-    ρ_y_H2 = mod.ext[:parameters][:ρ_y_H2] # rho-value in ADMM related to H2 market
-    λ_H2CN_prod = mod.ext[:parameters][:λ_H2CN_prod] # Carbon neutral H2 generation subsidy
-    gHCN_bar = mod.ext[:parameters][:gHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen generation subsidy
-    ρ_H2CN_prod = mod.ext[:parameters][:ρ_H2CN_prod] # rho-value in ADMM related to carbon neutral H2 generation subsidy 
-    λ_H2CN_cap = mod.ext[:parameters][:λ_H2CN_cap] # Carbon neutral H2 capacity subsidy
-    capHCN_bar = mod.ext[:parameters][:capHCN_bar] # element in ADMM penalty term related to carbon neutral hydrogen capacity subsidy
-    ρ_H2CN_cap = mod.ext[:parameters][:ρ_H2CN_cap] # rho-value in ADMM related to carbon neutral H2 capacity subsidy 
-    λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
-    r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
-    ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
-    λ_m_REC = mod.ext[:parameters][:λ_m_REC] # REC prices
-    r_m_bar = mod.ext[:parameters][:r_m_bar] # element in ADMM penalty term related to REC auctions
-    ρ_m_REC = mod.ext[:parameters][:ρ_m_REC] # rho-value in ADMM related to REC auctions
-    λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
-    r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
-    ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
-    λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
-    r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
-    ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
+    ρ_y_REC_pre2030 = mod.ext[:parameters][:ρ_y_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_y_REC_post2030 = mod.ext[:parameters][:ρ_y_REC_post2030] # rho-value in ADMM related to REC auctions
+    ρ_m_REC_pre2030 = mod.ext[:parameters][:ρ_m_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_m_REC_post2030 = mod.ext[:parameters][:ρ_m_REC_post2030] # rho-value in ADMM related to REC auctions
+    ρ_d_REC_pre2030 = mod.ext[:parameters][:ρ_d_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_d_REC_post2030 = mod.ext[:parameters][:ρ_d_REC_post2030] # rho-value in ADMM related to REC auctions
+    ρ_h_REC_pre2030 = mod.ext[:parameters][:ρ_h_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_h_REC_post2030 = mod.ext[:parameters][:ρ_h_REC_post2030] # rho-value in ADMM related to REC auctions
     ADD_SF = mod.ext[:parameters][:ADD_SF] 
 
     # Decision variables
@@ -82,7 +56,6 @@ function build_h2s_agent!(mod::Model)
     gH_y = mod.ext[:expressions][:gH_y] = @expression(mod, [jy=JY],
         sum(W[jd]*gH[jh,jd,jy] for jh in JH, jd in JD)
     )
-
     gH_d = mod.ext[:expressions][:gH_d] = @expression(mod, [jd=JD,jy=JY],
         sum(gH[jh,jd,jy] for jh in JH)
     )
@@ -97,35 +70,8 @@ function build_h2s_agent!(mod::Model)
         + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
     )
 
-    # Definition of the objective function
-    mod.ext[:objective] = @objective(mod, Min,
-    + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*capH[jy] for jy in JY) # [MEUR]
-    - sum(A[jy]*W[jd]*(λ_EOM[jh,jd,jy])*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY) # [MEUR]
-    - sum(A[jy]*ADD_SF[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-    - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
-    - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
-    - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-    + sum(A[jy]*λ_NG[jy]*dNG[jy] for jy in JY) 
-    - sum(A[jy]*W[jd]*λ_h_H2[jh,jd,jy]*gH[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-    - sum(A[jy]*W[jd]*λ_d_H2[jd,jy]*gH_d[jd,jy] for jd in JD, jy in JY)
-    - sum(A[jy]*λ_m_H2[jm,jy]*gH_m[jm,jy] for jm in JM, jy in JY)
-    - sum(A[jy]*λ_y_H2[jy]*gH_y[jy] for jy in JY)
-    - sum(A[jy]*λ_H2CN_prod[jy]*gHCN[jy] for jy in JY) 
-    - sum(A[jy]*(1-CAP_SV[jy])*λ_H2CN_cap[jy]*capHCN[jy] for jy in JY) 
-    + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY) 
-    + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
-    + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) # g is electricity
-    + sum(ρ_h_H2/2*W[jd]*(gH[jh,jd,jy] - gH_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY) 
-    + sum(ρ_d_H2/2*W[jd]*(gH_d[jd,jy] - gH_d_bar[jd,jy])^2 for jd in JD, jy in JY) 
-    + sum(ρ_m_H2/2*(gH_m[jm,jy] - gH_m_bar[jm,jy])^2 for jm in JM, jy in JY) 
-    + sum(ρ_y_H2/2*(gH_y[jy] - gH_y_bar[jy])^2 for jy in JY) 
-    + sum(ρ_H2CN_prod/2*(gHCN[jy] - gHCN_bar[jy])^2 for jy in JY)  
-    + sum(ρ_H2CN_cap/2*(capHCN[jy] - capHCN_bar[jy])^2 for jy in JY)  
-    + sum(ρ_y_REC/2*ADD_SF[jy]*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
-    + sum(ρ_m_REC/2*(r_m[jm,jy] - r_m_bar[jm,jy])^2 for jm in JM, jy in JY)
-    + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
-    + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-    )
+    # Definition of the objective function - will be updated 
+    mod.ext[:objective] = @objective(mod, Min,0)
     
     # Constraints
     mod.ext[:constraints][:gen_limit_capacity] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
@@ -195,71 +141,112 @@ function build_h2s_agent!(mod::Model)
 
     # recall that g and r are negative numbers (demand for electricity or renewable electricity)
     # ρ_m_REC, ρ_d_REC, ρ_h_REC are only non-zero if additionality is enforced on those time scales
-    # in those cases, additionality should not be enforced on an annual basis
-    if mod.ext[:parameters][:REC] == 1 && ρ_m_REC == 0 && ρ_d_REC == 0 && ρ_h_REC == 0 
-        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-            -η_E_H2*r_y[jy] >= ADD_SF[jy]*gHCN[jy] 
-        )
+    if mod.ext[:parameters][:REC] == 1 
+        if  ρ_y_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY_pre2030],
+                r_y[jy] <= -gHCN[jy]/η_E_H2 + ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD) + gHCN[jy]/η_E_H2)
+            )           
+        else
+            # contribution to the general RES target:
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY_pre2030],
+                r_y[jy] <= ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD) - (sum(r_m[jm,jy] for jm in JM) + sum(W[jd]*r_d[jd,jy] for jd in JD) + sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD)))
+            )     
+        end
+
+        if  ρ_y_REC_post2030 > 0 
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY_post2030],
+               r_y[jy] <= -gHCN[jy]/η_E_H2 + ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD) + gHCN[jy]/η_E_H2)
+            )
+        else
+            # contribution to the general RES target:
+            mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY_post2030],
+                r_y[jy] <= ADD_SF[jy]*(sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD) - (sum(r_m[jm,jy] for jm in JM) + sum(W[jd]*r_d[jd,jy] for jd in JD) + sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD)))
+            )     
+        end
+
         mod.ext[:constraints][:REC_balance_yearly_2] = @constraint(mod, [jy=JY],
-            r_y[jy] >= ADD_SF[jy]*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
-        )   
-        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
-            r_m[jm,jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
-            r_d[jd,jy] == 0 
-        )
-        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-            r_h[jh,jd,jy] == 0 
-        )
-    elseif mod.ext[:parameters][:REC] == 1 && ρ_m_REC > 0 
-        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jy=JY],
-            -η_E_H2*sum(r_m[jm,jy] for jm in JM) >= gHCN[jy] 
-        )
-        mod.ext[:constraints][:REC_balance_monthly_2] = @constraint(mod, [jm=JM,jy=JY],
-            r_m[jm,jy] >= sum(Wm[jd,jm]*g[jh,jd,jy] for jh in JH,jd in JD)
-        )
-        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-            r_y[jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
-            r_d[jd,jy] == 0 
-        )
-        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-            r_h[jh,jd,jy] == 0 
-        )
-    elseif mod.ext[:parameters][:REC] == 1 && ρ_d_REC > 0
-        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jy=JY],
-            -η_E_H2*sum(W[jd]*r_d[jd,jy] for jd in JD)  >= gHCN[jy] 
-        )
-        mod.ext[:constraints][:REC_balance_daily_2] = @constraint(mod, [jd=JD,jy=JY],
-            r_d[jd,jy] >= sum(g[jh,jd,jy] for jh in JH)
-        )
-        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-            r_y[jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
-            r_m[jm,jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-            r_h[jh,jd,jy] == 0 
-        )
-    elseif mod.ext[:parameters][:REC] == 1 && ρ_h_REC > 0
-        mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jy=JY],
-            -η_E_H2*sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD) >= gHCN[jy]   
-        )
-        mod.ext[:constraints][:REC_balance_hourly_2] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-            r_h[jh,jd,jy] >= g[jh,jd,jy] 
-        )
-        mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-            r_y[jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
-            r_m[jm,jy] == 0
-        )
-        mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
-            r_d[jd,jy] == 0 
-        )
+            r_y[jy] >= sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+        ) 
+
+        if  ρ_m_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jy=JY_pre2030],
+                -η_E_H2*sum(r_m[jm,jy] for jm in JM) >= gHCN[jy] 
+            )
+            mod.ext[:constraints][:REC_balance_monthly_2] = @constraint(mod, [jm=JM,jy=JY_pre2030],
+                r_m[jm,jy] >= sum(Wm[jd,jm]*g[jh,jd,jy] for jh in JH,jd in JD)
+            )
+        else
+            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY_pre2030],
+                r_m[jm,jy] == 0
+            )   
+        end
+
+        if  ρ_m_REC_post2030 > 0 
+            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jy=JY_post2030],
+                -η_E_H2*sum(r_m[jm,jy] for jm in JM) >= gHCN[jy] 
+            )
+            mod.ext[:constraints][:REC_balance_monthly_2] = @constraint(mod, [jm=JM,jy=JY_post2030],
+                r_m[jm,jy] >= sum(Wm[jd,jm]*g[jh,jd,jy] for jh in JH,jd in JD)
+            )
+        else
+            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY_post2030],
+                r_m[jm,jy] == 0
+            )   
+        end
+
+        
+        if  ρ_d_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jy=JY_pre2030],
+                -η_E_H2*sum(W[jd]*r_d[jd,jy] for jd in JD)  >= gHCN[jy] 
+            )
+            mod.ext[:constraints][:REC_balance_daily_2] = @constraint(mod, [jd=JD,jy=JY_pre2030],
+                r_d[jd,jy] >= sum(g[jh,jd,jy] for jh in JH)
+            )
+        else
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY_pre2030],
+                r_d[jd,jy] == 0 
+            )
+        end
+
+        if  ρ_d_REC_post2030 > 0 
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jy=JY_post2030],
+                -η_E_H2*sum(W[jd]*r_d[jd,jy] for jd in JD)  >= gHCN[jy] 
+            )
+            mod.ext[:constraints][:REC_balance_daily_2] = @constraint(mod, [jd=JD,jy=JY_post2030],
+                r_d[jd,jy] >= sum(g[jh,jd,jy] for jh in JH)
+            )
+        else
+            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY_post2030],
+                r_d[jd,jy] == 0 
+            )
+        end
+
+        if  ρ_h_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jy=JY_pre2030],
+                -η_E_H2*sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD) >= gHCN[jy]   
+            )
+            mod.ext[:constraints][:REC_balance_hourly_2] = @constraint(mod, [jh=JH,jd=JD,jy=JY_pre2030],
+                r_h[jh,jd,jy] >= g[jh,jd,jy] 
+            )
+        else
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY_pre2030],
+                r_h[jh,jd,jy] == 0 
+            )
+        end
+
+        if  ρ_h_REC_post2030 > 0 
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jy=JY_post2030],
+                -η_E_H2*sum(W[jd]*r_h[jh,jd,jy] for jh in JH, jd in JD) >= gHCN[jy]   
+            )
+            mod.ext[:constraints][:REC_balance_hourly_2] = @constraint(mod, [jh=JH,jd=JD,jy=JY_post2030],
+                r_h[jh,jd,jy] >= g[jh,jd,jy] 
+            )
+        else
+            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY_post2030],
+                r_h[jh,jd,jy] == 0 
+            )
+        end
+       
     else
         mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
             r_y[jy] == 0

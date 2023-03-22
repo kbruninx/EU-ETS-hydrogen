@@ -4,6 +4,8 @@ function build_ps_agent!(mod::Model)
     JD = mod.ext[:sets][:JD]
     JM = mod.ext[:sets][:JM]
     JY = mod.ext[:sets][:JY]
+    JY_pre2030 = mod.ext[:sets][:JY_pre2030]
+    JY_post2030 = mod.ext[:sets][:JY_post2030]
 
     # Extract time series data
     AF = mod.ext[:timeseries][:AF] # avaiability factors
@@ -23,24 +25,13 @@ function build_ps_agent!(mod::Model)
     CAP_SV = mod.ext[:parameters][:CAP_SV] # salvage value of new capacity
     DELTA_CAP_MAX = mod.ext[:parameters][:DELTA_CAP_MAX] # max YoY change in new capacity
     A = mod.ext[:parameters][:A] # discount factors
-    λ_EUA = mod.ext[:parameters][:λ_EUA] # EUA prices
-    b_bar = mod.ext[:parameters][:b_bar] # element in ADMM penalty term related to EUA auctions
-    ρ_EUA = mod.ext[:parameters][:ρ_EUA] # rho-value in ADMM related to EUA auctions
-    λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
-    g_bar = mod.ext[:parameters][:g_bar] # element in ADMM penalty term related to EOM
-    ρ_EOM = mod.ext[:parameters][:ρ_EOM] # rho-value in ADMM related to EOM auctions
-    λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
-    r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
     ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
-    λ_m_REC = mod.ext[:parameters][:λ_m_REC] # REC prices
-    r_m_bar = mod.ext[:parameters][:r_m_bar] # element in ADMM penalty term related to REC auctions
-    ρ_m_REC = mod.ext[:parameters][:ρ_m_REC] # rho-value in ADMM related to REC auctions
-    λ_d_REC = mod.ext[:parameters][:λ_d_REC] # REC prices
-    r_d_bar = mod.ext[:parameters][:r_d_bar] # element in ADMM penalty term related to REC auctions
-    ρ_d_REC = mod.ext[:parameters][:ρ_d_REC] # rho-value in ADMM related to REC auctions
-    λ_h_REC = mod.ext[:parameters][:λ_h_REC] # REC prices
-    r_h_bar = mod.ext[:parameters][:r_h_bar] # element in ADMM penalty term related to REC auctions
-    ρ_h_REC = mod.ext[:parameters][:ρ_h_REC] # rho-value in ADMM related to REC auctions
+    ρ_m_REC_pre2030 = mod.ext[:parameters][:ρ_m_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_m_REC_post2030 = mod.ext[:parameters][:ρ_m_REC_post2030] # rho-value in ADMM related to REC auctions
+    ρ_d_REC_pre2030 = mod.ext[:parameters][:ρ_d_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_d_REC_post2030 = mod.ext[:parameters][:ρ_d_REC_post2030] # rho-value in ADMM related to REC auctions
+    ρ_h_REC_pre2030 = mod.ext[:parameters][:ρ_h_REC_pre2030] # rho-value in ADMM related to REC auctions
+    ρ_h_REC_post2030 = mod.ext[:parameters][:ρ_h_REC_post2030] # rho-value in ADMM related to REC auctions
 
     # Create variables
     cap = mod.ext[:variables][:cap] = @variable(mod, [jy=JY], lower_bound=0, base_name="capacity")
@@ -66,23 +57,8 @@ function build_ps_agent!(mod::Model)
         + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
     )
 
-    # Objective 
-    mod.ext[:objective] = @objective(mod, Min,
-        + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
-        + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-        - sum(A[jy]*W[jd]*λ_EOM[jh,jd,jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-        - sum(A[jy]*λ_y_REC[jy]*r_y[jy] for jy in JY)
-        - sum(A[jy]*λ_m_REC[jm,jy]*r_m[jm,jy] for jm in JM, jy in JY)
-        - sum(A[jy]*W[jd]*λ_d_REC[jd,jy]*r_d[jd,jy] for jd in JD, jy in JY)
-        - sum(A[jy]*W[jd]*λ_h_REC[jh,jd,jy]*r_h[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
-        + sum(A[jy]*λ_EUA[jy]*b[jy] for jy in JY)
-        + sum(ρ_EUA/2*(b[jy] - b_bar[jy])^2 for jy in JY)
-        + sum(ρ_EOM/2*W[jd]*(g[jh,jd,jy] - g_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-        + sum(ρ_y_REC/2*(r_y[jy] - r_y_bar[jy])^2 for jy in JY)
-        + sum(ρ_m_REC/2*(r_m[jm,jy] - r_m_bar[jm,jy])^2 for jm in JM, jy in JY)
-        + sum(ρ_d_REC/2*W[jd]*(r_d[jd,jy] - r_d_bar[jd,jy])^2 for jd in JD, jy in JY)
-        + sum(ρ_h_REC/2*W[jd]*(r_h[jh,jd,jy] - r_h_bar[jh,jd,jy])^2 for jh in JH, jd in JD, jy in JY)
-    )
+    # Objective  - will be updated in solve-step
+    mod.ext[:objective] = @objective(mod, Min, 0)
 
     if DELTA_CAP_MAX > 0 
         # Capacity constraint
@@ -98,32 +74,74 @@ function build_ps_agent!(mod::Model)
             cap[jy] <= DELTA_CAP_MAX*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy-1) + LEG_CAP[jy-1])
         ) 
 
-        # Generation of RES from new capacity that participates in REC auction
-        if mod.ext[:parameters][:REC] == 1
+        # Generation of RES that participates in REC auction
+        if mod.ext[:parameters][:REC] == 1 && ρ_y_REC > 0 
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-                r_y[jy] <= sum(W[jd]*AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy])  for jh in JH, jd in JD)/1000 - sum(W[jd]*r_h[jh,jd,jy] for jh in JH,jd in JD) - sum(W[jd]*r_d[jd,jy] for jd in JD) - sum(r_m[jm,jy] for jm in JM)  # scaling factor needed to go from GW -> TWh
-            )
-            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
-                r_m[jm,jy] <= sum(Wm[jd,jm]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000
-            )
-            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
-                r_d[jd,jy] <=  sum(AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH)/1000
-            )
-            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-                r_h[jh,jd,jy] <=  AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy)/1000 
+                r_y[jy] <= sum(W[jd]*AF[jh,jd]*(sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) + LEG_CAP[jy]) for jh in JH, jd in JD)/1000 - sum(W[jd]*r_h[jh,jd,jy] for jh in JH,jd in JD) - sum(W[jd]*r_d[jd,jy] for jd in JD) - sum(r_m[jm,jy] for jm in JM)  # scaling factor needed to go from GW -> TWh
             )
         else
             mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
                 r_y[jy] == 0
             )
-            mod.ext[:constraints][:REC_balance_monthly] = @constraint(mod, [jm=JM,jy=JY],
+        end
+
+        if mod.ext[:parameters][:REC] == 1 && ρ_m_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_monthly_pre2030] = @constraint(mod, [jm=JM,jy=JY_pre2030],
+                r_m[jm,jy] <= sum(Wm[jd,jm]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000
+            )
+        else
+            mod.ext[:constraints][:REC_balance_monthly_pre2030] = @constraint(mod, [jm=JM,jy=JY_pre2030],
                 r_m[jm,jy] == 0
             )
-            mod.ext[:constraints][:REC_balance_daily] = @constraint(mod, [jd=JD,jy=JY],
+        end
+
+        if mod.ext[:parameters][:REC] == 1 &&  ρ_m_REC_post2030 > 0
+            mod.ext[:constraints][:REC_balance_monthly_post2030] = @constraint(mod, [jm=JM,jy=JY_post2030],
+                r_m[jm,jy] <= sum(Wm[jd,jm]*AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH, jd in JD)/1000
+            )
+        else
+            mod.ext[:constraints][:REC_balance_monthly_post2030] = @constraint(mod, [jm=JM,jy=JY_post2030],
+                r_m[jm,jy] == 0
+            )
+        end
+
+        if mod.ext[:parameters][:REC] == 1 && ρ_d_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_daily_pre2030] = @constraint(mod, [jd=JD,jy=JY_pre2030],
+                r_d[jd,jy] <=  sum(AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH)/1000
+            )
+        else
+            mod.ext[:constraints][:REC_balance_daily_pre2030] = @constraint(mod, [jd=JD,jy=JY_pre2030],
                 r_d[jd,jy] == 0 
             )
-            mod.ext[:constraints][:REC_balance_hourly] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-                r_h[jh,jd,jy] == 0 
+        end
+
+        if mod.ext[:parameters][:REC] == 1 &&  ρ_d_REC_post2030 > 0
+            mod.ext[:constraints][:REC_balance_daily_post2030] = @constraint(mod, [jd=JD,jy=JY_post2030],
+                r_d[jd,jy] <=  sum(AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy) for jh in JH)/1000
+            )
+        else
+            mod.ext[:constraints][:REC_balance_daily_post2030] = @constraint(mod, [jd=JD,jy=JY_post2030],
+                r_d[jd,jy] == 0 
+            )
+        end
+
+        if mod.ext[:parameters][:REC] == 1 && ρ_h_REC_pre2030 > 0 
+            mod.ext[:constraints][:REC_balance_hourly_pre2030] = @constraint(mod, [jh=JH,jd=JD,jy=JY_pre2030],
+                r_h[jh,jd,jy] <=  AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy)/1000 
+            )
+        else
+            mod.ext[:constraints][:REC_balance_yearly_pre2030] = @constraint(mod, [jh=JH,jd=JD,jy=JY_pre2030],
+                r_h[jh,jd,jy] == 0
+            )
+        end
+
+        if mod.ext[:parameters][:REC] == 1 &&  ρ_h_REC_post2030 > 0
+            mod.ext[:constraints][:REC_balance_hourly_post2030] = @constraint(mod, [jh=JH,jd=JD,jy=JY_post2030],
+                r_h[jh,jd,jy] <=  AF[jh,jd]*sum(CAP_LT[y2,jy]*cap[y2] for y2=1:jy)/1000 
+            )
+        else
+            mod.ext[:constraints][:REC_balance_yearly_pre2030] = @constraint(mod, [jh=JH,jd=JD,jy=JY_post2030],
+                r_h[jh,jd,jy] == 0
             )
         end
 

@@ -13,7 +13,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 10 # maximum number of iterations
+ max_iter: 100 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -25,10 +25,6 @@ REC:
   RES_share_other_2021: 0.174119315 # RES share from hydro and other renewables in 2021 ("other renewables","geothermal","hydro run-of-river","hydro reservoir"), own calculation 
 
 ETS: 
-  LRF_stat_2021: 43.003515 # MtCO2, only stationary installations, @ 2.2% of cap 2010
-  CAP_stat_2021: 1571.583007 # Stationary installations, after brexit - https://ec.europa.eu/clima/policies/ets/cap_en
-  CAP_aviation_2021: 24.5 # aviation - https://ec.europa.eu/clima/policies/ets/cap_en
-  CAP_maritime_2021: 40 # Maritime sector, green deal - https://www.nature.com/articles/s41467-022-28398-2 
   TNAC_THRESHOLD: 1096 # MtCO2 
   TNAC_MAX: 833 # MtCO2 
   TNAC_MIN: 400 # MtCO2 
@@ -57,11 +53,11 @@ NG:
   P_2019: 25 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2020: 25 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
   P_2021: 80 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2022: 200 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
-  P_2023: 150 # markets seem to consider that prices remain high for longer
-  P_2024: 125 # markets seem to consider that prices remain high for longer - 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2025: 100 # markets seem to consider that prices remain high for longer - 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
-  P_2026: 75  # markets seem to consider that prices remain high for longer - 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2022: 150 # €/MWh - rough estimate based on https://tradingeconomics.com/commodity/eu-natural-gas
+  P_2023: 80 # €/MWh - rough own estimate
+  P_2024: 51.4 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2025: 46.6 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
+  P_2026: 46.1 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2027: 45.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2028: 45 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
   P_2029: 44.5 # €/MWh - EERA 2022 - https://eepublicdownloads.azureedge.net/clean-documents/sdc-documents/ERAA/2022/data-for-publication/ERAA2022_Annex_1_Assumptions.pdf
@@ -74,9 +70,9 @@ H2:
   conv_factor: 33 # 1 mt H2 = 33 TWh 
 
 Industry: 
-  E_ref: 1900 #  MtCO2 - baseline emissions MACC
+  E_ref: 800 #  MtCO2 - baseline emissions MACC
+  E_ref_maritime: 80 #  MtCO2 - baseline emissions MACC
   tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
-  SF_ind: 0.38410844005092487 # relative share of emissions from industry in 2021, excluding emissions from hydrogen
   E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
   E_ind_2021: 512.9 # Emissions in 2021 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
