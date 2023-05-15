@@ -1,6 +1,6 @@
-## Topic: EU ETS, MSR and overlapping policies
+## Topic: EU ETS, MSR and temporal matching hydrogen-renewable electricity
 # Author: Kenneth Bruninx
-# Last update: November 2022
+# Last update: May 2023
 
 ## 0. Set-up code
 # HPC or not?
@@ -43,6 +43,7 @@ println("        ")
 # Include functions
 include(joinpath(home_dir,"Source","define_rho_parameters.jl"))
 include(joinpath(home_dir,"Source","define_common_parameters.jl"))
+include(joinpath(home_dir,"Source","define_cc_parameters.jl"))
 include(joinpath(home_dir,"Source","define_H2S_parameters.jl"))
 include(joinpath(home_dir,"Source","define_ps_parameters.jl"))
 include(joinpath(home_dir,"Source","define_ind_parameters.jl"))
@@ -56,6 +57,7 @@ include(joinpath(home_dir,"Source","define_NG_parameters.jl"))
 include(joinpath(home_dir,"Source","build_ind_agent.jl"))
 include(joinpath(home_dir,"Source","build_ps_agent.jl"))
 include(joinpath(home_dir,"Source","build_H2S_agent.jl"))
+include(joinpath(home_dir,"Source","build_cc_agent.jl"))
 include(joinpath(home_dir,"Source","define_results.jl"))
 include(joinpath(home_dir,"Source","ADMM.jl"))
 include(joinpath(home_dir,"Source","ADMM_subroutine.jl"))
@@ -63,6 +65,7 @@ include(joinpath(home_dir,"Source","update_ind_emissions.jl"))
 include(joinpath(home_dir,"Source","solve_ind_agent.jl"))
 include(joinpath(home_dir,"Source","solve_ps_agent.jl"))
 include(joinpath(home_dir,"Source","solve_H2S_agent.jl"))
+include(joinpath(home_dir,"Source","solve_cc_agent.jl"))
 include(joinpath(home_dir,"Source","update_supply.jl"))
 include(joinpath(home_dir,"Source","update_rho.jl"))
 include(joinpath(home_dir,"Source","save_results.jl"))
@@ -166,8 +169,8 @@ else
     stop_sens = 100  
 end
 
-# scen_number = 2
-for scen_number in range(start_scen,stop=stop_scen,step=1)
+scen_number = 2
+# for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -181,8 +184,8 @@ data = merge(data,scenario_definition)
 # Define rho-values based on additionality rules and hydrogen demand resolution in this scenario
 define_rho_parameters!(data)
 
-# sens_number = 1 
-for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
+sens_number = 1 
+# for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
 if sens_number >= 2
@@ -191,6 +194,7 @@ if sens_number >= 2
    
     # read the reference parameterization
     data = YAML.load_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref.yaml")))
+    
     # change affected parameters
     parameter = split(sensitivity_overview[sens_number-1,:Parameter])
     parameter_sector = split(parameter[1],"-") # affect multiple sectors or tech
@@ -228,8 +232,9 @@ println("   ")
 agents = Dict()
 agents[:ps] = [id for id in keys(data["PowerSector"])] 
 agents[:h2s] = [id for id in keys(data["HydrogenSector"])]
-agents[:ind] = ["Ind"] 
-agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind])   
+agents[:ind] = [id for id in keys(data["IndustrySector"])]
+agents[:cc] = [id for id in keys(data["CarbonCaptureSector"])]
+agents[:all] = union(agents[:ps],agents[:h2s],agents[:ind],agents[:cc])   
 # Different markets - to be completed based on the agents
 agents[:eom] = []                  
 agents[:ets] = []                  
@@ -271,8 +276,12 @@ define_NG_parameters!(NG,merge(data["General"],data["NG"]),ts,repr_days)
 
 # Parameters/variables natural gas market
 for m in agents[:ind]
-    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["Industry"]),ts,repr_days,agents)           # Parameters common to all agents
-    define_ind_parameters!(mdict[m],merge(data["General"],data["Industry"],data["ETS"],data["scenario"]))                    # Industry
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["IndustrySector"][m]),ts,repr_days,agents)           # Parameters common to all agents
+    define_ind_parameters!(mdict[m],merge(data["General"],data["IndustrySector"][m],data["ETS"],data["scenario"]))                    # Industry
+end
+for m in agents[:cc]
+    define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["CarbonCaptureSector"][m]),ts,repr_days,agents)                       # Parameters common to all agents
+    define_cc_parameters!(mdict[m],merge(data["General"],data["CarbonCaptureSector"][m]),REC)                                          # DAC
 end
 for m in agents[:ps]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["PowerSector"][m]),ts,repr_days,agents)     # Parameters common to all agents
@@ -280,7 +289,7 @@ for m in agents[:ps]
 end
 for m in agents[:h2s]
     define_common_parameters!(m,mdict[m],merge(data["General"],data["ADMM"],data["HydrogenSector"][m]),ts,repr_days,agents)  # Parameters common to all agents
-    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m],data["scenario"]),ts,repr_days,REC)      # Hydrogen sector
+    define_H2S_parameters!(mdict[m],merge(data["General"],data["HydrogenSector"][m],data["scenario"]),REC)                   # Hydrogen sector
 end
 
 # Calculate number of agents in each market
@@ -305,6 +314,9 @@ end
 for m in agents[:h2s]
     build_h2s_agent!(mdict[m])
 end
+for m in agents[:cc]
+    build_cc_agent!(mdict[m])
+end
 
 println("Build model: done")
 println("   ")
@@ -323,7 +335,7 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
-while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
+while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["IndustrySector"]["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
@@ -360,7 +372,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-end # end loop over sensititivity
-end # end for loop over scenarios
+# end # end loop over sensititivity
+# end # end for loop over scenarios
 
 println(string("##############################################################################################"))

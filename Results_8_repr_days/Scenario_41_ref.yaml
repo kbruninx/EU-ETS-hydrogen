@@ -292,7 +292,7 @@ ADMM:
   rho_REC_h_pre2030: 0
   rho_H2CN_cap: 1
   rho_EOM: 1
-  epsilon: 0.1
+  epsilon: 0.5
   rho_H2CN_prod: 1
   rho_REC_d_post2030: 0
   rho_H2_m: 0

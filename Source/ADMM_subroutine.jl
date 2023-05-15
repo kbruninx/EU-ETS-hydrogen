@@ -67,7 +67,7 @@ end
 # Solve agents decision problems:
 if m in agents[:ind]
     @timeit TO_local "Solve industry" begin
-        update_ind_emissions!(mod,merge(data["General"],data["Industry"],data["scenario"]),ETS) 
+        update_ind_emissions!(mod,merge(data["General"],data["IndustrySector"]["Industry"],data["scenario"]),ETS) 
         solve_ind_agent!(mod)  
     end
 elseif m in agents[:ps]
@@ -77,6 +77,10 @@ elseif m in agents[:ps]
 elseif m in agents[:h2s]
     @timeit TO_local "Solve hydrogen sector" begin
         solve_h2s_agent!(mod)  
+    end
+elseif m in agents[:cc]
+    @timeit TO_local "Solve carbon capture sector" begin
+        solve_cc_agent!(mod)  
     end
 end
 

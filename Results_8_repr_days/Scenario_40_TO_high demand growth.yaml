@@ -1,20 +1,20 @@
  ────────────────────────────────────────────────────────────────────────────────
                                         Time                    Allocations      
                                ───────────────────────   ────────────────────────
-       Tot / % measured:            1.98h / 633.9%          2.63TiB / 1250.2%    
+       Tot / % measured:            1247s / 714.0%           551GiB / 1252.0%    
 
  Section               ncalls     time    %tot     avg     alloc    %tot      avg
  ────────────────────────────────────────────────────────────────────────────────
- Solve power sector     59.8k    7.92h   63.2%   477ms   24.9TiB   75.7%   436MiB
- Solve hydrogen sector  16.3k    4.24h   33.8%   936ms   7.14TiB   21.7%   459MiB
- Query results          81.5k    1112s    2.5%  13.6ms    435GiB    1.3%  5.46MiB
- Compute dual resid...  5.44k     133s    0.3%  24.4ms    113GiB    0.3%  21.3MiB
- Solve industry         5.44k    50.3s    0.1%  9.26ms    162GiB    0.5%  30.5MiB
- Compute ADMM penal...  81.5k    37.6s    0.1%   461μs    142GiB    0.4%  1.79MiB
- Update EUA supply      5.44k    28.9s    0.1%  5.31ms   5.73GiB    0.0%  1.08MiB
- Compute imbalances     5.44k    8.60s    0.0%  1.58ms   4.16GiB    0.0%   802KiB
- Update prices          5.44k    1.94s    0.0%   356μs    690MiB    0.0%   130KiB
- Compute primal res...  5.44k    1.63s    0.0%   300μs   1.00GiB    0.0%   193KiB
- Update ρ               5.44k    299ms    0.0%  55.0μs   6.92MiB    0.0%  1.30KiB
- Progress bar           5.44k    167ms    0.0%  30.8μs   18.2MiB    0.0%  3.42KiB
+ Solve power sector     12.2k    1.63h   65.7%   478ms   5.09TiB   75.5%   436MiB
+ Solve hydrogen sector  3.34k    2758s   31.0%   826ms   1.46TiB   21.7%   459MiB
+ Query results          16.7k     245s    2.7%  14.6ms   96.6GiB    1.4%  5.92MiB
+ Compute dual resid...  1.11k    25.9s    0.3%  23.3ms   23.1GiB    0.3%  21.3MiB
+ Solve industry         1.11k    10.4s    0.1%  9.36ms   36.2GiB    0.5%  33.3MiB
+ Compute ADMM penal...  16.7k    6.19s    0.1%   371μs   34.5GiB    0.5%  2.12MiB
+ Update EUA supply      1.11k    5.97s    0.1%  5.36ms   1.21GiB    0.0%  1.11MiB
+ Compute primal res...  1.11k    1.98s    0.0%  1.78ms    210MiB    0.0%   193KiB
+ Compute imbalances     1.11k    459ms    0.0%   413μs    872MiB    0.0%   802KiB
+ Update prices          1.11k   89.1ms    0.0%  80.1μs    141MiB    0.0%   130KiB
+ Update ρ               1.11k   51.2ms    0.0%  46.0μs   1.43MiB    0.0%  1.32KiB
+ Progress bar           1.11k   29.1ms    0.0%  26.1μs   3.72MiB    0.0%  3.42KiB
  ────────────────────────────────────────────────────────────────────────────────

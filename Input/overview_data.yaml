@@ -13,7 +13,7 @@ ADMM:
  rho_H2: 1  # rho ADMM penalty term, H2
  rho_H2CN_prod: 1 # rho ADMM penalty term, carbon-neutral H2 production incentive (€/tH2)
  rho_H2CN_cap: 1 # rho ADMM penalty term, carbon-neutral H2 capacity incentive (€/GW)
- max_iter: 100 # maximum number of iterations
+ max_iter: 10000 # maximum number of iterations
  epsilon: 0.1 # stopping criterion - tolerance on "accuracy" with which the coupling constraints are satisfied, expressed as percentage of initial imbalance (e.g., demand). Applied to dual and primal residuals.
  CircularBufferSize: 2 # number of iterations for which data will be retained, should be at least 2 and less than max_iter
 
@@ -69,20 +69,42 @@ H2:
   demand: 10 # baseline demand for hydrogen, mtH2
   conv_factor: 33 # 1 mt H2 = 33 TWh 
 
-Industry: 
-  E_ref: 800 #  MtCO2 - baseline emissions MACC
-  E_ref_maritime: 80 #  MtCO2 - baseline emissions MACC
-  tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
-  E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
-  E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
-  E_ind_2021: 512.9 # Emissions in 2021 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
-  REC: "NO" # eligible for RECs?
-  ETS: "YES" # covered by ETS
-  EOM: "NO" # participates in EOM?
-  H2: "NO" # participate in the carbon neutral H2 market
-  H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
-  H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
-  NG: "NO" # participate in the natural gas market
+IndustrySector: 
+  Industry: 
+    E_ref: 800 #  MtCO2 - baseline emissions MACC
+    E_ref_maritime: 80 #  MtCO2 - baseline emissions MACC
+    tolerance_calibration: 1 # €/tCO2  - tolerance in calibration MACC
+    E_ind_2019: 598 # Emissions in 2019 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
+    E_ind_2020: 548.6 # Emissions in 2020 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
+    E_ind_2021: 512.9 # Emissions in 2021 - excluding emissions from production of hydrogen, estimated at 100MtCO2 today - https://sandbag.be/index.php/eu-ets-dashboard/ 
+    REC: "NO" # eligible for RECs?
+    ETS: "YES" # covered by ETS
+    EOM: "NO" # participates in EOM?
+    H2: "NO" # participate in the carbon neutral H2 market
+    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+    NG: "NO" # participate in the natural gas market
+
+# Direct air capture - data from PyPSA, assuming all energy input is electric (incl. heat, assuming COP of 3 for heat pumps)
+# Storage cost is ignored
+CarbonCaptureSector: 
+  DAC:
+    efficiency_E_CO2: 1.08333333333 # TWh/MtCO2
+    OC: 7000000 # MEUR/MtCO2/h 
+    Lifetime: 20 # years
+    Leadtime: 3 # years
+    Legcap_2021: 0.007 # MtCO2/h
+    Legcap_out: 20 # years
+    max_YoY_new_cap: 500 # % of current capacity
+    YoY_OC: -1.5 # % change in overnight investment cost YoY
+    YoY_VC: 0 # % change in variable cost YoY
+    REC: "YES" # eligible for RECs
+    ETS: "YES" # covered by ETS
+    EOM: "YES" # participates in EOM
+    H2: "NO" # participate in the carbon neutral H2 market
+    H2CN_prod: "NO" # participate in the carbon neutral H2 market (production)
+    H2CN_cap: "NO" # participate in the carbon neutral H2 market (capacity)
+    NG: "NO" # participate in the natural gas market
 
 HydrogenSector: 
   SMR: # unless stated otherwise, based on EUR-pypsa_data

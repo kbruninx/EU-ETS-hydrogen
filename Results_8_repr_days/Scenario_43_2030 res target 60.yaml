@@ -4,7 +4,7 @@ REC:
 EOM:
   SF: 1
 scenario:
-  remarks: missing
+  remarks: "missing"
   Additionality_pre_2030: "Hourly"
   H2_demand_2030: 20
   CNH2_cap_target_2030: 100
@@ -20,8 +20,8 @@ scenario:
   gamma: 2
   CNH2_demand_2030: 10.0
   H2_balance: "Daily"
-  sens_number: 11
-  max_em_change: 5.0
+  sens_number: 1
+  max_em_change: 10
 General:
   discount_rate: 0.1
   nMonths: 12
@@ -93,7 +93,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 50.0
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "SOLAR"
     H2: "NO"
@@ -137,7 +137,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 18
     emissions: 0
-    max_YoY_new_cap: 50.0
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_OFFSHORE"
     H2: "NO"
@@ -160,7 +160,7 @@ PowerSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0
-    max_YoY_new_cap: 50.0
+    max_YoY_new_cap: 50
     efficiency: 0
     AF_ts: "WIND_ONSHORE"
     H2: "NO"
@@ -292,12 +292,12 @@ ADMM:
   rho_REC_h_pre2030: 1
   rho_H2CN_cap: 1
   rho_EOM: 1
-  epsilon: 0.1
+  epsilon: 0.5
   rho_H2CN_prod: 1
   rho_REC_d_post2030: 0
   rho_H2_m: 0
 Industry:
-  E_ref: 800
+  H2: "NO"
   REC: "NO"
   E_ind_2020: 548.6
   EOM: "NO"
@@ -309,7 +309,7 @@ Industry:
   E_ind_2019: 598
   E_ref_maritime: 80
   tolerance_calibration: 1
-  H2: "NO"
+  E_ref: 800
 ETS:
   MSR_2019: 1297.124722
   TNAC_2020: 1578.772426
@@ -338,7 +338,7 @@ NG:
   P_2023: 80
   P_2030: 43.9
   P_2025: 46.6
-  SF: 2.0
+  SF: 1
   P_2019: 25
   P_2028: 45
   P_2026: 46.1
@@ -388,7 +388,7 @@ HydrogenSector:
     NG: "NO"
     Legcap_out: 15
     emissions: 0.0
-    max_YoY_new_cap: 480.0
+    max_YoY_new_cap: 500
     H2: "YES"
   SMRCCS:
     efficiency_NG_H2: 0.67
@@ -399,7 +399,7 @@ HydrogenSector:
     AF: 1
     Leadtime: 2
     Lifetime: 25
-    YoY_OC: 0.0
+    YoY_OC: 0
     H2CN_cap: "NO"
     efficiency_E_H2: 0
     H2CN_prod: "NO"
@@ -408,7 +408,7 @@ HydrogenSector:
     NG: "YES"
     Legcap_out: 15
     emissions: 0.0205
-    max_YoY_new_cap: 480.0
+    max_YoY_new_cap: 500
     H2: "YES"
 H2:
   demand: 10

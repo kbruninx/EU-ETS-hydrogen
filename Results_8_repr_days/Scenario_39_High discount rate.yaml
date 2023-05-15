@@ -2,12 +2,12 @@ REC:
   RES_share_other_2021: 0.174119315
   RES_target_2020: 0.34
 EOM:
-  SF: 1.0
+  SF: 1
 scenario:
-  remarks: missing
+  remarks: "missing"
   Additionality_pre_2030: "NA"
   H2_demand_2030: 20
-  CNH2_cap_target_2030: 200.0
+  CNH2_cap_target_2030: 100
   Additionality_post_2030: "NA"
   CNH2_cap_target_2024: 6
   MSR: "YES"
@@ -20,10 +20,10 @@ scenario:
   gamma: 2
   CNH2_demand_2030: 10.0
   H2_balance: "Daily"
-  sens_number: 21
+  sens_number: 1
   max_em_change: 10
 General:
-  discount_rate: 0.09600000000000002
+  discount_rate: 0.12
   nMonths: 12
   inflation: 0.02
   nTimesteps: 24
@@ -297,7 +297,7 @@ ADMM:
   rho_REC_d_post2030: 0
   rho_H2_m: 0
 Industry:
-  E_ref: 800
+  H2: "NO"
   REC: "NO"
   E_ind_2020: 548.6
   EOM: "NO"
@@ -309,7 +309,7 @@ Industry:
   E_ind_2019: 598
   E_ref_maritime: 80
   tolerance_calibration: 1
-  H2: "NO"
+  E_ref: 800
 ETS:
   MSR_2019: 1297.124722
   TNAC_2020: 1578.772426
