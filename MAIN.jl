@@ -166,8 +166,8 @@ else
     stop_sens = 100  
 end
 
-scen_number = 2
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+# scen_number = 2
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
@@ -181,14 +181,17 @@ data = merge(data,scenario_definition)
 # Define rho-values based on additionality rules and hydrogen demand resolution in this scenario
 define_rho_parameters!(data)
 
-sens_number = 1 
-
-# for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
+# sens_number = 1 
+for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
 if sens_number >= 2
     println("    ") 
     println(string("#                                  Sensitivity ",sens_number-1,"                                      #"))
+   
+    # read the reference parameterization
+    data = YAML.load_file(joinpath(home_dir,string("Results_",data["General"]["nReprDays"],"_repr_days"),string("Scenario_",data["scenario"]["scen_number"],"_ref.yaml")))
+    # change affected parameters
     parameter = split(sensitivity_overview[sens_number-1,:Parameter])
     parameter_sector = split(parameter[1],"-") # affect multiple sectors or tech
     parameter_tech = split(parameter[2],"-") # affect multiple sectors or tech
@@ -357,7 +360,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end loop over sensititivity
-# end # end for loop over scenarios
+end # end loop over sensititivity
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

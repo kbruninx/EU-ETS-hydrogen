@@ -13,7 +13,7 @@ scenario:
   MSR: "YES"
   scen_number: 27
   ref_scen_number: 26
-  RES_target_2030: 0.9
+  RES_target_2030: 0.45
   H2_demand_2050: 50
   CNH2_demand_2024: 1
   sensitivity: "YES"
@@ -85,7 +85,7 @@ PowerSector:
     Lifetime: 30
     Legcap_2020: 94.45
     Legcap_2019: 84.12
-    YoY_OC: -1.4
+    YoY_OC: -2.8
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"
@@ -129,7 +129,7 @@ PowerSector:
     Lifetime: 25
     Legcap_2020: 13.2
     Legcap_2019: 10.6
-    YoY_OC: -0.64
+    YoY_OC: -1.28
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"
@@ -152,7 +152,7 @@ PowerSector:
     Lifetime: 25
     Legcap_2020: 155.75
     Legcap_2019: 144.6
-    YoY_OC: -0.5
+    YoY_OC: -1.0
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"

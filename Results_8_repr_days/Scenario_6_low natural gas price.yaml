@@ -2,25 +2,25 @@ REC:
   RES_share_other_2021: 0.174119315
   RES_target_2020: 0.34
 EOM:
-  SF: 0.5
+  SF: 1
 scenario:
   remarks: missing
-  Additionality_pre_2030: "NA"
+  Additionality_pre_2030: "Hourly"
   H2_demand_2030: 20
   CNH2_cap_target_2030: 100
-  Additionality_post_2030: "NA"
+  Additionality_post_2030: "Hourly"
   CNH2_cap_target_2024: 6
   MSR: "YES"
-  scen_number: 27
-  ref_scen_number: 26
+  scen_number: 6
+  ref_scen_number: 1
   RES_target_2030: 0.45
   H2_demand_2050: 50
   CNH2_demand_2024: 1
-  sensitivity: "YES"
-  gamma: 2
+  sensitivity: "NO"
+  gamma: 1
   CNH2_demand_2030: 10.0
   H2_balance: "Yearly"
-  sens_number: 15
+  sens_number: 2
   max_em_change: 10
 General:
   discount_rate: 0.1
@@ -85,7 +85,7 @@ PowerSector:
     Lifetime: 30
     Legcap_2020: 94.45
     Legcap_2019: 84.12
-    YoY_OC: -2.8
+    YoY_OC: -1.4
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"
@@ -129,7 +129,7 @@ PowerSector:
     Lifetime: 25
     Legcap_2020: 13.2
     Legcap_2019: 10.6
-    YoY_OC: -1.28
+    YoY_OC: -0.64
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"
@@ -152,7 +152,7 @@ PowerSector:
     Lifetime: 25
     Legcap_2020: 155.75
     Legcap_2019: 144.6
-    YoY_OC: -1.0
+    YoY_OC: -0.5
     H2CN_cap: "NO"
     H2CN_prod: "NO"
     ETS: "NO"
@@ -285,11 +285,11 @@ ADMM:
   rho_H2_d: 0
   rho_EUA: 1
   max_iter: 10000
-  rho_REC_h_post2030: 0
+  rho_REC_h_post2030: 1
   rho_REC_y_post2030: 0
   rho_REC_m_pre2030: 0
   rho_REC: 1
-  rho_REC_h_pre2030: 0
+  rho_REC_h_pre2030: 1
   rho_H2CN_cap: 1
   rho_EOM: 1
   epsilon: 0.5
@@ -338,7 +338,7 @@ NG:
   P_2023: 80
   P_2030: 43.9
   P_2025: 46.6
-  SF: 1
+  SF: 0.5
   P_2019: 25
   P_2028: 45
   P_2026: 46.1
