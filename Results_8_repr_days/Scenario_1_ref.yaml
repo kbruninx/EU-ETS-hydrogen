@@ -3,21 +3,6 @@ REC:
   RES_target_2020: 0.34
 EOM:
   SF: 1
-IndustrySector:
-  Industry:
-    E_ref: 800
-    REC: "NO"
-    E_ind_2020: 548.6
-    EOM: "NO"
-    E_ind_2021: 512.9
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "YES"
-    NG: "NO"
-    E_ind_2019: 598
-    E_ref_maritime: 80
-    tolerance_calibration: 1
-    H2: "NO"
 scenario:
   remarks: "Used to calibrate MACC"
   Additionality_pre_2030: "NA"
@@ -288,24 +273,6 @@ PowerSector:
     efficiency: 0.4
     AF_ts: "NA"
     H2: "NO"
-CarbonCaptureSector:
-  DAC:
-    efficiency_E_CO2: 1.08333333333
-    REC: "YES"
-    YoY_VC: 0
-    OC: 7000000
-    EOM: "YES"
-    Leadtime: 3
-    Lifetime: 20
-    YoY_OC: -1.5
-    H2CN_cap: "NO"
-    H2CN_prod: "NO"
-    ETS: "YES"
-    Legcap_2021: 0.007
-    NG: "NO"
-    Legcap_out: 20
-    max_YoY_new_cap: 500
-    H2: "NO"
 ADMM:
   rho_REC_y_pre2030: 0
   CircularBufferSize: 2
@@ -317,7 +284,7 @@ ADMM:
   rho_H2: 1
   rho_H2_d: 0
   rho_EUA: 1
-  max_iter: 100
+  max_iter: 10000
   rho_REC_h_post2030: 0
   rho_REC_y_post2030: 0
   rho_REC_m_pre2030: 0
@@ -325,10 +292,24 @@ ADMM:
   rho_REC_h_pre2030: 0
   rho_H2CN_cap: 1
   rho_EOM: 1
-  epsilon: 0.1
+  epsilon: 0.5
   rho_H2CN_prod: 1
   rho_REC_d_post2030: 0
   rho_H2_m: 0
+Industry:
+  E_ref: 800
+  REC: "NO"
+  E_ind_2020: 548.6
+  EOM: "NO"
+  E_ind_2021: 512.9
+  H2CN_cap: "NO"
+  H2CN_prod: "NO"
+  ETS: "YES"
+  NG: "NO"
+  E_ind_2019: 598
+  E_ref_maritime: 80
+  tolerance_calibration: 1
+  H2: "NO"
 ETS:
   MSR_2019: 1297.124722
   TNAC_2020: 1578.772426

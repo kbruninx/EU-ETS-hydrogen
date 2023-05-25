@@ -55,17 +55,17 @@ function build_cc_agent!(mod::Model)
 
     # Electricity consumption  
     mod.ext[:constraints][:gen_limit_energy_sources] = @constraint(mod, [jh=JH,jd=JD,jy=JY],
-        cc[jh,jd,jy]/η_E_CO2 == -g[jh,jd,jy]  # [TWh]
+        cc[jh,jd,jy]/η_E_CO2 <= -g[jh,jd,jy]  # [TWh]
     )
 
     # Selling emission allowances
     mod.ext[:constraints][:EUA_balance]  = @constraint(mod, [jy=JY], 
-        sum(b[y2] for y2=1:jy) >=  -sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD) # [MtonCO2]
+        sum(b[y2] for y2=1:jy) >=  -sum(W[jd]*cc[jh,jd,y2] for jh in JH, jd in JD,y2=1:jy) # [MtonCO2]
     )
 
     # REC    
     mod.ext[:constraints][:REC_balance_yearly] = @constraint(mod, [jy=JY],
-        r_y[jy] == ADD_SF[jy]*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
+        r_y[jy] <= ADD_SF[jy]*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)
     )     
 
     return mod

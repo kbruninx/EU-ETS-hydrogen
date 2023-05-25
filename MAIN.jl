@@ -4,7 +4,7 @@
 
 ## 0. Set-up code
 # HPC or not?
-HPC = "NA" # NA, DelftBlue or ThinKing
+HPC = "DelftBlue" # NA, DelftBlue or ThinKing
 
 # Home directory
 const home_dir = @__DIR__
@@ -169,11 +169,14 @@ else
     stop_sens = 100  
 end
 
-scen_number = 2
-# for scen_number in range(start_scen,stop=stop_scen,step=1)
+# scen_number = 2
+for scen_number in range(start_scen,stop=stop_scen,step=1)
 
 println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
+println("    ")
+println("Current time: ",Dates.format(now(), "dd-mm-YYYY -- HH:MM"))
+println("    ")
 
 ## 1. Read associated input for this simulation
 scenario_overview_row = Dict(pairs(scenario_overview[scen_number,:])) # create dict from dataframe
@@ -184,8 +187,8 @@ data = merge(data,scenario_definition)
 # Define rho-values based on additionality rules and hydrogen demand resolution in this scenario
 define_rho_parameters!(data)
 
-sens_number = 1 
-# for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
+# sens_number = 1 
+for sens_number in range(start_sens,stop=minimum([length(sensitivity_overview[!,:Parameter])+1,stop_sens]),step=1) 
 data["scenario"]["sens_number"] = sens_number 
 
 if sens_number >= 2
@@ -339,11 +342,13 @@ while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["In
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
-    mdict["Ind"].ext[:parameters][:β] = copy(mdict["Ind"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
+    mdict["Industry"].ext[:parameters][:β] = copy(mdict["Industry"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
     println(string("Required iterations: ",ADMM["n_iter"]))
     println(string("Required walltime: ",ADMM["walltime"], " minutes"))
-    println(string("New estimate for β: ", mdict["Ind"].ext[:parameters][:β]))
+    println(string("New estimate for β: ", mdict["Industry"].ext[:parameters][:β]))
+    println("Current time: ",Dates.format(now(), "HH:MM"))
+
     println(string("        "))
 
     # Calculate equilibrium with new estimate beta
@@ -356,6 +361,7 @@ println(string("Done!"))
 println(string("        "))
 println(string("Required iterations: ",ADMM["n_iter"]))
 println(string("Required walltime: ",ADMM["walltime"], " minutes"))
+println("Current time: ",Dates.format(now(), "HH:MM"))
 println(string("        "))
 
 ## 6. Postprocessing and save results 
@@ -372,7 +378,7 @@ end
 println("Postprocessing & save results: done")
 println("   ")
 
-# end # end loop over sensititivity
-# end # end for loop over scenarios
+end # end loop over sensititivity
+end # end for loop over scenarios
 
 println(string("##############################################################################################"))

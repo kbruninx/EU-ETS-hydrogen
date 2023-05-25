@@ -14,6 +14,7 @@ function solve_ps_agent!(mod::Model)
     else 
         VC  = mod.ext[:parameters][:VC]  
     end
+    CPC  = mod.ext[:parameters][:CPC]  
     IC = mod.ext[:parameters][:IC] # overnight investment costs
     A = mod.ext[:parameters][:A] # discount factors
     CAP_SV = mod.ext[:parameters][:CAP_SV] # salvage value of new capacity
@@ -155,6 +156,7 @@ function solve_ps_agent!(mod::Model)
 
     OPEX_obj = mod.ext[:expressions][:OPEX_obj] = @expression(mod,
         + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*CPC*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)^2 for jy in JY)
     )
 
     EOM_obj = mod.ext[:expressions][:EOM_obj] = @expression(mod,

@@ -12,7 +12,8 @@ function solve_cc_agent!(mod::Model)
    
    # Extract variables and expressions
    cap = mod.ext[:variables][:cap]  
-    
+   cc = mod.ext[:variables][:cc]  
+
     # Expressions to compute objective
     if mod.ext[:parameters][:EOM] == 1
         λ_EOM = mod.ext[:parameters][:λ_EOM] # EOM prices
@@ -31,7 +32,6 @@ function solve_cc_agent!(mod::Model)
     end
 
     if mod.ext[:parameters][:REC] == 1
-        ADD_SF = mod.ext[:parameters][:ADD_SF] 
         λ_y_REC = mod.ext[:parameters][:λ_y_REC] # REC prices
         r_y_bar = mod.ext[:parameters][:r_y_bar] # element in ADMM penalty term related to REC auctions
         ρ_y_REC = mod.ext[:parameters][:ρ_y_REC] # rho-value in ADMM related to REC auctions
@@ -66,10 +66,15 @@ function solve_cc_agent!(mod::Model)
     CAPEX_obj = mod.ext[:expressions][:CAPEX_obj] = @expression(mod,
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY) # [MEUR]
     )
+       
+    OPEX_obj = mod.ext[:expressions][:OPEX_obj] = @expression(mod,
+        + sum(A[jy]*(10*10^6*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD) + 0.001*10^6*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD)^2) for jy in JY) # [MEUR]
+    )
 
     # Update objective 
     mod.ext[:objective] = @objective(mod, Min,
         + CAPEX_obj
+        + OPEX_obj
         + EOM_obj
         + REC_obj
         + ETS_obj

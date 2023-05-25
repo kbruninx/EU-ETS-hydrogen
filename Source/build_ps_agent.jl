@@ -18,6 +18,7 @@ function build_ps_agent!(mod::Model)
     else 
         VC  = mod.ext[:parameters][:VC]  
     end
+    CPC  = mod.ext[:parameters][:CPC]  
     IC = mod.ext[:parameters][:IC] # overnight investment costs
     CI = mod.ext[:parameters][:CI] # carbon intensity
     LEG_CAP = mod.ext[:parameters][:LEG_CAP] # legacy capacity
@@ -55,6 +56,7 @@ function build_ps_agent!(mod::Model)
     mod.ext[:expressions][:tot_cost] = @expression(mod, 
         + sum(A[jy]*(1-CAP_SV[jy])*IC[jy]*cap[jy] for jy in JY)
         + sum(A[jy]*W[jd]*VC[jy]*g[jh,jd,jy] for jh in JH, jd in JD, jy in JY)
+        + sum(A[jy]*CPC*sum(W[jd]*g[jh,jd,jy] for jh in JH, jd in JD)^2 for jy in JY)
     )
 
     # Objective  - will be updated in solve-step

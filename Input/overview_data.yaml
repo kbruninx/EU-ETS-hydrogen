@@ -176,6 +176,7 @@ HydrogenSector:
 PowerSector: 
  Nuclear:
   fuelCosts: 10 # MEUR/TWh - assumption 
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 7940 # MEUR/GW
@@ -200,6 +201,7 @@ PowerSector:
 
  SPP_lignite:
   fuelCosts: 22.5 # MEUR/TWh (assumes 2.5 €/GJ (EERA), efficiency at 40%)
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0.909 # Mton/TWh - EERA (emission factor 101 kgCO2/GJ)
   efficiency: 0 # not used
   OC: 3845 # MEUR/GW
@@ -224,6 +226,7 @@ PowerSector:
 
  SPP_coal:
   fuelCosts: 26.91 # MEUR/TWh - EERA (assumes 2.99 €/GJ, efficiency at 40%)
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0.846 # Mton/TWh - EERA (emission factor 94 kgCO2/GJ)
   efficiency: 0 # not used
   OC: 3845 # MEUR/GW
@@ -248,6 +251,7 @@ PowerSector:
 
  CCGT_old:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   efficiency: 0.5 # NG -> electricity  
   emissions: 0.456 # Mton/TWh (emission factor: 57 kgCO2/GJ (EERA))
   OC: 880 # MEUR/GW
@@ -270,6 +274,7 @@ PowerSector:
 
  CCGT_new:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   efficiency: 0.6 # NG -> electricity  
   emissions: 0.342 # Mton/TWh (emissions factor: 57 kgCO2/GJ - EERA)
   OC: 880 # MEUR/GW
@@ -292,6 +297,7 @@ PowerSector:
 
  OCGT:
   fuelCosts: 0 # MEUR/TWh - to be linked to price of natural gas
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   efficiency: 0.4 # NG -> electricity  
   emissions: 0.513 # Mton/TWh (emission factor: 57 kgCO2/GJ - EERA)
   OC: 453 # MEUR/GW
@@ -314,6 +320,7 @@ PowerSector:
 
  ICE:
   fuelCosts: 198 # MEUR/TWh - (assumes 19.25 €/GJ (EERA), efficiency at 35%)
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 1.028 # Mton/TWh - EERA (emission factor 100 kgCO2/GJ)
   efficiency: 0 # not used
   OC: 453 # MEUR/GW 
@@ -336,6 +343,7 @@ PowerSector:
 
  Biomass: 
   fuelCosts: 50 # MEUR/TWh - own assumption due to lack of data 
+  CostPotentialCurve: 0 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 3381  # MEUR/GW
@@ -358,6 +366,7 @@ PowerSector:
 
  Solar:
   fuelCosts: 0 # MEUR/TWh
+  CostPotentialCurve: 1250 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 529 # MEUR/GW
@@ -382,6 +391,7 @@ PowerSector:
 
  WindOnshore:
   fuelCosts: 0 # MEUR/TWh
+  CostPotentialCurve: 2500 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 1118 # MEUR/GW
@@ -406,6 +416,7 @@ PowerSector:
 
  WindOffshore:
   fuelCosts: 0 # MEUR/TWh
+  CostPotentialCurve: 1250 # MEUR/TWh^2 - approximating cost potential curves, see McKenna 2014 Applied Energy
   emissions: 0 # Mton/TWh
   efficiency: 0 # not used
   OC: 1748 # MEUR/GW

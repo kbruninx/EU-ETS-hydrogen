@@ -57,6 +57,7 @@ PowerSector:
     YoY_OC: -0.5
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "NO"
     Legcap_2021: 21.0
     NG: "NO"
@@ -80,6 +81,7 @@ PowerSector:
     YoY_OC: 0
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 48.7
     NG: "NO"
@@ -103,6 +105,7 @@ PowerSector:
     YoY_OC: -1.4
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 1250
     ETS: "NO"
     Legcap_2021: 110.84
     NG: "NO"
@@ -124,6 +127,7 @@ PowerSector:
     YoY_OC: 0
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 16.95
     NG: "NO"
@@ -147,6 +151,7 @@ PowerSector:
     YoY_OC: -0.64
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 1250
     ETS: "NO"
     Legcap_2021: 14.12
     NG: "NO"
@@ -170,6 +175,7 @@ PowerSector:
     YoY_OC: -0.5
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 2500
     ETS: "NO"
     Legcap_2021: 164.87
     NG: "NO"
@@ -193,6 +199,7 @@ PowerSector:
     YoY_OC: 0
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "NO"
     Legcap_2021: 104.64
     NG: "NO"
@@ -214,6 +221,7 @@ PowerSector:
     YoY_OC: -0.3
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 70
     NG: "YES"
@@ -235,6 +243,7 @@ PowerSector:
     YoY_OC: -0.3
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 100
     NG: "YES"
@@ -258,6 +267,7 @@ PowerSector:
     YoY_OC: 0
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 74.9
     NG: "NO"
@@ -279,6 +289,7 @@ PowerSector:
     YoY_OC: -0.3
     H2CN_cap: "NO"
     H2CN_prod: "NO"
+    CostPotentialCurve: 0
     ETS: "YES"
     Legcap_2021: 13.4
     NG: "YES"
