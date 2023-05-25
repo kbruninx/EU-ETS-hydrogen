@@ -29,6 +29,7 @@ using JLD2
 using Base.Threads: @spawn 
 using Base: split
 using ArgParse # Parsing arguments from the command line
+using Dates 
 
 # Gurobi environment to suppress output
 println("Define Gurobi environment...")
@@ -176,7 +177,6 @@ println("    ")
 println(string("######################                  Scenario ",scen_number,"                 #########################"))
 println("    ")
 println("Current time: ",Dates.format(now(), "dd-mm-YYYY -- HH:MM"))
-println("    ")
 
 ## 1. Read associated input for this simulation
 scenario_overview_row = Dict(pairs(scenario_overview[scen_number,:])) # create dict from dataframe
@@ -338,14 +338,17 @@ ADMM!(results,ADMM,ETS,EOM,REC,H2,H2CN_prod,H2CN_cap,NG,mdict,agents,data,TO)   
 ADMM["walltime"] =  TimerOutputs.tottime(TO)*10^-9/60                                                                                     # wall time 
 
 # Calibration of industry MACC
+iteration = 0
 while abs(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]) > data["IndustrySector"]["Industry"]["tolerance_calibration"] && data["scenario"]["ref_scen_number"] == scen_number && sens_number == 1
+    iteration = iteration + 1
+    # Save current results 
+    save_results(mdict,EOM,ETS,H2,ADMM,results,merge(data["General"],data["ADMM"],data["H2"],data["scenario"]),agents,string("calibration_iteration_",iteration"")) 
+
     # Calibration β - new estimate:
     println(string("Calibration error 2021 EUA prices: " , results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"]," €/tCO2"))
 
     mdict["Industry"].ext[:parameters][:β] = copy(mdict["Industry"].ext[:parameters][:β]/(1+(results[ "λ"]["EUA"][end][1]-data["ETS"]["P_calibration"])/data["ETS"]["P_calibration"])^(1/data["scenario"]["gamma"]))
 
-    println(string("Required iterations: ",ADMM["n_iter"]))
-    println(string("Required walltime: ",ADMM["walltime"], " minutes"))
     println(string("New estimate for β: ", mdict["Industry"].ext[:parameters][:β]))
     println("Current time: ",Dates.format(now(), "HH:MM"))
 

@@ -68,7 +68,7 @@ function solve_cc_agent!(mod::Model)
     )
        
     OPEX_obj = mod.ext[:expressions][:OPEX_obj] = @expression(mod,
-        + sum(A[jy]*(10*10^6*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD) + 0.001*10^6*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD)^2) for jy in JY) # [MEUR]
+        + sum(A[jy]*(10*10^6*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD) + 0.001*sum(W[jd]*cc[jh,jd,jy] for jh in JH, jd in JD)^2) for jy in JY) # [MEUR]
     )
 
     # Update objective 
