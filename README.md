@@ -1,3 +1,5 @@
+Warning: this is code is currently under (re)development. The documentation is incomplete.
+
 This code was developed to study the interaction between the power sector, the energy intensive industry and the hydrogen sector on the auctions of the European Emission Trading System, the energy-only electricity market, the hydrogen market. It calculates an equilibrium between a set of representative price-taking agents on these markets and allows enforcing renewable targets and different defnitions of the "additionality" principle (putting requirements on the electricity used in the electrolysis proces). The market stability reserve in EU ETS is fully considered, endogenously adapting the supply of emission allowances.  It employs an iterative price-search algorithm based on ADMM to calculate this equilibrium iteratively. The emissions of the energy-intensive industry are represented via marginal abatement cost curves, which can be automatically calibrated to reproduce allowance prices post MSR reform (2019). 
 
 (Variations on) this research code documented below have been used in the following papers:
